@@ -1,0 +1,8 @@
+Deployed Client: {
+  shape: sequence_diagram
+  User
+  User -> Client: Get page
+  Client -> User: {style.stroke-dash: 5}
+  User -> Server: API call
+  Server -> User: {style.stroke-dash: 5}
+}

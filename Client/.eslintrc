@@ -1,0 +1,41 @@
+{
+	"env": {
+		"browser": true,
+		"es2021": true,
+		"node": true
+	},
+	"settings": {
+		"react": {
+			"version": "detect"
+		}
+	},
+	"extends": ["eslint:recommended", "plugin:react/recommended"],
+	"parser": "@typescript-eslint/parser",
+	"parserOptions": {
+		"ecmaFeatures": {
+			"jsx": true
+		},
+		"ecmaVersion": 12,
+		"sourceType": "module"
+	},
+	"rules": {
+		"no-unused-vars": "off",
+		"@typescript-eslint/no-unused-vars": [
+			"error",
+			{
+				"argsIgnorePattern": "^_",
+				"varsIgnorePattern": "^_",
+				"caughtErrorsIgnorePattern": "^_"
+			}
+		],
+		"no-useless-constructor": "off",
+		"@typescript-eslint/no-useless-constructor": "error",
+		"jest/no-done-callback": "off",
+		"react/jsx-key": "warn",
+		"react/no-array-index-key": "warn",
+		"react/react-in-jsx-scope": "off",
+		"react-hooks/rules-of-hooks": "error",
+		"react-hooks/exhaustive-deps": "warn"
+	},
+	"plugins": ["@typescript-eslint", "react", "react-hooks"]
+}

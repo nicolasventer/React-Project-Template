@@ -1,0 +1,14 @@
+{
+	"entryPoints": ["src/**/*.ts"],
+	"validation": {
+		"notExported": true,
+		"invalidLink": true,
+		"notDocumented": true
+	},
+	"logLevel": "Warn",
+	"treatWarningsAsErrors": false,
+	"excludeExternals": true,
+	"projectDocuments": ["README.md", "src/**/*.md"],
+	"plugin": ["@zamiell/typedoc-plugin-not-exported"],
+	"exclude": ["src/**/*.d.ts"]
+}

@@ -1,0 +1,11 @@
+Client Side Rendering: {
+  shape: sequence_diagram
+  User
+  Server
+  Client: "Client (no server)"
+  Client -> Client: Build page
+  User -> Server -> Client: Get page
+  Client -> Server -> User: {style.stroke-dash: 5}
+  User -> Server: API call
+  Server -> User: {style.stroke-dash: 5}
+}

@@ -1,0 +1,21 @@
+Project structure: {
+  misc: {
+    d2
+  }
+  home: {
+    "README.md"
+  }
+  misc.d2 -> home."README.md": images
+  Client: {
+    docs
+    tests
+    src
+  }
+  Server: {
+    docs
+    tests
+    src
+  }
+  Client -> Server: pages
+  Client <- Common -> Server: types
+}
