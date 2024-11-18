@@ -1,5 +1,20 @@
-import { effect, signal, Signal } from "@preact/signals";
-import { objDiffStr } from "./commonUtils";
+import { effect, type ReadonlySignal, signal, Signal } from "@preact/signals";
+import { objDiffStr } from "./clientUtils";
+
+/**
+ * Type corresponding to a recursive read-only signal.
+ * @example
+ * type RecursiveReadOnlySignal = RecursiveReadOnlySignal<Signal<number>>; // ReadonlySignal<number>
+ * type RecursiveReadOnlyArraySignal = RecursiveReadOnlySignal<Signal<number>[]>; // ReadonlySignal<number>[]
+ * type RecursiveReadOnlyObjectSignal = RecursiveReadOnlySignal<{ a: Signal<number> }>; // { a: ReadonlySignal<number> }
+ */
+export type RecursiveReadOnlySignal<T> = T extends Signal<infer U>
+	? ReadonlySignal<RecursiveReadOnlySignal<U>>
+	: T extends (infer U)[]
+	? RecursiveReadOnlySignal<U>[]
+	: T extends object
+	? { [K in keyof T]: RecursiveReadOnlySignal<T[K]> }
+	: T;
 
 /**
  * Type corresponding to the value of a signal.
@@ -99,3 +114,47 @@ export const signalWithDiff = <T>(initialValue: T, onDiff: (diffStr: string) => 
 	});
 	return newSignal;
 };
+
+/** Creates a signal with a time value. The time is updated every time the value is updated. */
+export class SignalWithTime<T> extends Signal<{
+	/** The value of the signal. */
+	val: T;
+	/** The time of the last update of the signal. */
+	time: number;
+}> {
+	/**
+	 * Creates a signal with a time value. The time is updated every time the value is updated.
+	 * @param initialValue the initial value of the signal
+	 * @param initialTime the initial time of the signal
+	 * @returns the signal
+	 */
+	constructor(initialValue: T, initialTime = Date.now()) {
+		super({ val: initialValue, time: initialTime });
+	}
+
+	/** Get the value of the signal. (not named `v` since it is already defined in Signal) */
+	get vv() {
+		return this.value.val;
+	}
+
+	/** Set the value of the signal. (not named `v` since it is already defined in Signal) */
+	set vv(v: T) {
+		this.value = { val: v, time: Date.now() };
+	}
+
+	/** Updates the time of the signal to the current time. */
+	refreshTime() {
+		this.value = { val: this.peek().val, time: Date.now() };
+	}
+}
+
+/** Creates a signal with a time value. The time is updated every time the value is updated. */
+export const signalWithTime = <T>(initialValue: T, time = Date.now()) => new SignalWithTime(initialValue, time);
+
+/**
+ * Synchronizes two signals with a time value. The signal with the earliest time is updated with the value of the other signal.
+ * @param signal1 the first signal
+ * @param signal2 the second signal
+ */
+export const syncSignalWithTime = <T>(signal1: SignalWithTime<T>, signal2: SignalWithTime<T>) =>
+	signal1.value.time < signal2.value.time ? (signal1.value = signal2.value) : (signal2.value = signal1.value);

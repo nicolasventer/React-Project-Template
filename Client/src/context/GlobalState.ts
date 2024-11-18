@@ -1,7 +1,10 @@
 import { computed, effect, signal, Signal } from "@preact/signals";
 import type { ColorSchemeType, DynDict, LanguageType, Log, TranslationCategoryType } from "../Common/CommonModel";
 import type { Tr } from "../tr/en";
-import type { SignalToValue } from "../utils/signalUtils";
+import type { RecursiveReadOnlySignal, SignalToValue } from "../utils/signalUtils";
+
+/** the key of the local storage */
+export const LOCAL_STORAGE_KEY = "template_globalState" as const;
 
 /** The type of the global state of the application. */
 export type GlobalState = {
@@ -38,8 +41,19 @@ export type GlobalState = {
 
 type LocalStorageState = SignalToValue<Pick<GlobalState, "colorScheme" | "language" | "isConsoleDisplayed" | "consoleHeight">>;
 
-const loadGlobalState = (): GlobalState => {
-	const storedGlobalState = JSON.parse(localStorage.getItem("globalState") ?? "{}") as Partial<SignalToValue<LocalStorageState>>;
+/**
+ * Load the global state from the local storage. Can be called to fully set the global state.
+ * @returns The new global state. Still needs to be assigned to the global state.
+ * @example
+ * localStorage.setItem("globalState", JSON.stringify({ colorScheme: "light" }));
+ * const newGlobalState = loadGlobalState();
+ * Object.assign(globalState, newGlobalState);
+ * setTimeout(() => window.location.reload(), 2000); // refresh the page
+ */
+export const loadGlobalState = (): GlobalState => {
+	const storedGlobalState = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) ?? "{}") as Partial<
+		SignalToValue<LocalStorageState>
+	>;
 
 	return {
 		colorScheme: signal(storedGlobalState.colorScheme ?? "dark"),
@@ -60,10 +74,13 @@ const loadGlobalState = (): GlobalState => {
 /** The global state of the application. */
 export const globalState: GlobalState = loadGlobalState();
 
+/** The readonly global state of the application. */
+export const gs = globalState as RecursiveReadOnlySignal<GlobalState>;
+
 /** @ignore */
 export const tr = {
 	get v() {
-		return globalState.tr.value;
+		return gs.tr.value;
 	},
 };
 
@@ -72,7 +89,7 @@ export const tr = {
  * @param word The word to translate.
  * @returns The translated word or the original word if it is not found.
  */
-export const trFn = (word: keyof Tr) => globalState.tr.value[word] ?? word;
+export const trFn = (word: keyof Tr) => gs.tr.value[word] ?? word;
 
 // TODO: these dictionaries should be loaded from the server (here simulated by getDynDict)
 const _enDynDict: DynDict = {};
@@ -84,8 +101,7 @@ const getDynDict = async (language: LanguageType): Promise<DynDict> => (language
  * @param category The category of the word.
  * @returns The translation function.
  */
-export const trDynFn = (category: TranslationCategoryType) => (word: string) =>
-	globalState.trDynDict.value[category][word] ?? word;
+export const trDynFn = (category: TranslationCategoryType) => (word: string) => gs.trDynDict.value[category][word] ?? word;
 
 /** If the language is loading. */
 export const _isLanguageLoading = signal(false);
@@ -94,30 +110,32 @@ export const _isLanguageLoading = signal(false);
 effect(
 	() => (
 		(_isLanguageLoading.value = true),
-		void Promise.all([import(`../tr/${globalState.language.value}.js`), getDynDict(globalState.language.value)]).then(
-			([{ default: tr }, dynDict]) => (
-				(globalState.tr.value = tr), (globalState.trDynDict.value = dynDict), (_isLanguageLoading.value = false)
-			)
+		void Promise.all([import(`../tr/${gs.language.value}.js`), getDynDict(gs.language.value)]).then(
+			([{ default: tr }, dynDict]) => {
+				globalState.tr.value = tr;
+				globalState.trDynDict.value = dynDict;
+				_isLanguageLoading.value = false;
+			}
 		)
 	)
 );
 
 const localStorageState = computed(
 	(): LocalStorageState => ({
-		colorScheme: globalState.colorScheme.value,
-		language: globalState.language.value,
-		isConsoleDisplayed: globalState.isConsoleDisplayed.value,
-		consoleHeight: globalState.consoleHeight.value,
+		colorScheme: gs.colorScheme.value,
+		language: gs.language.value,
+		isConsoleDisplayed: gs.isConsoleDisplayed.value,
+		consoleHeight: gs.consoleHeight.value,
 	})
 );
 
 /** "md" if the screen is above md, "sm" otherwise. */
-export const smMd = computed(() => (globalState.isAboveMd.value ? "md" : "sm"));
+export const smMd = computed(() => (gs.isAboveMd.value ? "md" : "sm"));
 /** "sm" if the screen is above md, "xs" otherwise. */
-export const xsSm = computed(() => (globalState.isAboveMd.value ? "sm" : "xs"));
+export const xsSm = computed(() => (gs.isAboveMd.value ? "sm" : "xs"));
 /** "compact-md" if the screen is above md, "compact-sm" otherwise. */
 export const compactXsSm = computed(() => `compact-${xsSm.value}`);
 
-effect(() => localStorage.setItem("globalState", JSON.stringify(localStorageState.value)));
+effect(() => localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(localStorageState.value)));
 
-effect(() => void document.body.classList.toggle("dark", globalState.colorScheme.value === "dark"));
+effect(() => void document.body.classList.toggle("dark", gs.colorScheme.value === "dark"));

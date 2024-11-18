@@ -28,6 +28,8 @@ The `Light versions` remove the dependencies with `elysia`, `typebox`, `mantine`
 ## Features
 
 - [x] Hot reload (client)
+- [x] File base routing (client)
+- [x] Lazy loading (client)
 - [x] Watch mode (server)
 - [x] Client side rendering
 - [x] Tests (server and client)
@@ -58,7 +60,13 @@ The script will create a symbolic link between the `Common` folder of the `Clien
 If you want to install the dependencies manually, you should at least create the symbolic link:
 
 ```bat
-mklink /J "Client/src/Common" "Server/src/Common"
+mk_link.bat
+```
+
+If you only require the client, you can run the following:
+
+```bat
+copy_common.bat
 ```
 
 ### On Linux
@@ -75,8 +83,13 @@ The script will create a symbolic link between the `Common` folder of the `Clien
 If you want to install the dependencies manually, you should at least create the symbolic link:
 
 ```sh
-cd ../Client/src
-ln -s ../../Server/src/Common .
+mk_link.sh
+```
+
+If you only require the client, you can run the following:
+
+```sh
+copy_common.sh
 ```
 
 ## Usage
@@ -93,7 +106,7 @@ bun run dev
 
 **WARNING:** Be sure to be exactly in the Client folder, otherwise you will have page not found error.
 
-*Access the client at http://localhost:5173*
+_Access the client at http://localhost:5173_
 
 #### Production
 
@@ -105,7 +118,7 @@ bun run preview
 # bun run doc # for documentation
 ```
 
-*Access the client at http://localhost:4173*
+_Access the client at http://localhost:4173_
 
 #### Deployment
 
@@ -133,7 +146,7 @@ In the Server folder, run:
 bun run dev
 ```
 
-*Note: The client changes will be loaded on the refresh of the page.*
+_Note: The client changes will be loaded on the refresh of the page._
 
 #### Production
 
@@ -143,7 +156,7 @@ In the Client folder:
 bun run build
 ```
 
-*Client is not accessible yet.*
+_Client is not accessible yet._
 
 In the Server folder, run:
 
@@ -151,18 +164,18 @@ In the Server folder, run:
 bun run start
 ```
 
-*Note: You can rebuild the client at any time, the server will serve the new files.*
+_Note: You can rebuild the client at any time, the server will serve the new files._
 
-*Access the server at http://localhost:3000/status*
+_Access the server at http://localhost:3000/status_
 
-*Access the client at http://localhost:3000*
+_Access the client at http://localhost:3000_
 
 #### Deployment
 
 Take `index.html` and `dist` folder from the client and the server code and execute the server.  
 You can also take the `docs` folder from the client.
 
------
+---
 
 ## Project structure
 
@@ -183,7 +196,7 @@ bun run build
 bun run preview
 ```
 
-*Access the client at http://localhost:4173*
+_Access the client at http://localhost:4173_
 
 In the Server folder, run:
 
@@ -191,7 +204,7 @@ In the Server folder, run:
 bun run start
 ```
 
-*Access the server at http://localhost:3000/status*
+_Access the server at http://localhost:3000/status_
 
 ![deployed_client](misc/d2/deployed_client.png)
 
@@ -203,7 +216,7 @@ In the Client folder, run:
 bun run build
 ```
 
-*Client is not accessible yet.*
+_Client is not accessible yet._
 
 In the Server folder, run:
 
@@ -211,8 +224,8 @@ In the Server folder, run:
 bun run start
 ```
 
-*Access the server at http://localhost:3000/status*
+_Access the server at http://localhost:3000/status_
 
-*Access the client at http://localhost:3000*
+_Access the client at http://localhost:3000_
 
 ![client_side_rendering](misc/d2/client_side_rendering.png)

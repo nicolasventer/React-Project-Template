@@ -3,18 +3,18 @@ import fs from "fs";
 
 const TR_DIR = "./src/tr";
 
-const file = Bun.argv[2] ?? "*";
+const argFileName = Bun.argv[2] || "*";
 
-const buildFile = async (file: string) => {
-	const jsFile = file.replace(".ts", ".js");
-	await Bun.$`bun build ${file} --outfile=${jsFile} --minify`;
+const buildFile = async (fileName: string) => {
+	const jsFile = fileName.replace(".ts", ".js");
+	await Bun.$`bun build ${fileName} --outfile=${jsFile} --minify`;
 };
 
-if (file === "" || file === "*") {
-	for (const file of fs.readdirSync(TR_DIR)) {
-		if (!file.endsWith(".ts")) continue;
-		const jsFile = file.replace(".ts", ".js");
-		const trPath = `${TR_DIR}/${file}`;
+if (argFileName === "*") {
+	for (const fileName of fs.readdirSync(TR_DIR)) {
+		if (!fileName.endsWith(".ts")) continue;
+		const jsFile = fileName.replace(".ts", ".js");
+		const trPath = `${TR_DIR}/${fileName}`;
 		const jrPath = `${TR_DIR}/${jsFile}`;
 		if (fs.existsSync(jrPath)) {
 			const tsFileStat = fs.statSync(trPath);
@@ -23,6 +23,6 @@ if (file === "" || file === "*") {
 		}
 		await buildFile(trPath);
 	}
-} else if (file.endsWith(".ts") && fs.existsSync(file)) {
-	await buildFile(file);
+} else if (argFileName.endsWith(".ts") && fs.existsSync(argFileName)) {
+	await buildFile(argFileName);
 }

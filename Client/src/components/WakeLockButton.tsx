@@ -2,8 +2,9 @@ import { ActionIcon } from "@mantine/core";
 import { effect, signal } from "@preact/signals";
 import { Lock, LockOpen } from "lucide-react";
 import toast from "react-hot-toast";
-import { globalState } from "../context/GlobalState";
-import { widthSizeObj } from "../utils/commonUtils";
+import { gs } from "../context/GlobalState";
+import { setWakeLock } from "../context/userActions";
+import { widthSizeObj } from "../utils/clientUtils";
 
 const isWakeLockAvailable = "wakeLock" in navigator || "keepAwake" in screen;
 
@@ -21,7 +22,7 @@ export const toggleWakeLock = () => {
 		if (wakeLockObj) {
 			wakeLockObj.release();
 			wakeLockObj = null;
-			globalState.isWakeLock.value = false;
+			setWakeLock(false);
 		} else {
 			isWakeLockLoading.value = true;
 			navigator.wakeLock
@@ -32,11 +33,11 @@ export const toggleWakeLock = () => {
 
 					wakeLockObj.addEventListener("release", () => {
 						showToasts && toast("Automatic screen lock enabled", { icon: "🔓" });
-						globalState.isWakeLock.value = false;
+						setWakeLock(false);
 						wakeLockObj = null;
 					});
 
-					globalState.isWakeLock.value = true;
+					setWakeLock(true);
 					showToasts && toast("Automatic screen lock disabled", { icon: "🔒" });
 				})
 				.catch((err) => {
@@ -47,7 +48,7 @@ export const toggleWakeLock = () => {
 		}
 	} else if ("keepAwake" in screen) {
 		screen.keepAwake = !screen.keepAwake;
-		globalState.isWakeLock.value = !!screen.keepAwake;
+		setWakeLock(!!screen.keepAwake);
 		if (screen.keepAwake) showToasts && toast("Automatic screen lock disabled", { icon: "🔒" });
 		else showToasts && toast("Automatic screen lock enabled", { icon: "🔓" });
 	}
@@ -61,7 +62,7 @@ document.addEventListener("visibilitychange", () => (isDocumentVisible.value = d
  */
 export const automaticWakeLock = () => {
 	showToasts = false;
-	effect(() => void (isDocumentVisible.value && !globalState.isWakeLock.value && toggleWakeLock()));
+	effect(() => void (isDocumentVisible.value && !gs.isWakeLock.value && toggleWakeLock()));
 };
 
 /**
@@ -72,7 +73,7 @@ export const WakeLockButton = () => (
 	<>
 		{isWakeLockAvailable && (
 			<ActionIcon loading={isWakeLockLoading.value} pb={1}>
-				{globalState.isWakeLock.value ? (
+				{gs.isWakeLock.value ? (
 					<Lock onClick={toggleWakeLock} width={widthSizeObj(3.5, 6)} />
 				) : (
 					<LockOpen onClick={toggleWakeLock} width={widthSizeObj(3.5, 6)} />

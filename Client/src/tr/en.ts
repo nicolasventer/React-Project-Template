@@ -9,6 +9,9 @@ const _tr = {
 	"is not implemented yet": "is not implemented yet",
 	// Home
 	Home: "Home",
+	// NotFound
+	"404 Not Found": "404 Not Found",
+	"Redirecting to the home page...": "Redirecting to the home page...",
 };
 
 export default _tr;

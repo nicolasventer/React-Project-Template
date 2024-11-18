@@ -9,7 +9,8 @@
 	"logLevel": "Warn",
 	"treatWarningsAsErrors": false,
 	"excludeExternals": true,
-	"projectDocuments": ["README.md", "src/**/*.md"],
+	// "projectDocuments": ["README.md", "src/**/*.md"],
+	"projectDocuments": ["README.md"],
 	"plugin": ["@zamiell/typedoc-plugin-not-exported"],
 	"exclude": ["src/**/*.d.ts"]
 }

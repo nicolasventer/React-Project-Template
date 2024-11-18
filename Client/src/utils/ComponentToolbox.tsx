@@ -1,4 +1,3 @@
-/* eslint-disable react/display-name */
 import clsx from "clsx";
 import { type JSX, ComponentPropsWithoutRef, createElement, ForwardedRef, forwardRef, ReactNode, useEffect } from "react";
 import { useMount } from "../hooks/useMount";
@@ -171,6 +170,8 @@ type LayoutProps = {
 	margin?: CssProperty;
 	/** the flex grow */
 	flexGrow?: CssProperty;
+	/** whether to set the overflow to auto */
+	overflowAuto?: boolean;
 } & ComponentPropsWithoutRef<"div">;
 
 /**
@@ -178,28 +179,29 @@ type LayoutProps = {
  * @param props div props
  * @returns a div with the flex box properties
  */
-export const Layout = forwardRef(
-	(
-		{
-			layout,
-			alignItems,
-			justifyContent,
-			gap,
-			width,
-			widthMaxContent,
-			height,
-			heightMaxContent,
-			padding,
-			paddingTop,
-			paddingLeft,
-			margin,
-			marginTop,
-			marginLeft,
-			flexGrow,
-			...divProps
-		}: LayoutProps & { layout: LayoutType },
-		ref: ForwardedRef<HTMLDivElement>
-	) => (
+export const Layout = forwardRef(function Layout(
+	{
+		layout,
+		alignItems,
+		justifyContent,
+		gap,
+		width,
+		widthMaxContent,
+		height,
+		heightMaxContent,
+		padding,
+		paddingTop,
+		paddingLeft,
+		margin,
+		marginTop,
+		marginLeft,
+		flexGrow,
+		overflowAuto,
+		...divProps
+	}: LayoutProps & { layout: LayoutType },
+	ref: ForwardedRef<HTMLDivElement>
+) {
+	return (
 		<div
 			{...divProps}
 			ref={ref}
@@ -213,11 +215,12 @@ export const Layout = forwardRef(
 				...getPadding({ padding, paddingTop, paddingLeft }),
 				...getMargin({ margin, marginTop, marginLeft }),
 				flexGrow,
+				overflow: overflowAuto ? "auto" : undefined,
 				...(typeof divProps.style === "object" ? divProps.style : {}),
 			}}
 		/>
-	)
-);
+	);
+});
 
 /**
  * A horizontal flex box, with default alignItems="center"
@@ -225,9 +228,9 @@ export const Layout = forwardRef(
  * @param props div props
  * @returns a div with the horizontal flex box properties
  */
-export const Horizontal = forwardRef((props: LayoutProps, ref: ForwardedRef<HTMLDivElement>) => (
-	<Layout ref={ref} alignItems="center" {...props} layout="horizontal" />
-));
+export const Horizontal = forwardRef(function Horizontal(props: LayoutProps, ref: ForwardedRef<HTMLDivElement>) {
+	return <Layout ref={ref} alignItems="center" {...props} layout="horizontal" />;
+});
 
 /**
  * A vertical flex box
@@ -235,9 +238,9 @@ export const Horizontal = forwardRef((props: LayoutProps, ref: ForwardedRef<HTML
  * @param props div props
  * @returns a div with the vertical flex box properties
  */
-export const Vertical = forwardRef((props: LayoutProps, ref: ForwardedRef<HTMLDivElement>) => (
-	<Layout ref={ref} {...props} layout="vertical" />
-));
+export const Vertical = forwardRef(function Vertical(props: LayoutProps, ref: ForwardedRef<HTMLDivElement>) {
+	return <Layout ref={ref} {...props} layout="vertical" />;
+});
 
 /**
  * An overlap flex box
@@ -245,9 +248,9 @@ export const Vertical = forwardRef((props: LayoutProps, ref: ForwardedRef<HTMLDi
  * @param props div props
  * @returns a div with the overlap flex box properties
  */
-export const Overlap = forwardRef((props: LayoutProps, ref: ForwardedRef<HTMLDivElement>) => (
-	<Layout ref={ref} {...props} layout="overlap" />
-));
+export const Overlap = forwardRef(function Overlap(props: LayoutProps, ref: ForwardedRef<HTMLDivElement>) {
+	return <Layout ref={ref} {...props} layout="overlap" />;
+});
 
 /**
  * @notExported
@@ -283,46 +286,48 @@ export const FlexGrow = <T extends (...args: any) => any>({
  * @param tag the tag to use
  * @returns a component with the tag
  */
-export const GetIntrinsicComp =
-	<T extends keyof JSX.IntrinsicElements>(tag: T) =>
-	(props: JSX.IntrinsicElements[T]) =>
-		createElement(tag as any, props);
+export const GetIntrinsicComp = <T extends keyof JSX.IntrinsicElements>(tag: T) =>
+	function GetIntrinsicComp(props: JSX.IntrinsicElements[T]) {
+		return createElement(tag as any, props);
+	};
 
 /**
  * A box component that have properties like width, height
  * @param props div props
  * @returns a div with the specified properties
  */
-export const Box = forwardRef(
-	(
-		{
-			width,
-			widthMaxContent,
-			height,
-			heightMaxContent,
-			padding,
-			paddingTop,
-			paddingLeft,
-			margin,
-			marginTop,
-			marginLeft,
-			flexGrow,
-			...divProps
-		}: {
-			width?: CssProperty;
-			widthMaxContent?: boolean;
-			height?: CssProperty;
-			heightMaxContent?: boolean;
-			padding?: CssProperty;
-			paddingTop?: CssProperty;
-			paddingLeft?: CssProperty;
-			margin?: CssProperty;
-			marginTop?: CssProperty;
-			marginLeft?: CssProperty;
-			flexGrow?: CssProperty;
-		} & ComponentPropsWithoutRef<"div">,
-		ref: ForwardedRef<HTMLDivElement>
-	) => (
+export const Box = forwardRef(function Box(
+	{
+		width,
+		widthMaxContent,
+		height,
+		heightMaxContent,
+		padding,
+		paddingTop,
+		paddingLeft,
+		margin,
+		marginTop,
+		marginLeft,
+		flexGrow,
+		overflowAuto,
+		...divProps
+	}: {
+		width?: CssProperty;
+		widthMaxContent?: boolean;
+		height?: CssProperty;
+		heightMaxContent?: boolean;
+		padding?: CssProperty;
+		paddingTop?: CssProperty;
+		paddingLeft?: CssProperty;
+		margin?: CssProperty;
+		marginTop?: CssProperty;
+		marginLeft?: CssProperty;
+		flexGrow?: CssProperty;
+		overflowAuto?: boolean;
+	} & ComponentPropsWithoutRef<"div">,
+	ref: ForwardedRef<HTMLDivElement>
+) {
+	return (
 		<div
 			ref={ref}
 			{...divProps}
@@ -332,8 +337,9 @@ export const Box = forwardRef(
 				...getPadding({ padding, paddingTop, paddingLeft }),
 				...getMargin({ margin, marginTop, marginLeft }),
 				flexGrow,
+				overflow: overflowAuto ? "auto" : undefined,
 				...(typeof divProps.style === "object" ? { ...divProps.style } : {}),
 			}}
 		/>
-	)
-);
+	);
+});

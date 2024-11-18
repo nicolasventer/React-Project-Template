@@ -1,7 +1,7 @@
 import { Input, InputProps, Popover } from "@mantine/core";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { useState } from "react";
-import { globalState, xsSm } from "../../context/GlobalState";
+import { gs, xsSm } from "../../context/GlobalState";
 import { Vertical } from "../../utils/ComponentToolbox";
 import CustomSelectCss from "./CustomSelect.module.css";
 
@@ -61,12 +61,12 @@ export const CustomSelect = ({
 					{...{ "data-value": value }}
 					onClick={() => setOpened((o) => !o)}
 					size={xsSm.value}
-					w={globalState.isAboveMd ? 110 : 90}
+					w={gs.isAboveMd ? 110 : 90}
 					{...CustomSelectDefaultValueProps}
 					{...valueProps}
 				/>
 			</Popover.Target>
-			<Popover.Dropdown p={0} w={globalState.isAboveMd ? 110 : 90} style={{ zIndex: 6000 }}>
+			<Popover.Dropdown p={0} w={gs.isAboveMd ? 110 : 90} style={{ zIndex: 6000 }}>
 				<Vertical gap={5}>
 					{data.map((item) => (
 						<Input

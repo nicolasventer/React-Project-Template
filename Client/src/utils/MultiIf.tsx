@@ -43,6 +43,6 @@ export const Switch = <T,>({
  * @returns the result of the multi if statement
  */
 export const MultiIf = ({ branches, else: else_ }: { branches: { condition: boolean; then: ReactNode }[]; else?: ReactNode }) => {
-	const branch = branches.find((branch) => branch.condition === true);
+	const branch = branches.find((branch) => branch.condition);
 	return <>{branch !== undefined ? branch.then : else_}</>;
 };

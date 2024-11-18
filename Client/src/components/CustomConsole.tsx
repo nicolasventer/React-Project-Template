@@ -1,11 +1,13 @@
 import { ActionIcon, Button, Indicator, Paper, Text, ThemeIcon, Tooltip } from "@mantine/core";
-import { computed, signal } from "@preact/signals";
+import { signal } from "@preact/signals";
 import { GripHorizontal } from "lucide-react";
-import { type MouseEventHandler, type TouchEventHandler, useRef } from "react";
+import { type MouseEventHandler, type TouchEventHandler } from "react";
 import { GrClear } from "react-icons/gr";
 import type { LogType } from "../Common/CommonModel";
-import { globalState } from "../context/GlobalState";
+import { gs } from "../context/GlobalState";
+import { addConsoleLog, clearConsole, resizeConsole, toggleConsole, updateLogToSeeCount } from "../context/userActions";
 import { Horizontal, Overlap, Vertical } from "../utils/ComponentToolbox";
+
 const isWrap = signal(false);
 
 document.addEventListener("keydown", (ev) => {
@@ -20,7 +22,7 @@ const isHandleHovered = signal(false);
 const startResize: MouseEventHandler<HTMLElement> & TouchEventHandler<HTMLElement> = (ev) => {
 	ev.stopPropagation();
 	mousePos.value = "clientX" in ev ? { x: ev.clientX, y: ev.clientY } : { x: ev.touches[0].clientX, y: ev.touches[0].clientY };
-	startConsoleHeight.value = globalState.consoleHeight.value;
+	startConsoleHeight.value = gs.consoleHeight.value;
 	isConsoleResizing.value = true;
 	document.body.addEventListener("mousemove", resize);
 	document.body.addEventListener("mouseup", stopResize);
@@ -28,23 +30,12 @@ const startResize: MouseEventHandler<HTMLElement> & TouchEventHandler<HTMLElemen
 	document.body.addEventListener("touchend", stopResize);
 };
 
-const closeHeight = computed(() => globalState.viewportSize.value.height * 0.05);
-const openHeight = computed(() => globalState.viewportSize.value.height * 0.15);
-const maxConsoleHeight = computed(() => globalState.viewportSize.value.height * 0.5);
-
 const resize = (ev: MouseEvent | TouchEvent) => {
 	ev.stopPropagation();
 	if (!isConsoleResizing.value) return;
 	const clientY = ev instanceof MouseEvent ? ev.clientY : ev.touches[0].clientY;
 	const newHeight = startConsoleHeight.value + mousePos.value.y - clientY;
-	globalState.consoleHeight.value = Math.max(openHeight.value, Math.min(maxConsoleHeight.value, newHeight));
-	if (newHeight <= closeHeight.value) {
-		globalState.isConsoleDisplayed.value = false;
-		globalState.consoleHeight.value = startConsoleHeight.value;
-	} else if (newHeight >= openHeight.value) {
-		globalState.isConsoleDisplayed.value = true;
-		globalState.logToSeeCount.value = 0;
-	}
+	resizeConsole(newHeight, startConsoleHeight.value);
 };
 const stopResize = (ev: MouseEvent | TouchEvent) => {
 	ev.stopPropagation();
@@ -69,108 +60,99 @@ const stopResize = (ev: MouseEvent | TouchEvent) => {
  * @param {boolean} [props.resizable=true] If the console is resizable, default is true. If not resizable, the console will take the full height.
  * @returns The console that displays the execution log and errors.
  */
-export const CustomConsole = ({ resizable = true }: { resizable?: boolean }) => {
-	const paperRef = useRef<HTMLDivElement>(null);
-
-	return (
-		<Overlap height={"100%"} width={"100%"} style={{ position: "absolute", top: 0, pointerEvents: "none" }}>
-			<Vertical justifyContent="flex-end" style={{ zIndex: 200, pointerEvents: "none", margin: "-1px 0" }}>
-				{globalState.isConsoleDisplayed.value && (
-					<>
-						{resizable && (
-							<Paper
-								onMouseDown={startResize}
-								onMouseEnter={() => (isHandleHovered.value = true)}
-								onMouseLeave={() => (isHandleHovered.value = false)}
-								onTouchStart={startResize}
-								style={{
-									cursor: "ns-resize",
-									backgroundColor:
-										isHandleHovered.value || isConsoleResizing.value ? "var(--mantine-primary-color-filled)" : undefined,
-									borderRadius: 0,
-									display: "flex",
-									justifyContent: "center",
-									pointerEvents: "auto",
-									borderBottom: 0,
-								}}
-								withBorder
-							>
-								<ThemeIcon size="xs" variant="transparent">
-									<GripHorizontal />
-								</ThemeIcon>
-							</Paper>
-						)}
+export const CustomConsole = ({ resizable = true }: { resizable?: boolean }) => (
+	<Overlap height={"100%"} width={"100%"} style={{ position: "absolute", top: 0, pointerEvents: "none" }}>
+		<Vertical justifyContent="flex-end" style={{ zIndex: 200, pointerEvents: "none", margin: "-1px 0" }}>
+			{gs.isConsoleDisplayed.value && (
+				<>
+					{resizable && (
 						<Paper
-							ref={paperRef}
+							onMouseDown={startResize}
+							onMouseEnter={() => (isHandleHovered.value = true)}
+							onMouseLeave={() => (isHandleHovered.value = false)}
+							onTouchStart={startResize}
+							style={{
+								cursor: "ns-resize",
+								backgroundColor:
+									isHandleHovered.value || isConsoleResizing.value ? "var(--mantine-primary-color-filled)" : undefined,
+								borderRadius: 0,
+								display: "flex",
+								justifyContent: "center",
+								pointerEvents: "auto",
+								borderBottom: 0,
+								userSelect: "none",
+							}}
 							withBorder
-							style={{ height: resizable ? globalState.consoleHeight.value : "100%", pointerEvents: "auto", overflow: "auto" }}
 						>
-							{globalState.logList.value.map((log, index) => {
-								const isLogToSee = globalState.logList.value.length - index <= globalState.logToSeeCount.value;
-								return (
-									<Horizontal
-										// eslint-disable-next-line react/no-array-index-key
-										key={index}
-										gap={8}
-										style={{
-											padding: "4px 8px",
-											background: isLogToSee ? "var(--mantine-primary-color-light)" : undefined,
-											cursor: isLogToSee ? "pointer" : undefined,
-										}}
-										alignItems="baseline"
-										onClick={() => isLogToSee && (globalState.logToSeeCount.value = globalState.logList.value.length - index - 1)}
-									>
-										<Text
-											c={log.type === "error" ? "red" : log.type === "warn" ? "yellow" : log.type === "info" ? "blue" : "gray"}
-											style={{ whiteSpace: "pre", fontFamily: "consolas" }}
-										>
-											{`[${log.type}]`.padEnd(7)}
-										</Text>
-										<Text style={{ whiteSpace: "pre", fontFamily: "consolas" }}>[{log.time}]</Text>
-										<Tooltip label="Press Alt+Z to toggle wrap" hidden={log.message.length < 100}>
-											<Text style={{ whiteSpace: "pre", fontFamily: "consolas", textWrapMode: isWrap.value ? "wrap" : "nowrap" }}>
-												{log.message}
-											</Text>
-										</Tooltip>
-									</Horizontal>
-								);
-							})}
+							<ThemeIcon size="xs" variant="transparent">
+								<GripHorizontal />
+							</ThemeIcon>
 						</Paper>
-					</>
-				)}
-				<Horizontal gap={12} style={{ background: "var(--mantine-color-body)" }}>
-					<Indicator
-						label={globalState.logToSeeCount.value}
-						disabled={globalState.logToSeeCount.value === 0}
-						color={"red"}
-						position="top-end"
-						size={25}
-						flex={1}
+					)}
+					<Paper
+						withBorder
+						style={{ height: resizable ? gs.consoleHeight.value : "100%", pointerEvents: "auto", overflow: "auto" }}
 					>
-						<Button
-							onClick={() => (
-								(globalState.isConsoleDisplayed.value = !globalState.isConsoleDisplayed.value),
-								globalState.isConsoleDisplayed.value && (globalState.logToSeeCount.value = 0)
-							)}
-							size="compact-xs"
-							style={{ pointerEvents: "auto" }}
-							fullWidth
-						>
-							Console
-						</Button>
-					</Indicator>
-					<ActionIcon
-						size={24}
-						style={{ margin: "-6px 0", scale: 0.8, pointerEvents: "auto" }}
-						onClick={() => ((globalState.logList.value = []), (globalState.logToSeeCount.value = 0))}
-					>
-						<GrClear />
-					</ActionIcon>
-				</Horizontal>
-			</Vertical>
-		</Overlap>
-	);
-};
+						{gs.logList.value.map((log, index) => {
+							const isLogToSee = gs.logList.value.length - index <= gs.logToSeeCount.value;
+							return (
+								<Horizontal
+									// eslint-disable-next-line react/no-array-index-key
+									key={index}
+									gap={8}
+									style={{
+										padding: "4px 8px",
+										background: isLogToSee ? "var(--mantine-primary-color-light)" : undefined,
+										cursor: isLogToSee ? "pointer" : undefined,
+									}}
+									alignItems="baseline"
+									onClick={() => isLogToSee && updateLogToSeeCount(index)}
+								>
+									<Text
+										c={log.type === "error" ? "red" : log.type === "warn" ? "yellow" : log.type === "info" ? "blue" : "gray"}
+										style={{ whiteSpace: "pre", fontFamily: "consolas" }}
+									>
+										{`[${log.type}]`.padEnd(7)}
+									</Text>
+									<Text style={{ whiteSpace: "pre", fontFamily: "consolas" }}>[{log.time}]</Text>
+									<Tooltip label="Press Alt+Z to toggle wrap" hidden={log.message.length < 100}>
+										<Text
+											style={{
+												whiteSpace: "pre",
+												fontFamily: "consolas",
+												textWrapMode: isWrap.value ? "wrap" : "nowrap",
+												overflowWrap: isWrap.value ? "anywhere" : undefined,
+											}}
+										>
+											{log.message}
+										</Text>
+									</Tooltip>
+								</Horizontal>
+							);
+						})}
+					</Paper>
+				</>
+			)}
+			<Horizontal gap={12} style={{ background: "var(--mantine-color-body)" }}>
+				<Indicator
+					label={gs.logToSeeCount.value}
+					disabled={gs.logToSeeCount.value === 0}
+					color={"red"}
+					position="top-end"
+					size={25}
+					flex={1}
+				>
+					<Button onClick={toggleConsole} size="compact-xs" style={{ pointerEvents: "auto" }} fullWidth>
+						Console
+					</Button>
+				</Indicator>
+				<ActionIcon size={24} style={{ margin: "-6px 0", scale: 0.8, pointerEvents: "auto" }} onClick={clearConsole}>
+					<GrClear />
+				</ActionIcon>
+			</Horizontal>
+		</Vertical>
+	</Overlap>
+);
 
 const oldConsoleLog = console.log;
 const oldConsoleInfo = console.info;
@@ -179,21 +161,15 @@ const oldConsoleError = console.error;
 
 const newConsoleLogFn =
 	(type: LogType) =>
-	(...args: unknown[]) => (
-		(globalState.logList.value = [
-			...globalState.logList.peek(),
-			{
-				type,
-				time: new Date().toISOString().split("T")[1],
-				message: args
-					.map((arg) =>
-						typeof arg === "string" ? arg : arg instanceof Error ? `${arg.message}\n${arg.stack}` : JSON.stringify(arg)
-					)
-					.join(" "),
-			},
-		]),
-		(globalState.logToSeeCount.value = globalState.logToSeeCount.peek() + 1)
-	);
+	(...args: unknown[]) =>
+		addConsoleLog(
+			type,
+			args
+				.map((arg) =>
+					typeof arg === "string" ? arg : arg instanceof Error ? `${arg.message}\n${arg.stack}` : JSON.stringify(arg)
+				)
+				.join(" ")
+		);
 
 /**
  * Type of the console: normal for the default console, custom for the custom console, both for both.
