@@ -1,9 +1,8 @@
 // 46114287767612e1d26fdcf5fb4a9f45d695ed3106079c9ce7e5122f78b9c7c9
-import { checkValidRoute } from "./router_src/checkValidRoute";
-import { lazySingleLoader } from "./router_src/lazyLoader";
-import { RouteParams, Router } from "./router_src/Router";
+import { checkValidRoute, lazySingleLoader, RouteParams, Router } from "easy-react-router";
 
 export const {
+	RouteCustomLink,
 	RouteLink,
 	RouterRender,
 	buildRouteLink,
@@ -14,6 +13,7 @@ export const {
 	isRouteLoading,
 	isRouteVisible,
 	loadRouteFn,
+	navigateToCustomRouteFn,
 	navigateToRouteFn,
 	/** The route that is displayed when the current route is not found. */
 	notFoundRoute,

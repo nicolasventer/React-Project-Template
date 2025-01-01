@@ -1,10 +1,10 @@
-mklink /J "Client/src/Common" "Server/src/Common"
+mklink /J "Server/src/Shared" "Client/src/Shared"
 
-cd Server
-call bun install
-
-cd ../Client
+cd Client
 call bun install
 call bun run build
+
+cd ../Server
+call bun install
 
 cd ..

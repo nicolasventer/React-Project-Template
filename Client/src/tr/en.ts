@@ -1,8 +1,5 @@
-import { LANGUAGES_OBJ, type LanguageType } from "../Common/CommonModel";
-
 /** @ignore */
 const _tr = {
-	lang: LANGUAGES_OBJ.en as LanguageType,
 	Loading: "Loading",
 	Error: "Error",
 	"not found": "not found",
@@ -12,6 +9,9 @@ const _tr = {
 	// NotFound
 	"404 Not Found": "404 Not Found",
 	"Redirecting to the home page...": "Redirecting to the home page...",
+	Cancel: "Cancel",
+	"Redirect cancelled.": "Redirect cancelled.",
+	"Go to Home page": "Go to Home page",
 };
 
 export default _tr;

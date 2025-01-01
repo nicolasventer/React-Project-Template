@@ -1,0 +1,22 @@
+[
+	{ "name": "Kimberly Hodge", "email": "muellerstephen@anderson.com", "permissions": ["admin", "update"] },
+	{ "name": "Deborah Horton", "email": "pamelaboyd@moreno-edwards.com", "permissions": ["read", "admin", "create"] },
+	{ "name": "William Rubio", "email": "dgould@yahoo.com", "permissions": ["admin"] },
+	{ "name": "Charles Chang", "email": "morrisonwyatt@yahoo.com", "permissions": ["create"] },
+	{ "name": "Matthew Lawson", "email": "owilliams@yahoo.com", "permissions": ["update", "create", "read"] },
+	{ "name": "Christopher Beasley", "email": "jbell@hotmail.com", "permissions": ["create", "admin"] },
+	{ "name": "Cody Malone", "email": "jonathan46@yahoo.com", "permissions": ["admin", "delete"] },
+	{ "name": "Courtney Berger", "email": "catherine19@gmail.com", "permissions": ["create", "read"] },
+	{ "name": "Brandon Murray", "email": "kochchelsea@gmail.com", "permissions": ["update", "delete", "create"] },
+	{ "name": "Clayton Sanchez", "email": "tonyajohnson@matthews.net", "permissions": ["update"] },
+	{ "name": "Johnathan Matthews", "email": "molly47@fletcher.info", "permissions": ["read"] },
+	{ "name": "Rebecca Smith", "email": "thomasmurphy@armstrong.info", "permissions": ["admin", "read"] },
+	{ "name": "Kyle Snow", "email": "romerocathy@tran.org", "permissions": ["read", "delete"] },
+	{ "name": "Jeffrey Richardson", "email": "oliverlaurie@hotmail.com", "permissions": ["create"] },
+	{ "name": "Jamie Espinoza", "email": "tammy77@hotmail.com", "permissions": ["read", "update", "delete"] },
+	{ "name": "Arthur Richardson", "email": "tbrown@yahoo.com", "permissions": ["delete", "admin"] },
+	{ "name": "Angel Brown", "email": "fhaney@ortiz-cohen.info", "permissions": ["delete", "admin"] },
+	{ "name": "John Davis", "email": "michael25@baker.com", "permissions": ["admin", "create", "update"] },
+	{ "name": "Christina Golden", "email": "taylormichelle@perez-ward.net", "permissions": ["create", "update"] },
+	{ "name": "Trevor Reed", "email": "fwolfe@yahoo.com", "permissions": ["create"] }
+]

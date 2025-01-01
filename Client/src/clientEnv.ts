@@ -1,5 +1,4 @@
-/* eslint-disable no-mixed-spaces-and-tabs */
-import { B_PROD } from "./_bProd";
+import { B_PROD } from "@/Shared/bProd.gen";
 
 /** the client environment */
 export type ClientEnv = {

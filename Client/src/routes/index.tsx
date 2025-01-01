@@ -1,4 +1,5 @@
-import { lazyLoader } from "../router_src/lazyLoader";
+/* eslint-disable react-refresh/only-export-components */
+import { lazyLoader } from "easy-react-router";
 
 const indexLazyLoader = lazyLoader(() => import("./index.lazy"));
 /** The function to load the module. */

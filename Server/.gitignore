@@ -175,3 +175,6 @@ dist
 .DS_Store
 
 docs/
+src/Shared/
+bun.lockb
+bun.lock

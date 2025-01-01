@@ -25,8 +25,32 @@ bun run dev
 
 ## Build
 
+Build and preview in development mode with:
+
 ```sh
 bun run build
+bun run preview
+```
+
+Build and preview in production mode with:
+
+```sh
+bun run buildProd
+bun run previewProd
+```
+
+## Deploy
+
+Build and deploy in production mode with:
+
+```sh
+bun run buildDeploy
+```
+
+Generate the static html files with (already done by `buildDeploy`):
+
+```sh
+bun run genHtml
 ```
 
 ## Test
@@ -61,6 +85,14 @@ bun run codegen
 bun run doc
 ```
 
+## Dependency graph
+
+```sh
+bun run depgraph
+```
+
+You can visually check that the [Project structure](#project-structure) is respected.
+
 ## Lint
 
 Get the linting report with:
@@ -74,3 +106,29 @@ Fix the linting issues with:
 ```sh
 bun run lintfix
 ```
+
+## GenAPI
+
+Generate the api with:
+
+```sh
+bun run genApi
+```
+
+Edit the file [\_genApi.ts](./_genApi.ts) if you want to change the api generation.
+
+# Project structure
+
+![client_project_structure](./misc/d2/client_project_structure.png)
+
+- There is no restriction within `Actions` folder, only the most relevant imports are shown.
+- `(readOnlyGlobalState)` is not a folder.
+- All features that start with `_` are common features.
+- `imports` should only re-export from other features.
+- `setters` can import `getters` and `api`.
+- `api` can import `getters`.
+- No other import is allowed between `setters`, `getters` and `api`.
+
+## Enable api mock
+
+To enable the api mock, it is recommended to add `enableApiMock()` in the `src/index.ts` file.

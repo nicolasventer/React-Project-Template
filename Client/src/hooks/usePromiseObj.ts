@@ -1,5 +1,4 @@
-import { useCallback, useState } from "preact/hooks";
-import { useMount } from "./useMount";
+import { useCallback, useEffect, useState } from "react";
 
 /**
  * Hook to run a promise and get the state of it
@@ -7,7 +6,7 @@ import { useMount } from "./useMount";
  * @param runArgs arguments to run the function with on mount, if provided, do not forget to catch the promise
  * @returns object with the state of the promise, a run function to run the promise and a setData function to set the data
  */
-export const usePromiseObj = <T, U extends any[], V = unknown>(fn: (...args: U) => Promise<T>, runArgs?: U) => {
+export const usePromiseObj = <T, U extends unknown[], V = unknown>(fn: (...args: U) => Promise<T>, runArgs?: U) => {
 	const [state, setState] = useState({
 		/** Whether the promise is loading */
 		loading: false,
@@ -34,7 +33,8 @@ export const usePromiseObj = <T, U extends any[], V = unknown>(fn: (...args: U) 
 		[fn, state]
 	);
 
-	useMount(() => void (runArgs && run(...runArgs)));
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	useEffect(() => void (runArgs && run(...runArgs)), []);
 
 	return {
 		...state,

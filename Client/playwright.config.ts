@@ -2,9 +2,8 @@ import { defineConfig, devices } from "@playwright/test";
 import { env } from "process";
 
 const bUseHtml = env.USE_HTML === "true";
-const bUseCsr = env.USE_CSR === "true";
 
-const baseURL = bUseCsr ? "http://localhost:3000" : "http://localhost:5173";
+const baseURL = "http://localhost:5173";
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -56,7 +55,7 @@ export default defineConfig({
 
 	/* Run your local dev server before starting the tests */
 	webServer: {
-		command: bUseCsr ? "bun run --cwd=../Server starttest" : "bun run dev",
+		command: "bun run dev",
 		url: baseURL,
 		reuseExistingServer: true,
 	},

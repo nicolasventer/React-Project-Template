@@ -136,8 +136,12 @@ playwright-report/
 blob-report/
 playwright/.cache/
 coverage-reports/
-src/Common/
-_bProd.ts
+bProd.gen.ts
 !vite-plugin-watch-0.4.0.tgz
+!easy-react-router-1.0.0.tgz
 typedoc_out
 src/tr/*.js
+projectStructure.cache.json
+bun.lock
+bun.lockb
+graph-dependencies.html

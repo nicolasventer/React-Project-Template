@@ -1,9 +1,11 @@
-import { Text, Title } from "@mantine/core";
-import { useEffect } from "react";
-import { wait } from "../Common/CommonUtils";
-import { tr } from "../context/GlobalState";
-import { navigateToRouteFn } from "../routerInstance.gen";
-import { Horizontal, Vertical } from "../utils/ComponentToolbox";
+import { wait } from "@/Shared/SharedUtils";
+import { tr } from "@/gs";
+import { useMount } from "@/hooks/useMount";
+import { Horizontal, Vertical } from "@/libs/StrongBox/ComponentToolbox";
+import { navigateToRouteFn } from "@/routerInstance.gen";
+import { Button, Text, Title } from "@mantine/core";
+import { useSignal } from "@preact/signals";
+import toast from "react-hot-toast";
 
 /**
  * Not found page.
@@ -12,13 +14,29 @@ import { Horizontal, Vertical } from "../utils/ComponentToolbox";
  * @returns the not found page.
  */
 export const NotFoundPage = () => {
-	useEffect(() => void wait(3000).then(() => navigateToRouteFn("/")()), []);
+	const cancelled = useSignal(false);
+	useMount(() => void wait(3000).then(() => !cancelled.value && navigateToRouteFn("/")()));
+
+	const cancel = () => {
+		cancelled.value = true;
+		toast(tr.v["Redirect cancelled."], { duration: 3000 });
+	};
+
 	return (
 		<>
 			<Horizontal justifyContent="center" height="100%">
 				<Vertical justifyContent="center">
 					<Title order={1}>{tr.v["404 Not Found"]}</Title>
-					<Text>{tr.v["Redirecting to the home page..."]}</Text>
+					{!cancelled.value && <Text>{tr.v["Redirecting to the home page..."]}</Text>}
+					<Vertical marginTop={20} alignItems="center">
+						<div>
+							{cancelled.value ? (
+								<Button onClick={navigateToRouteFn("/")}>{tr.v["Go to Home page"]}</Button>
+							) : (
+								<Button onClick={cancel}>{tr.v.Cancel}</Button>
+							)}
+						</div>
+					</Vertical>
 				</Vertical>
 			</Horizontal>
 		</>

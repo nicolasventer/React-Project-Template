@@ -1,7 +1,6 @@
 # Preact Project Template
 
-This is a template for a Preact project. It allows the client either to be standalone or to be a client for a server.
-
+This is a template for a opinionated Preact project with many features already set up.  
 There are 4 links, each link corresponding to `Preact`/`React` `Full`/`Light` Template.
 
 | ![full_screenshot](./misc/full_screenshot.jpeg) | ![light_screenshot](./misc/light_screenshot.jpeg) |
@@ -10,13 +9,11 @@ There are 4 links, each link corresponding to `Preact`/`React` `Full`/`Light` Te
 
 ### [Try it online](https://nicolasventer.github.io/Preact-Project-Template/)
 
-The `React versions` are using the custom hook `useReact`. This hook ensure the re-render of the component when the signal is changed.
+**Note:** `memo` is not used in React version.
 
-There is also another custom hook called `useReactSignal`. It is a wrapper around `useState` that returns an object with the property value that is an accessor (get and set) for the state.
+**Note 2:** It is expected in the future that **_all Preact versions will be deleted_** since memoization is handled by React with its compiler.
 
-**Note:** memo is not used in React version.
-
-The `Light versions` remove the dependencies with `elysia`, `typebox`, `mantine`, `react-hot-toast`, `lucide-react` and `react-icons`.
+The `Light versions` remove the dependencies with `typebox`, `mantine`, `react-hot-toast`, `lucide-react` and `react-icons`.
 
 ## Links
 
@@ -27,14 +24,13 @@ The `Light versions` remove the dependencies with `elysia`, `typebox`, `mantine`
 
 ## Features
 
-- [x] Hot reload (client)
-- [x] File base routing (client)
-- [x] Lazy loading (client)
-- [x] Watch mode (server)
-- [x] Client side rendering
+- [x] File base routing (client) (using [Easy-React-Router](https://github.com/nicolasventer/Easy-React-Router))
+- [x] Lazy loading (client) (using [Easy-React-Router](https://github.com/nicolasventer/Easy-React-Router))
+- [x] Structured code (client) (see [Client project structure](Client/README.md#project-structure))
 - [x] Tests (server and client)
 - [x] Code coverage (server and client)
-- [x] Documentation (server and client)
+- [x] Documentation (server and client) _(WIP: change of doc tool)_
+- [x] Dependency graph (client)
 - [x] Linting (server and client)
 
 ## Installation
@@ -56,17 +52,17 @@ cd Preact-Project-Template
 all_init_on_cloned.bat
 ```
 
-The script will create a symbolic link between the `Common` folder of the `Client` and `Server` folders and then install the dependencies.  
+The script will create a symbolic link between the `Shared` folder of the `Client` and `Server` folders and then install the dependencies.  
 If you want to install the dependencies manually, you should at least create the symbolic link:
 
 ```bat
 mk_link.bat
 ```
 
-If you only require the client, you can run the following:
+If you only require the server, you can run the following:
 
 ```bat
-copy_common.bat
+copy_shared.bat
 ```
 
 ### On Linux
@@ -79,24 +75,26 @@ cd Preact-Project-Template
 ./all_init_on_cloned.sh
 ```
 
-The script will create a symbolic link between the `Common` folder of the `Client` and `Server` folders and then install the dependencies.  
+The script will create a symbolic link between the `Shared` folder of the `Client` and `Server` folders and then install the dependencies.  
 If you want to install the dependencies manually, you should at least create the symbolic link:
 
 ```sh
 mk_link.sh
 ```
 
-If you only require the client, you can run the following:
+If you only require the server, you can run the following:
 
 ```sh
-copy_common.sh
+copy_shared.sh
 ```
 
 ## Usage
 
-### Client only (useful for hot reload that keeps the state)
+### Client
 
 #### Development
+
+##### Watch mode
 
 In the Client folder:
 
@@ -108,37 +106,45 @@ bun run dev
 
 _Access the client at http://localhost:5173_
 
-#### Production
+##### Preview mode
 
 In the Client folder, run:
 
 ```sh
 bun run build
 bun run preview
-# bun run doc # for documentation
 ```
 
 _Access the client at http://localhost:4173_
+
+#### Production
+
+##### Preview mode
+
+In the Client folder, run:
+
+```sh
+bun run buildProd
+bun run previewProd
+```
+
+_Access the client at http://localhost:4173/${clientEnv.BASE_URL}/_
 
 #### Deployment
 
 In the Client folder, run:
 
 ```sh
-bun run build
+bun run buildDeploy
 ```
 
-Then serve `index.html` and `dist` folder (and optionally the `docs` folder) (for example push on GitHub pages).
+It updates the `docs` folder (for example for GitHub pages).
 
-### Server and Client
+### Server
 
 #### Development
 
-In the Client folder, run:
-
-```sh
-bun run watch
-```
+##### Watch mode
 
 In the Server folder, run:
 
@@ -146,17 +152,7 @@ In the Server folder, run:
 bun run dev
 ```
 
-_Note: The client changes will be loaded on the refresh of the page._
-
-#### Production
-
-In the Client folder:
-
-```sh
-bun run build
-```
-
-_Client is not accessible yet._
+##### Preview mode
 
 In the Server folder, run:
 
@@ -164,16 +160,15 @@ In the Server folder, run:
 bun run start
 ```
 
-_Note: You can rebuild the client at any time, the server will serve the new files._
+_Check that the server is running at http://localhost:3000/_
 
-_Access the server at http://localhost:3000/status_
+#### Production
 
-_Access the client at http://localhost:3000_
+TODO: see for building the server.
 
 #### Deployment
 
-Take `index.html` and `dist` folder from the client and the server code and execute the server.  
-You can also take the `docs` folder from the client.
+TODO: see for deploying the server.
 
 ---
 
@@ -184,48 +179,3 @@ You can also take the `docs` folder from the client.
 ## Tech stack
 
 ![tech_stack](misc/d2/tech_stack.png)
-
-## Deployment
-
-### Deployed client
-
-In the Client folder, run:
-
-```sh
-bun run build
-bun run preview
-```
-
-_Access the client at http://localhost:4173_
-
-In the Server folder, run:
-
-```sh
-bun run start
-```
-
-_Access the server at http://localhost:3000/status_
-
-![deployed_client](misc/d2/deployed_client.png)
-
-### Client Side Rendering
-
-In the Client folder, run:
-
-```sh
-bun run build
-```
-
-_Client is not accessible yet._
-
-In the Server folder, run:
-
-```sh
-bun run start
-```
-
-_Access the server at http://localhost:3000/status_
-
-_Access the client at http://localhost:3000_
-
-![client_side_rendering](misc/d2/client_side_rendering.png)

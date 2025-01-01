@@ -1,4 +1,5 @@
 import preact from "@preact/preset-vite";
+import { routerPlugin } from "easy-react-router/plugin";
 import path from "path";
 import { env } from "process";
 import { defineConfig } from "vite";
@@ -10,23 +11,23 @@ const langBuildWatcher = watch({
 	command: (file) => `bun run ./_lang_build.ts ${file}`,
 });
 
-const routesGenWatcher = watch({
-	pattern: "src/routes/**",
-	command: "bun _genRoutes.ts", // add --json to also generate json file, add --force to always generate
-});
-
-const lazyComponentWatcher = watch({
-	pattern: "src/**/*.{tsx,ts}",
-	command: (filePath) => `bun _genLazyComponent.ts ${filePath}`,
-});
-
 export default defineConfig({
 	base: "./",
-	plugins: [preact(), ...(env.USE_HTTPS ? [mkcert()] : []), langBuildWatcher, routesGenWatcher, lazyComponentWatcher],
+	plugins: [
+		preact(),
+		...(env.USE_HTTPS ? [mkcert()] : []),
+		langBuildWatcher,
+		routerPlugin({ lazyComponent: { eslintDisableWarning: true } }),
+	],
+	server: {
+		watch: {
+			ignored: ["**/playwright-report/**", "**/coverage-reports/**"],
+		},
+	},
+	resolve: { alias: { "@": path.resolve(__dirname, "src") } },
 	build: {
 		rollupOptions: {
 			output: {
-				// eslint-disable-next-line no-undef
 				dir: path.resolve(__dirname, "dist"),
 				entryFileNames: "[name].js",
 				assetFileNames: "asset/[name].[ext]",

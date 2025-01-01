@@ -1,0 +1,66 @@
+Project structure: {
+  src: {
+    features: {
+      Feature1
+      Feature2
+    }
+    api
+    tr
+    "globalState.ts"
+
+    Actions {
+      "actions.state.ts"
+      "actions.types.ts"
+      "actions.interface.ts"
+      "actions.utils.ts"
+      "actions.impl.ts"
+      impl
+
+      "actions.types.ts" -> impl
+      "actions.utils.ts" -> impl
+      "actions.interface.ts" -> impl
+      "actions.state.ts" -> impl
+      "actions.state.ts" -> "actions.impl.ts"
+      impl -> "actions.impl.ts"
+    }
+
+    "(readOnlyGlobalState)": {
+      features: {
+        _Common: {
+          "common.imports.ts"
+          "common.getters.ts"
+          "common.setters.ts"
+          "common.api.ts"
+          Components
+
+          "common.imports.ts" -> Components
+          "common.getters.ts" -> Components
+          "common.setters.ts" -> Components
+          "common.api.ts" -> Components
+        }
+      }
+      "gs.ts"
+      hooks
+      libs
+      Shared
+
+      "gs.ts" -> features._Common."common.getters.ts"
+      Shared -> features
+      hooks -> features
+      libs -> features
+    }
+
+    tr -> "(readOnlyGlobalState)"."gs.ts"
+    "globalState.ts" -> Actions."actions.state.ts"
+    Actions."actions.impl.ts" -> "(readOnlyGlobalState)"
+    "globalState.ts" -> "(readOnlyGlobalState)"."gs.ts"
+    "globalState.ts" -> "(readOnlyGlobalState)".features._Common."common.setters.ts"
+    api -> "(readOnlyGlobalState)".features._Common."common.api.ts"
+    "(readOnlyGlobalState)" -> routes
+    "(readOnlyGlobalState)" -> features
+    api -> features
+    features -> routes
+  }
+}
+
+A -> B: can be imported by

@@ -1,13 +1,18 @@
-import { B_PROD } from "./_bProd";
+import { enableApiMock } from "@/api/api.config";
+import { B_PROD } from "@/Shared/bProd.gen";
 
-if (!B_PROD) await import("preact/debug");
+if (!B_PROD) await import("preact/debug").catch(() => {});
 
+import "@/index.css";
+import "@mantine/core/styles.css";
+
+import { clientEnv } from "@/clientEnv";
+import { setRouterBaseRoute } from "@/routerInstance.gen";
+import { MainLayout } from "@/routes";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { clientEnv } from "./clientEnv";
-import { setRouterBaseRoute } from "./routerInstance.gen";
-import { MainLayout } from "./routes";
-import "./style.css";
+
+enableApiMock();
 
 setRouterBaseRoute(clientEnv.BASE_URL);
 
