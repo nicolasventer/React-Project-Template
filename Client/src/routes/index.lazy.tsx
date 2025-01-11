@@ -34,7 +34,7 @@ export const MainLayout = () => {
 			<MantineProvider theme={theme} forceColorScheme={st.colorScheme.current.value}>
 				<CustomConsole />
 				<Toaster position="bottom-center" toastOptions={{ duration: 2000 }} />
-				<RouterRender subPath="/" />
+				<RouterRender subPath="/" useReact />
 			</MantineProvider>
 		</FullViewport>
 	);

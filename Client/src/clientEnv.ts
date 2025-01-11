@@ -6,7 +6,7 @@ export type ClientEnv = {
 
 export const clientEnv: ClientEnv = B_PROD
 	? {
-			BASE_URL: "/Preact-Project-Template/preact_full",
+			BASE_URL: "/Preact-Project-Template/react_full",
 	  }
 	: {
 			BASE_URL: "",

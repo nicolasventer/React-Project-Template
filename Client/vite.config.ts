@@ -1,4 +1,4 @@
-import preact from "@preact/preset-vite";
+import react from "@vitejs/plugin-react";
 import { routerPlugin } from "easy-react-router/plugin";
 import path from "path";
 import { env } from "process";
@@ -14,7 +14,7 @@ const langBuildWatcher = watch({
 export default defineConfig({
 	base: "./", // remove base if deployed with vite commands (i.e. `bunx --bun vite build` && `vite preview`)
 	plugins: [
-		preact(),
+		react({ babel: { plugins: ["module:@preact/signals-react-transform"] } }),
 		...(env.USE_HTTPS ? [mkcert()] : []),
 		langBuildWatcher,
 		routerPlugin({ lazyComponent: { eslintDisableWarning: true } }),
