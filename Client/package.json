@@ -23,9 +23,10 @@
 		"test": "bunx playwright test",
 		"cov": "cross-env USE_COVERAGE=true bunx playwright test && cmd /c \"start coverage-reports/index.html\"",
 		"testui": "bunx playwright test --ui",
-		"testdebug": "bunx playwright test --debug",
+		"testdebug": "cross-env USE_ONE=true bunx playwright test --debug",
 		"testhtml": "cross-env USE_HTML=true bunx playwright test",
-		"codegen": "bunx playwright codegen",
+		"testhtmlone": "cross-env USE_HTML=true, USE_ONE=true bunx playwright test",
+		"codegen": "bunx playwright codegen # --viewport-size=\"1600,920\"",
 		"lint": "eslint .",
 		"lintfix": "eslint --fix .",
 		"depgraph": "depcruise --version && depcruise --config depcruise-config.cjs --output-type archi src | dot -T svg | depcruise-wrap-stream-in-html > graph-dependencies.html && cmd /c \"start graph-dependencies.html\""
@@ -40,7 +41,6 @@
 		"@types/react": "19.0.8",
 		"@types/react-dom": "19.0.3",
 		"@typescript-eslint/eslint-plugin": "8.23.0",
-		"@zamiell/typedoc-plugin-not-exported": "0.3.0",
 		"cross-env": "7.0.3",
 		"dependency-cruiser": "16.9.0",
 		"eslint": "9.19.0",
@@ -55,6 +55,7 @@
 		"monocart-reporter": "2.9.13",
 		"ts-morph": "25.0.1",
 		"tslib": "2.8.1",
+		"typedoc-plugin-missing-exports": "3.1.0",
 		"typescript-eslint": "8.23.0",
 		"vite-plugin-mkcert": "1.17.6"
 	},

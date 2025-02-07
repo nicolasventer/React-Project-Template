@@ -11,7 +11,9 @@ There are 4 links, each link corresponding to `Preact`/`React` `Full`/`Light` Te
 
 **Note:** `memo` is not used in React version.
 
-**Note 2:** It is expected in the future that **_all Preact versions will be deleted_** since memoization is handled by React with its compiler.
+**Note 2:** The `React compiler` is not yet used since **unstable** and currently does not work well with `preact signals`.
+
+<!-- **Note 2:** It is expected in the future that **_all Preact versions will be deleted_** since memoization is handled by React with its compiler. -->
 
 The `Light versions` remove the dependencies with `typebox`, `mantine`, `react-hot-toast`, `lucide-react` and `react-icons`.
 
@@ -26,12 +28,13 @@ The `Light versions` remove the dependencies with `typebox`, `mantine`, `react-h
 
 - [x] File base routing (client) (using [Easy-React-Router](https://github.com/nicolasventer/Easy-React-Router))
 - [x] Lazy loading (client) (using [Easy-React-Router](https://github.com/nicolasventer/Easy-React-Router))
-- [x] Structured code (client) (see [Client project structure](Client/README.md#project-structure))
+- [x] Structured code (server and client)
 - [x] Tests (server and client)
 - [x] Code coverage (server and client)
-- [x] Documentation (server and client) _(WIP: change of doc tool)_
-- [x] Dependency graph (client)
+- [x] Documentation (client) _(WIP: add of Storybook on client, and see for Server)_
+- [x] Dependency graph (server and client)
 - [x] Linting (server and client)
+- [x] API type safety (server and client)
 
 ## Installation
 

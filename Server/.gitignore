@@ -175,6 +175,8 @@ dist
 .DS_Store
 
 docs/
+typedoc_out/
 src/Shared/
-bun.lockb
 bun.lock
+bun.lockb
+graph-dependencies.html

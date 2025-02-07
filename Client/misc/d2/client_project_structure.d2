@@ -1,14 +1,9 @@
 Project structure: {
   src: {
-    features: {
-      Feature1
-      Feature2
-    }
-    api
-    tr
+    
     "globalState.ts"
 
-    Actions {
+    actions: {
       "actions.state.ts"
       "actions.types.ts"
       "actions.interface.ts"
@@ -24,42 +19,39 @@ Project structure: {
       impl -> "actions.impl.ts"
     }
 
-    "(readOnlyGlobalState)": {
-      features: {
-        _Common: {
-          "common.imports.ts"
-          "common.getters.ts"
-          "common.setters.ts"
-          "common.api.ts"
-          Components
+    api
+    tr
 
-          "common.imports.ts" -> Components
-          "common.getters.ts" -> Components
-          "common.setters.ts" -> Components
-          "common.api.ts" -> Components
-        }
+    components: {
+      _app
+      feature1
+      feature2 {
+        "Feature2.imports.ts"
+        "Feature2.tsx"
+
+        "Feature2.imports.ts" -> "Feature2.tsx"
       }
-      "gs.ts"
-      hooks
-      libs
-      Shared
 
-      "gs.ts" -> features._Common."common.getters.ts"
-      Shared -> features
-      hooks -> features
-      libs -> features
+      _app -> feature1
+      _app -> feature2
+      feature1 -> feature2."Feature2.imports.ts"
     }
 
-    tr -> "(readOnlyGlobalState)"."gs.ts"
-    "globalState.ts" -> Actions."actions.state.ts"
-    Actions."actions.impl.ts" -> "(readOnlyGlobalState)"
+    "(readOnlyGlobalState)": {
+      "gs.ts"
+      Shared
+      utils
+      assets
+    }
+
+    "globalState.ts" -> actions."actions.state.ts"
     "globalState.ts" -> "(readOnlyGlobalState)"."gs.ts"
-    "globalState.ts" -> "(readOnlyGlobalState)".features._Common."common.setters.ts"
-    api -> "(readOnlyGlobalState)".features._Common."common.api.ts"
+    actions."actions.impl.ts" -> components
+    actions."actions.impl.ts" -> "(readOnlyGlobalState)"
+    api -> actions
+    tr -> "(readOnlyGlobalState)"."gs.ts"
     "(readOnlyGlobalState)" -> routes
-    "(readOnlyGlobalState)" -> features
-    api -> features
-    features -> routes
+    components -> routes
   }
 }
 

@@ -1,7 +1,6 @@
-import { enableApiMock } from "@/api/api.config";
-import { B_PROD } from "@/Shared/bProd.gen";
+import "preact/debug";
 
-if (!B_PROD) await import("preact/debug").catch(() => {});
+import { enableApiMock } from "@/api/api.config";
 
 import "@/index.css";
 import "@mantine/core/styles.css";

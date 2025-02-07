@@ -4,12 +4,9 @@ import { createFolderStructure } from "eslint-plugin-project-structure";
 
 export const folderStructureConfig = createFolderStructure({
 	structure: [
-		// Allow any files in the root of your project, like package.json, eslint.config.mjs, etc.
-		// You can add rules for them separately.
-		// You can also add exceptions like this: "(?!folderStructure)*".
+		// Allow any files in the root of your project
 		{ name: "*" },
-
-		// Allow any folders in the root of your project.
+		// Allow any folders in the root of your project
 		{ name: "*", children: [] },
 
 		// src/
@@ -34,32 +31,23 @@ export const folderStructureConfig = createFolderStructure({
 				{ name: "api", children: [{ name: "api.ts" }, { name: "api.(config|gen|mock).ts" }] },
 				// src/assets/
 				{ ruleId: "assets-folder" },
-				// src/data/
-				{ ruleId: "data-folder" },
-				// src/fonts/
-				{ name: "fonts", children: [{ name: "font.css" }], ruleId: "fonts-subfolder" },
-				// src/hooks/
-				{ name: "hooks", children: [{ name: "use{PascalCase}.(ts|tsx)" }] },
-				// src/libs/
-				{ name: "libs", children: [] },
+				// src/utils/
+				{ name: "utils", children: [] },
 				// src/routes/
 				{ ruleId: "routes-folder" },
 				// src/tr/
 				{ name: "tr", children: [{ name: "{snake_case}.(ts|js)" }] },
-
-				// src/Actions/
+				// src/actions/
 				{
-					name: "Actions",
+					name: "actions",
 					children: [
 						{ name: "actions.(impl|interface|state|types|utils).ts" },
 						{ name: "_*.ts" },
 						{ ruleId: "actions-subfolder" },
 					],
 				},
-
-				// src/features/
-				{ name: "features", children: [{ ruleId: "features-subfolder" }] },
-
+				// src/components/
+				{ ruleId: "components-folder" },
 				// src/Shared/
 				{ name: "Shared", children: [] },
 			],
@@ -67,19 +55,13 @@ export const folderStructureConfig = createFolderStructure({
 	],
 
 	rules: {
-		"features-subfolder": {
-			// Shared features start with `_`
-			name: "_?{PascalCase}",
+		"components-folder": {
+			name: "components",
 			children: [
-				{ name: "{folderName}.(api|getters|setters|imports).ts" },
-				{
-					name: "{PascalCase}",
-					children: [
-						{ name: "{FolderName}.((lazy.)?tsx|utils.ts)" },
-						{ name: "{FolderName}.module.css" },
-						{ name: "_{PascalCase}.((lazy.)?tsx|utils.ts)" },
-					],
-				},
+				{ name: "_?{camelCase}", ruleId: "components-folder" },
+				{ name: "{PascalCase}(.lazy)?.tsx" },
+				{ name: "{PascalCase}.(utils|props|imports).ts" },
+				{ name: "{PascalCase}.module.css" },
 			],
 		},
 		"routes-folder": {
@@ -88,13 +70,33 @@ export const folderStructureConfig = createFolderStructure({
 		},
 		"assets-folder": {
 			name: "assets",
-			children: [{ name: "*.(png|jpg|jpeg|gif|svg)" }, { name: "*", ruleId: "assets-folder" }],
+			children: [
+				{ ruleId: "images-folder" },
+				{ ruleId: "videos-folder" },
+				{ ruleId: "audios-folder" },
+				{ ruleId: "data-folder" },
+				{ ruleId: "fonts-subfolder", children: [{ name: "font.css" }] },
+				{ name: "*", ruleId: "assets-folder" },
+			],
+		},
+		"images-folder": {
+			name: "images",
+			children: [{ name: "*.(png|jpg|jpeg|gif|svg|ico)" }, { name: "*", ruleId: "images-folder" }],
+		},
+		"videos-folder": {
+			name: "videos",
+			children: [{ name: "*.(mp4|webm|ogg|mkv)" }, { name: "*", ruleId: "videos-folder" }],
+		},
+		"audios-folder": {
+			name: "audios",
+			children: [{ name: "*.(mp3|wav|ogg)" }, { name: "*", ruleId: "audios-folder" }],
 		},
 		"data-folder": {
 			name: "data",
 			children: [{ name: "*.json" }, { name: "*", ruleId: "data-folder" }],
 		},
 		"fonts-subfolder": {
+			name: "fonts",
 			children: [{ name: "*.(eot|ttf|woff|woff2)" }, { name: "*", ruleId: "fonts-subfolder" }],
 		},
 		"actions-subfolder": {

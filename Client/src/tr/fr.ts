@@ -1,6 +1,5 @@
 import type { Tr } from "./en";
 
-/** @ignore */
 const _tr: Tr = {
 	Loading: "Chargement",
 	Error: "Erreur",

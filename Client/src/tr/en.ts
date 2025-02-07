@@ -1,4 +1,3 @@
-/** @ignore */
 const _tr = {
 	Loading: "Loading",
 	Error: "Error",
@@ -16,5 +15,4 @@ const _tr = {
 
 export default _tr;
 
-/** @ignore */
 export type Tr = typeof _tr;

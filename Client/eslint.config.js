@@ -65,6 +65,7 @@ export default tseslint.config(
 			"react-hooks/rules-of-hooks": "error",
 			"react-hooks/exhaustive-deps": "warn",
 			"@typescript-eslint/no-namespace": "off",
+			"@typescript-eslint/consistent-type-imports": "warn",
 		},
 	}
 );

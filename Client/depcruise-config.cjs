@@ -7,7 +7,7 @@ module.exports = {
 
 		includeOnly: "^src",
 
-		exclude: ["^src/libs/(?!utils)", "^src/tr", "^src/globalState.ts", "^src/gs.ts", "^src/Actions/actions.impl.ts"],
+		exclude: ["^src/utils", "^src/tr", "^src/globalState.ts", "^src/gs.ts", "^src/actions/actions.impl.ts"],
 
 		tsPreCompilationDeps: false,
 
@@ -19,7 +19,7 @@ module.exports = {
 
 		reporterOptions: {
 			archi: {
-				collapsePattern: "^src/DockLayout|^src/features/[^/]+/[^/]+|^src/assets",
+				collapsePattern: "^src/assets",
 
 				theme: {
 					modules: [

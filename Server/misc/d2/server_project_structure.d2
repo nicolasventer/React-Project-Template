@@ -1,0 +1,22 @@
+Project structure: {
+  src: {
+    "index.ts"
+    routes: {
+      "app.routes.ts"
+      User: {
+        "user.impl.ts"
+        "user.routes.ts"
+
+        "user.impl.ts" -> "user.routes.ts"
+      }
+
+      User."user.routes.ts" -> "app.routes.ts"
+    }
+
+    toOrganize
+
+    routes."app.routes.ts" -> "index.ts"
+    toOrganize -> "index.ts"
+  }
+}
+A -> B: can be imported by

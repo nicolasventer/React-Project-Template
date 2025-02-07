@@ -7,8 +7,8 @@ This is the client side of the application.
 ## Requirements
 
 - [bun](https://bun.sh/)
-- [typedoc](https://typedoc.org/)
 - [serve](https://www.npmjs.com/package/serve)
+- [typedoc](https://typedoc.org/)
 - [playwright](https://playwright.dev/) + ([VsCode extension](https://marketplace.visualstudio.com/items?itemName=ms-playwright.playwright))
 
 ## Installation
@@ -121,13 +121,10 @@ Edit the file [\_genApi.ts](./_genApi.ts) if you want to change the api generati
 
 ![client_project_structure](./misc/d2/client_project_structure.png)
 
-- There is no restriction within `Actions` folder, only the most relevant imports are shown.
+- There is no restriction within `actions` folder, only the most relevant imports are shown.
 - `(readOnlyGlobalState)` is not a folder.
-- All features that start with `_` are common features.
-- `imports` should only re-export from other features.
-- `setters` can import `getters` and `api`.
-- `api` can import `getters`.
-- No other import is allowed between `setters`, `getters` and `api`.
+- All components placed in a folder that start with `_` are common components.
+- `imports` should only re-export from other component folders.
 
 ## Enable api mock
 
