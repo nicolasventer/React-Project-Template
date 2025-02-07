@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "sources": ["..\\src\\routerInstance.gen.ts"],
+  "sourcesContent": [
+    "// 46114287767612e1d26fdcf5fb4a9f45d695ed3106079c9ce7e5122f78b9c7c9\r\nimport { checkValidRoute, lazySingleLoader, RouteParams, Router } from \"easy-react-router\";\r\n\r\nexport const {\r\n\tRouteCustomLink,\r\n\tRouteLink,\r\n\tRouterRender,\r\n\tbuildRouteLink,\r\n\t/** The current route of the app. It is set to undefined if the route is not found (see {@link notFoundRoute}). */\r\n\tcurrentRoute,\r\n\tgetRouteParams,\r\n\tisRouteLoaded,\r\n\tisRouteLoading,\r\n\tisRouteVisible,\r\n\tloadRouteFn,\r\n\tnavigateToCustomRouteFn,\r\n\tnavigateToRouteFn,\r\n\t/** The route that is displayed when the current route is not found. */\r\n\tnotFoundRoute,\r\n\tsetRouterBaseRoute,\r\n\tsetUseRouteTransition,\r\n\tupdateCurrentRoute,\r\n\tuseRoutes,\r\n} = new Router(\r\n\t{\r\n\t\t[checkValidRoute(\"//\")]: lazySingleLoader(() => import(\"./routes/index.index\"), \"HomePage\"),\r\n\t\t[checkValidRoute(\"/\")]: lazySingleLoader(() => import(\"./routes/index\"), \"MainLayout\"),\r\n\t},\r\n\t{\r\n\t\t[checkValidRoute(\"/\")]: lazySingleLoader(() => import(\"./routes/404\"), \"NotFoundPage\"),\r\n\t}\r\n);\r\n\r\n/** The type of the route paths. */\r\nexport type RouterPathType = typeof currentRoute.value;\r\n/**\r\n * @template {string} RoutePath\r\n * Type of the parameters of a route path.\r\n * `params` is optional if the route has no parameters.\r\n * @example\r\n * type A = RouteParams<\"/a/:b/c?d\">; // { b: string; d?: string; }\r\n */\r\nexport type RouterParamsType<T extends RouterPathType> = RouteParams<T>;\r\n\r\nupdateCurrentRoute();\r\n"
+  ],
+  "mappings": "mHAGO,IACN,kBACA,YACA,eACA,iBAEA,eACA,iBACA,gBACA,iBACA,iBACA,cACA,0BACA,oBAEA,gBACA,qBACA,wBACA,qBACA,aACG,IAAI,EACP,EACE,EAAgB,IAAI,GAAI,EAAiB,IAAa,iDAAyB,UAAU,GACzF,EAAgB,GAAG,GAAI,EAAiB,IAAa,2CAAmB,YAAY,CACtF,EACA,EACE,EAAgB,GAAG,GAAI,EAAiB,IAAa,yCAAiB,cAAc,CACtF,CACD,EAaA,EAAmB",
+  "debugId": "4D66F5F81318149364756E2164756E21",
+  "names": []
+}

@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "sources": ["..\\src\\api\\api.config.ts"],
+  "sourcesContent": [
+    "/** Configurations for the API. */\r\nexport const apiConfig = {\r\n\t/** Whether the API mock is enabled. */\r\n\tisMockEnabled: false,\r\n};\r\n\r\n/** Enables the API mock. */\r\nexport const enableApiMock = () => (apiConfig.isMockEnabled = true);\r\n"
+  ],
+  "mappings": "AACO,IAAM,EAAY,CAExB,cAAe,EAChB,EAGa,EAAgB,IAAO,EAAU,cAAgB",
+  "debugId": "E4F85D02252D74A264756E2164756E21",
+  "names": []
+}

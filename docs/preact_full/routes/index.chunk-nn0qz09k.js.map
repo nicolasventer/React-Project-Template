@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "sources": ["..\\src\\routes\\index.tsx"],
+  "sourcesContent": [
+    "/* eslint-disable react-refresh/only-export-components */\r\nimport { lazyLoader } from \"easy-react-router\";\r\n\r\nconst indexLazyLoader = lazyLoader(() => import(\"./index.lazy\"));\r\n/** The function to load the module. */\r\nexport const load = indexLazyLoader.load;\r\n/** The loading state. */\r\nexport const loadingState = indexLazyLoader.loadingState;\r\n// @routeExport\r\nexport const MainLayout = indexLazyLoader.getComponent(\"MainLayout\");\r\n"
+  ],
+  "mappings": "0KAGA,KAAM,GAAkB,GAAW,IAAa,wCAAe,EAElD,EAAO,EAAgB,KAEvB,EAAe,EAAgB,aAE/B,EAAa,EAAgB,aAAa,YAAY",
+  "debugId": "26A71FDAEB70699564756E2164756E21",
+  "names": []
+}

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<script type="importmap">
+			{
+				"imports": {
+					"../tr/": "./tr/"
+				}
+			}
+		</script>
+		<link rel="stylesheet" type="text/css" media="screen" href="./asset/index.css" />
+		<script type="importmap">
+			{
+				"imports": {
+					"../tr/": "./tr/"
+				}
+			}
+		</script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script>
+			if (!window.location.href.endsWith("/")) window.location.href = window.location.href + "/";
+		</script>
+		<script type="module" src="./index.js"></script>
+	</body>
+</html>
