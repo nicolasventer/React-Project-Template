@@ -11,6 +11,7 @@ type BaseResizeHandleProps = {
 	onEndResize?: () => void;
 	onDoubleClick?: () => void;
 	tableSelector: string;
+	tableExcludeClass: string;
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -21,6 +22,7 @@ const BaseResizeHandle = ({
 	onStartResize,
 	onEndResize,
 	tableSelector,
+	tableExcludeClass,
 	onDoubleClick,
 }: BaseResizeHandleProps) => {
 	const [isResizing, setIsResizing] = useState(false);
@@ -73,15 +75,19 @@ const BaseResizeHandle = ({
 	useEffect(() => {
 		const resizingTableSelector = `${tableSelector}:has(.resize-handle-${index}.resizing)`;
 		const hoverTableSelector = `${tableSelector}:has(.resize-handle-${index}:hover)`;
-		WriteSelectors(`resize-handle-${index}-css`, {
-			[`${resizingTableSelector} td:nth-of-type(${index + 2}), ${resizingTableSelector} th:nth-of-type(${index + 2})`]: {
-				borderLeft: `solid 1px ${theme === "light" ? "blue" : "yellow"}`,
+		WriteSelectors(
+			`resize-handle-${index}-css`,
+			{
+				[`${resizingTableSelector} td:nth-of-type(${index + 2}), ${resizingTableSelector} th:nth-of-type(${index + 2})`]: {
+					borderLeft: `solid 1px ${theme === "light" ? "blue" : "yellow"}`,
+				},
+				[`${hoverTableSelector}:not(:has(.resizing)) th:nth-of-type(${index + 2})`]: {
+					borderLeft: "solid 1px gray",
+				},
 			},
-			[`${hoverTableSelector}:not(:has(.resizing)) th:nth-of-type(${index + 2})`]: {
-				borderLeft: "solid 1px gray",
-			},
-		});
-	}, [index, tableSelector, theme]);
+			`.${tableExcludeClass}`
+		);
+	}, [index, tableExcludeClass, tableSelector, theme]);
 
 	return (
 		<div
@@ -103,6 +109,8 @@ export type UseColumnWidthProps = {
 	isResizeHeaderFirst?: boolean;
 	/** The table selector */
 	tableSelector: string;
+	/** The table exclude class */
+	tableExcludeClass: string;
 };
 
 /** The return type of the useColumnWidth hook */
@@ -124,12 +132,14 @@ export type UseColumnWidthReturn = {
  * @param props.initialWidthArray the initial width array
  * @param props.isResizeHeaderFirst whether to resize the headers first
  * @param props.tableSelector the table selector
+ * @param props.tableExcludeClass the table exclude class
  * @returns the width array, the setWidthArray function and the ResizeHandle component
  */
 export const useColumnWidth = ({
 	initialWidthArray,
 	isResizeHeaderFirst,
 	tableSelector,
+	tableExcludeClass,
 }: UseColumnWidthProps): UseColumnWidthReturn => {
 	const theme = useComputedColorScheme();
 
@@ -175,24 +185,28 @@ export const useColumnWidth = ({
 
 	useEffect(
 		() =>
-			WriteSelectors(`table-column-widths-${tableSelector}-css`, {
-				...Object.fromEntries(
-					headerWidthArray.map((width, index) => [
-						`${tableSelector} th:nth-child(${index + 1})`,
-						{ width: `${width}px`, maxWidth: `${width}px` },
-					])
-				),
-				...Object.fromEntries(
-					widthArray.map((width, index) => [`${tableSelector} td:nth-child(${index + 1})`, { width: `${width}px` }])
-				),
-				[`${tableSelector}:not(.col-border) th:has(.resize-handle) + th`]: { borderLeft: "solid 1px transparent" },
-				[`${tableSelector}:not(.col-border) thead:hover th:has(.resize-handle:not(.resizing)) + th,
+			WriteSelectors(
+				`table-column-widths-${tableSelector}-css`,
+				{
+					...Object.fromEntries(
+						headerWidthArray.map((width, index) => [
+							`${tableSelector} th:nth-child(${index + 1})`,
+							{ width: `${width}px`, maxWidth: `${width}px` },
+						])
+					),
+					...Object.fromEntries(
+						widthArray.map((width, index) => [`${tableSelector} td:nth-child(${index + 1})`, { width: `${width}px` }])
+					),
+					[`${tableSelector}:not(.col-border) th:has(.resize-handle) + th`]: { borderLeft: "solid 1px transparent" },
+					[`${tableSelector}:not(.col-border) thead:hover th:has(.resize-handle:not(.resizing)) + th,
 					${tableSelector}:not(.col-border):has(.resizing) th:has(.resize-handle:not(.resizing)) + th`]: {
-					borderLeft: theme === "light" ? "solid 1px black" : "solid 1px white",
+						borderLeft: theme === "light" ? "solid 1px black" : "solid 1px white",
+					},
+					[`${tableSelector}.resize-header-first:has(.resize-handle.resizing)`]: { display: "grid" },
 				},
-				[`${tableSelector}.resize-header-first:has(.resize-handle.resizing)`]: { display: "grid" },
-			}),
-		[headerWidthArray, tableSelector, theme, widthArray]
+				`.${tableExcludeClass}`
+			),
+		[headerWidthArray, tableExcludeClass, tableSelector, theme, widthArray]
 	);
 
 	// TODO: implement double click behavior
@@ -219,6 +233,7 @@ export const useColumnWidth = ({
 							onEndResize={() => setWidthArray(headerWidthArrayRef.current)}
 							onDoubleClick={onDoubleClick}
 							tableSelector={tableSelector}
+							tableExcludeClass={tableExcludeClass}
 						/>
 				  )
 				: ({ index }: { index: number }) => (
@@ -228,6 +243,7 @@ export const useColumnWidth = ({
 							setWidth={(width) => setAllWidthArray(headerWidthArrayRef.current.with(index, width))}
 							onDoubleClick={onDoubleClick}
 							tableSelector={tableSelector}
+							tableExcludeClass={tableExcludeClass}
 						/>
 				  ),
 		// eslint-disable-next-line react-hooks/exhaustive-deps

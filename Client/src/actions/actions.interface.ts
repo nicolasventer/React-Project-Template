@@ -16,10 +16,10 @@ export type IActions = {
 		};
 	};
 	wakeLock: {
-		automaticEnable: () => void;
+		_automaticEnable: () => void;
 		toggle: () => void;
 	};
-	viewportSize: { update: (viewportSize: ViewportSize) => void };
+	viewportSize: { _update: (viewportSize: ViewportSize) => void };
 	data: {
 		import: (file: File | null) => void;
 		export: () => void;

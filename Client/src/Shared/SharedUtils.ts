@@ -1,3 +1,9 @@
+/** Typed version of the Omit utility. */
+export type TypedOmit<Type, K extends keyof Type> = Omit<Type, K>;
+
+/** Typed version of the Extract utility. */
+export type TypedExtract<Type, K extends Type> = Extract<Type, K>;
+
 /** The type of an object with the keys as the values of the enum. */
 export type EnumObj<T extends Readonly<string>> = { [K in T]: K };
 

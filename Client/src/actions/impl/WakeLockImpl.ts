@@ -12,7 +12,7 @@ export class WakeLockImpl implements IWakeLock {
 		document.addEventListener("visibilitychange", () => (this.isDocumentVisible.value = document.visibilityState === "visible"));
 	}
 
-	automaticEnable = () => {
+	_automaticEnable = () => {
 		this.isToastEnabled = false;
 		effect(() => {
 			if (this.isDocumentVisible.value && !state.wakeLock.isEnabled.value) this.toggle();

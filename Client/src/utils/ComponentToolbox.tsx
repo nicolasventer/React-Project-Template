@@ -44,28 +44,32 @@ export const Style = (css: Partial<CSSStyleDeclaration>) => {
  * Writes the selectors to the style element
  * @param styleId the id of the style element
  * @param selectors the selectors to write
+ * @param scopeEnd the end of the scope
  */
-export const WriteSelectors = (styleId: string, selectors: Record<string, Partial<CSSStyleDeclaration>>) => {
+export const WriteSelectors = (styleId: string, selectors: Record<string, Partial<CSSStyleDeclaration>>, scopeEnd?: string) => {
 	let classStyleEl = document.getElementById(styleId);
 	if (!classStyleEl) {
 		classStyleEl = document.createElement("style");
 		classStyleEl.id = styleId;
 		document.head.appendChild(classStyleEl);
 	}
-	classStyleEl.innerHTML = Object.entries(selectors).reduce((allStyles, [selector, style]) => {
+	let innerHTML = Object.entries(selectors).reduce((allStyles, [selector, style]) => {
 		allStyles += `${selector} { ${Style(style)} }\n`;
 		return allStyles;
 	}, "");
+	if (scopeEnd) innerHTML = `@scope (:root) to (${scopeEnd}) { ${innerHTML} }`;
+	classStyleEl.innerHTML = innerHTML;
 };
 
 /**
  * Writes the classes to the style element
  * @param styleId the id of the style element
  * @param classes the classes to write
+ * @param scopeEnd the end of the scope
  */
-export const WriteClasses = (styleId: string, classes: Record<string, Partial<CSSStyleDeclaration>>) => {
+export const WriteClasses = (styleId: string, classes: Record<string, Partial<CSSStyleDeclaration>>, scopeEnd?: string) => {
 	const selectors = Object.fromEntries(Object.entries(classes).map(([className, style]) => [`.${className}`, style]));
-	WriteSelectors(styleId, selectors);
+	WriteSelectors(styleId, selectors, scopeEnd);
 };
 
 /** Writes the toolbox classes, needs to use the component toolbox */
@@ -252,6 +256,7 @@ export const Layout = forwardRef(function Layout(
 		overflowAuto,
 		positionAbsolute,
 		positionRelative,
+		topLeft,
 		borderSolid,
 
 		alignItems,
@@ -289,6 +294,7 @@ export const Layout = forwardRef(function Layout(
 					overflowAuto,
 					positionAbsolute,
 					positionRelative,
+					topLeft,
 					borderSolid,
 				}),
 				...(typeof divProps.style === "object" ? divProps.style : {}),
@@ -375,6 +381,7 @@ export const Box = forwardRef(function Box(
 		overflowAuto,
 		positionAbsolute,
 		positionRelative,
+		topLeft,
 		borderSolid,
 		...divProps
 	}: BoxProps,
@@ -402,6 +409,7 @@ export const Box = forwardRef(function Box(
 					overflowAuto,
 					positionAbsolute,
 					positionRelative,
+					topLeft,
 					borderSolid,
 				}),
 				...(typeof divProps.style === "object" ? { ...divProps.style } : {}),

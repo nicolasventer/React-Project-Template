@@ -5,6 +5,7 @@
 		"envDev": "bun run _genClientEnv.ts",
 		"envProd": "cross-env B_PROD=true bun run _genClientEnv.ts",
 		"dev": "bun run envDev && bunx --bun vite",
+		"devs": "bun run ./_run.ts",
 		"genHtml": "bun run ./node_modules/easy-react-router/build/plugin/_genRoutes.ts --html dist/index.html",
 		"genApi": "bun run _genApi.ts",
 		"buildDev": "bun run envDev && bun run _build.ts && bun run genHtml",

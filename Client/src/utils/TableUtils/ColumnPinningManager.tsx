@@ -104,15 +104,18 @@ export class ColumnPinningManager<T extends string> {
  * @param params.leftPinningCount the number of left pinned columns
  * @param params.rightPinningCount the number of right pinned columns
  * @param params.tableSelector the selector of the table
+ * @param params.tableExcludeClass the exclude class of the table
  */
 export const WriteColumnPinningStyle = ({
 	leftPinningCount,
 	rightPinningCount,
 	tableSelector,
+	tableExcludeClass,
 }: {
 	leftPinningCount: number;
 	rightPinningCount: number;
 	tableSelector: string;
+	tableExcludeClass: string;
 }) => {
 	const [widthArray, setWidthArray] = useState<number[]>([]);
 	const cumulWidthArray = useMemo(() => {
@@ -157,20 +160,37 @@ export const WriteColumnPinningStyle = ({
 					${tableSelector} tfoot th:${childSelector}(${index}),
 					${tableSelector} tfoot td:${childSelector}(${index})`;
 		};
-		WriteSelectors(`${tableSelector}-column-pinning-css`, {
-			...Object.fromEntries(
-				Array.from({ length: leftPinningCount }, (_, i) => [
-					getSelector(i + 1, "left"),
-					{ position: "sticky", left: `${cumulWidthArray[i]}px`, zIndex: "2" },
-				])
-			),
-			...Object.fromEntries(
-				Array.from({ length: rightPinningCount }, (_, i) => [
-					getSelector(i + 1, "right"),
-					{ position: "sticky", right: `${cumulWidthArray.at(-1)! - cumulWidthArray.at(-i - 1)!}px`, zIndex: "2" },
-				])
-			),
-		});
-	}, [leftPinningCount, rightPinningCount, tableSelector, cumulWidthArray]);
+		WriteSelectors(
+			`${tableSelector}-column-pinning-css`,
+			{
+				...Object.fromEntries(
+					Array.from({ length: leftPinningCount }, (_, i) => [
+						getSelector(i + 1, "left"),
+						{
+							position: "sticky",
+							left: `${cumulWidthArray[i]}px`,
+							zIndex: "2",
+							boxShadow: "inset -0.0625rem 0px 0px 0px #424242",
+						},
+					])
+				),
+				...Object.fromEntries(
+					Array.from({ length: rightPinningCount }, (_, i) => [
+						getSelector(i + 1, "right"),
+						{ position: "sticky", right: `${cumulWidthArray.at(-1)! - cumulWidthArray.at(-i - 1)!}px`, zIndex: "2" },
+					])
+				),
+				// html only to avoid key collision
+				["html " + getSelector(leftPinningCount, "left")]: {
+					boxShadow: "inset -0.625rem 0px 0.625rem -0.625rem #424242",
+				},
+				// * only to avoid key collision
+				["html " + getSelector(rightPinningCount, "right")]: {
+					boxShadow: "inset 0.625rem 0px 0.625rem -0.625rem #424242",
+				},
+			},
+			`.${tableExcludeClass}`
+		);
+	}, [leftPinningCount, rightPinningCount, tableExcludeClass, tableSelector, cumulWidthArray]);
 	return <></>;
 };

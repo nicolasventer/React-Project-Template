@@ -5,16 +5,26 @@ import { type ComponentPropsWithRef, useEffect, useMemo } from "react";
 
 /**
  * Get the selector for the table
- * @param cssId the css id used to set the class name of the table
+ * @param cssId the css id used to set the class name of the table (default: "default")
  * @returns the selector for the table
  */
 // eslint-disable-next-line react-refresh/only-export-components
 export const getTableSelector = (cssId = "default") => `.table-${cssId}`;
 
+/**
+ * Get the exclude class for the table. Add this class to the element that you want to not apply the table styles to.
+ * @param cssId the css id used to set the class name of the table (default: "default")
+ * @returns the exclude class for the table
+ */
+// eslint-disable-next-line react-refresh/only-export-components
+export const getTableExcludeClass = (cssId = "default") => `table-${cssId}-exclude`;
+
 /** The Table component props */
 export type TableProps = {
 	/** Whether to set the table to full width (default: true) */
 	fullWidth?: boolean;
+	/** Whether to set the table to full height */
+	fullHeight?: boolean;
 	/** Whether to set the table to have a border */
 	withTableBorder?: boolean;
 	/** Whether to set the table to have column borders */
@@ -51,6 +61,8 @@ export type TableProps = {
 		theadBackgroundColor?: string;
 		/** The tfoot background color (default: `theme === "light" ? "#FFFFFF" : "#242424"`) */
 		tfootBackgroundColor?: string;
+		/** The cell padding (default: `0.4375rem 0.625rem`) */
+		cellPadding?: string;
 	};
 	/** The styles to apply to table elements (it is using the class name selector defined by the css id) */
 	styles?: {
@@ -116,6 +128,7 @@ export type TableProps = {
  */
 export const Table = ({
 	fullWidth = true,
+	fullHeight,
 	withTableBorder,
 	withColumnBorders,
 	withRowBorders,
@@ -141,6 +154,7 @@ export const Table = ({
 		highlightBackgroundColor = theme === "light" ? "#F1F3F5" : "#3B3B3B",
 		theadBackgroundColor = theme === "light" ? "#FFFFFF" : "#242424",
 		tfootBackgroundColor = theme === "light" ? "#FFFFFF" : "#242424",
+		cellPadding = "0.4375rem 0.625rem",
 	} = styleOptions ?? {};
 
 	const { other, ...mainStyles } = styles ?? {};
@@ -151,47 +165,53 @@ export const Table = ({
 			const rowBorderColor = "#424242";
 			const colBorderColor = "#424242";
 			const tableSelector = getTableSelector(cssId);
-			WriteSelectors(`table-${cssId}-css`, {
-				[`${tableSelector}`]: { borderCollapse: "collapse", fontSize: "0.875rem" },
-				[`${tableSelector}, ${tableSelector} *`]: { boxSizing: "border-box" },
-				[`${tableSelector} th`]: { textAlign: "left" },
-				[`${tableSelector} th *`]: { overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" },
-				[`${tableSelector} th, ${tableSelector} td`]: { padding: "0.4375rem 0.625rem", backgroundColor: tableBackgroundColor },
+			WriteSelectors(
+				`table-${cssId}-css`,
+				{
+					[`${tableSelector}`]: { borderCollapse: "collapse", fontSize: "0.875rem" },
+					[`${tableSelector}, ${tableSelector} *`]: { boxSizing: "border-box" },
+					[`${tableSelector} th`]: { textAlign: "left" },
+					[`${tableSelector} th *`]: { overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" },
+					[`${tableSelector} th, ${tableSelector} td`]: { padding: cellPadding, backgroundColor: tableBackgroundColor },
 
-				[`${tableSelector}.table-full-width`]: { minWidth: "100%" },
-				[`${tableSelector}.table-border`]: { border: tableBorder },
-				[`${tableSelector}.table-border > :first-child > tr:first-child,
+					[`${tableSelector}.table-full-width`]: { minWidth: "100%" },
+					[`${tableSelector}.table-full-height`]: { height: "100%" },
+					[`${tableSelector}.table-border`]: { border: tableBorder },
+					[`${tableSelector}.table-border > :first-child > tr:first-child,
 					${tableSelector}.table-border > :last-child > tr:last-child`]: {
-					// visible when table-border is set and not row-border
-					boxShadow: `inset 0px 0px 0px 0.0625rem ${rowBorderColor}`,
-				},
-				[`${tableSelector}.col-border th, ${tableSelector}.col-border td`]: {
-					borderLeft: colBorder,
-					borderRight: colBorder,
-					// visible when col-border is set and some columns are pinned
-					boxShadow: `inset 0.0625rem 0px 0px 0px ${colBorderColor}`,
-				},
-				[`${tableSelector}.row-border tr`]: {
-					borderTop: rowBorder,
-					borderBottom: rowBorder,
-					// visible when row-border is set and header or footer is sticky
-					boxShadow: `inset 0px 0px 0px 0.0625rem ${rowBorderColor}`,
-				},
-				// visible when row-border is set and not table-border
-				[`${tableSelector}.row-border > :first-child > tr:first-child`]: { borderTop: "none" },
-				[`${tableSelector}.row-border > :last-child > tr:last-child`]: { borderBottom: "none" },
-				// visible when col-border is set and not table-border
-				[`${tableSelector}.col-border th:first-child,
-					${tableSelector}.col-border td:first-child`]: { borderLeft: "none", boxShadow: "none" },
-				[`${tableSelector}.col-border th:last-child, ${tableSelector}.col-border td:last-child`]: { borderRight: "none" },
+						// visible when table-border is set and not row-border
+						boxShadow: `inset 0px 0px 0px 0.0625rem ${rowBorderColor}`,
+					},
+					[`${tableSelector}.col-border th, ${tableSelector}.col-border td`]: {
+						borderLeft: colBorder,
+						borderRight: colBorder,
+						// visible when col-border is set and some columns are pinned
+						boxShadow: `inset 0.0625rem 0px 0px 0px ${colBorderColor}`,
+					},
+					[`${tableSelector}.row-border tr`]: {
+						borderTop: rowBorder,
+						borderBottom: rowBorder,
+						// visible when row-border is set and header or footer is sticky
+						boxShadow: `inset 0px 0px 0px 0.0625rem ${rowBorderColor}`,
+					},
+					// visible when row-border is set and not table-border
+					[`${tableSelector}.row-border:not(.table-border) > :first-child > tr:first-child`]: { borderTop: "none" },
+					[`${tableSelector}.row-border:not(.table-border) > :last-child > tr:last-child`]: { borderBottom: "none" },
+					// visible when col-border is set and not table-border
+					[`${tableSelector}.col-border:not(.table-border) th:first-child,
+					${tableSelector}.col-border:not(.table-border) td:first-child`]: { borderLeft: "none", boxShadow: "none" },
+					[`${tableSelector}.col-border:not(.table-border) th:last-child, ${tableSelector}.col-border:not(.table-border) td:last-child`]:
+						{ borderRight: "none" },
 
-				[`${tableSelector}.row-striped tbody > tr:nth-of-type(odd) > th,
+					[`${tableSelector}.row-striped tbody > tr:nth-of-type(odd) > th,
 					${tableSelector}.row-striped tbody > tr:nth-of-type(odd) > td`]: { backgroundColor: stripedBackgroundColor },
-				[`${tableSelector}.row-highlightOnHover tbody > tr:hover > th,
+					[`${tableSelector}.row-highlightOnHover tbody > tr:hover > th,
 					${tableSelector}.row-highlightOnHover tbody > tr:hover > td`]: { backgroundColor: highlightBackgroundColor },
-				[`${tableSelector}.sticky-header thead`]: { position: "sticky", top: "0", zIndex: "3" },
-				[`${tableSelector}.sticky-footer tfoot`]: { position: "sticky", bottom: "0", zIndex: "3" },
-			});
+					[`${tableSelector}.sticky-header thead`]: { position: "sticky", top: "0", zIndex: "3" },
+					[`${tableSelector}.sticky-footer tfoot`]: { position: "sticky", bottom: "0", zIndex: "3" },
+				},
+				`.${getTableExcludeClass(cssId)}`
+			);
 			WriteSelectors(`table-${cssId}-custom-css`, {
 				...Object.fromEntries(
 					Object.entries({ ...mainStyles, ...other }).map(([key, value]) => [
@@ -203,6 +223,7 @@ export const Table = ({
 		}
 	}, [
 		bWriteCss,
+		cellPadding,
 		colBorder,
 		cssId,
 		highlightBackgroundColor,
@@ -222,6 +243,7 @@ export const Table = ({
 				`table-${cssId}`,
 				{
 					"table-full-width": fullWidth,
+					"table-full-height": fullHeight,
 					"table-border": withTableBorder,
 					"col-border": withColumnBorders,
 					"row-border": withRowBorders,
@@ -236,6 +258,7 @@ export const Table = ({
 		[
 			cssId,
 			fullWidth,
+			fullHeight,
 			withTableBorder,
 			withColumnBorders,
 			withRowBorders,

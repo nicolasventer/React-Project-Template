@@ -48,6 +48,22 @@ export const SwitchV = <T, V, U = T>({ value, transform, cases, defaultCase }: S
 };
 
 /**
+ * The parameters of the SwitchVComp function
+ * @template T the type of the value
+ * @template U the type of the transformed value
+ */
+export type SwitchVCompProps<T, U = T> = {
+	/** The value to pass to the cases */
+	value: T;
+	/** The function to transform the value before passing it to the cases (default: identity function) */
+	transform?: (v: T) => U;
+	/** The branches of the switch statement */
+	cases: [U, (props: { value: T; transformedValue: U }) => ReactNode][];
+	/** The default branch, if none of the branches match */
+	defaultCase?: (props: { value: T; transformedValue: U }) => ReactNode;
+};
+
+/**
  * @see {@link SwitchV}
  * A switch statement component in JSX.
  * @template T the type of the value
@@ -59,11 +75,12 @@ export const SwitchV = <T, V, U = T>({ value, transform, cases, defaultCase }: S
  * @param props.defaultCase the default branch, if none of the branches match
  * @returns the result of the switch statement
  */
-export const SwitchVComp = <T, U = T>({ value, transform, cases, defaultCase }: SwitchVProps<T, ReactNode, U>) =>
+export const SwitchVComp = <T, U = T>({ value, transform, cases, defaultCase }: SwitchVCompProps<T, U>) =>
 	useMemo(() => {
 		const transformedValue = transform ? transform(value) : (value as unknown as U);
 		const foundCase = cases.find(([u]) => u === transformedValue);
-		return <>{foundCase ? foundCase[1](value, transformedValue) : defaultCase?.(value, transformedValue)}</>;
+		const Component = foundCase ? foundCase[1] : (defaultCase ?? (() => null));
+		return <Component value={value} transformedValue={transformedValue} />;
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [value]);
 

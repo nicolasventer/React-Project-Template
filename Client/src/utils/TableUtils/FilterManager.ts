@@ -78,15 +78,29 @@ export const FilterUtils = {
 	 * @param {boolean} [ignoreCase=true] whether to ignore the case of the text (default: true)
 	 * @returns the filter function
 	 */
-	textOrFilterFn: <T>(getText: (t: T) => string, ignoreCase = true) =>
+	textOrFilterFn: <T>(getText: (t: T) => string | string[], ignoreCase = true) =>
 		ignoreCase
 			? (t: T, values: string[]) => {
 					const v = values.filter(Boolean);
-					return v.length === 0 || v.some((value) => getText(t).toLowerCase().includes(value.toLowerCase()));
+					return (
+						v.length === 0 ||
+						v.some((value) => {
+							const text = getText(t);
+							if (typeof text === "string") return text.toLowerCase().includes(value.toLowerCase());
+							return text.some((t) => t.toLowerCase().includes(value.toLowerCase()));
+						})
+					);
 			  }
 			: (t: T, values: string[]) => {
 					const v = values.filter(Boolean);
-					return v.length === 0 || v.some((value) => getText(t).includes(value));
+					return (
+						v.length === 0 ||
+						v.some((value) => {
+							const text = getText(t);
+							if (typeof text === "string") return text.includes(value);
+							return text.some((t) => t.includes(value));
+						})
+					);
 			  },
 
 	/**
@@ -95,14 +109,28 @@ export const FilterUtils = {
 	 * @param {boolean} [ignoreCase=true] whether to ignore the case of the text (default: true)
 	 * @returns the filter function
 	 */
-	textAndFilterFn: <T>(getText: (t: T) => string, ignoreCase = true) =>
+	textAndFilterFn: <T>(getText: (t: T) => string | string[], ignoreCase = true) =>
 		ignoreCase
 			? (t: T, values: string[]) => {
 					const v = values.filter(Boolean);
-					return v.length === 0 || v.every((value) => getText(t).toLowerCase().includes(value.toLowerCase()));
+					return (
+						v.length === 0 ||
+						v.every((value) => {
+							const text = getText(t);
+							if (typeof text === "string") return text.toLowerCase().includes(value.toLowerCase());
+							return text.some((t) => t.toLowerCase().includes(value.toLowerCase()));
+						})
+					);
 			  }
 			: (t: T, values: string[]) => {
 					const v = values.filter(Boolean);
-					return v.length === 0 || v.every((value) => getText(t).includes(value));
+					return (
+						v.length === 0 ||
+						v.every((value) => {
+							const text = getText(t);
+							if (typeof text === "string") return text.includes(value);
+							return text.some((t) => t.includes(value));
+						})
+					);
 			  },
 };

@@ -6,27 +6,34 @@ import { DataImpl } from "@/actions/impl/DataImpl";
 import { LanguageImpl } from "@/actions/impl/LanguageImpl";
 import { ViewportSizeImpl } from "@/actions/impl/ViewportSizeImpl";
 import { WakeLockImpl } from "@/actions/impl/WakeLockImpl";
+import { Events } from "@/utils/Events";
 import type { RecursiveReadOnlySignal } from "@/utils/signalUtils";
 import { computed } from "@preact/signals";
 
 export const st = state as RecursiveReadOnlySignal<typeof state>;
 
-export const computedSt = {
+const _computedSt = {
 	isAboveMd: computed(() => st.viewportSize.value.width >= 992),
 	isBelowXxs: computed(() => st.viewportSize.value.width <= 400),
 	isWakeLockAvailable: "wakeLock" in navigator || "keepAwake" in screen,
 };
 
-export const computedSt2 = {
-	smMd: computed(() => (computedSt.isAboveMd.value ? "md" : "sm")),
-	xsSm: computed(() => (computedSt.isAboveMd.value ? "sm" : "xs")),
+const _computedSt2 = {
+	smMd: computed(() => (_computedSt.isAboveMd.value ? "md" : "sm")),
+	xsSm: computed(() => (_computedSt.isAboveMd.value ? "sm" : "xs")),
 };
 
-export const computedSt3 = {
-	compactXsSm: computed(() => `compact-${computedSt2.xsSm.value}`),
+const _computedSt3 = {
+	compactXsSm: computed(() => `compact-${_computedSt2.xsSm.value}`),
 };
 
-class Actions implements IActions {
+export const computedSt = Object.assign(_computedSt, _computedSt2, _computedSt3);
+
+type OmitKeys<Type, K extends keyof Type> = Omit<Type, K>;
+
+// intermediate type useful to progressively implement the IActions interface
+type IPartialActions = OmitKeys<IActions, never>;
+class Actions implements IPartialActions {
 	constructor(
 		public colorScheme: IColorScheme,
 		public language: ILanguage,
@@ -45,3 +52,8 @@ export const actions: IActions = new Actions(
 	new ViewportSizeImpl(),
 	new DataImpl()
 );
+export const events = new Events({
+	onPageLoad: [],
+	intervals: {},
+	onDataChange: [],
+});

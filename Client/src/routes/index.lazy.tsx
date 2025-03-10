@@ -11,10 +11,24 @@ const theme = createTheme({});
 
 actions.console.type.update("both");
 
+/**
+ * The main layout of the application. \
+ * It renders:
+ * - {@link FullViewport},
+ * - {@link WriteToolboxClasses},
+ * - `MantineProvider` with the theme and `st.colorScheme.current.value`,
+ * - `Toaster` with the position "bottom-center" and the toast options duration 2000,
+ * - {@link CustomConsole},
+ * - {@link RouterRender} with the subPath "/", which renders the current route.
+ * It also updates `actions.viewportSize` when the viewport size changes.
+ * @param params
+ * @param params.children the children to render
+ * @returns the main layout of the application
+ */
 // @routeExport
 export const MainLayout = () => {
 	const { height, width } = useViewportSize();
-	useEffect(() => actions.viewportSize.update({ height, width }), [height, width]);
+	useEffect(() => actions.viewportSize._update({ height, width }), [height, width]);
 
 	return (
 		<FullViewport>
