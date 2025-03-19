@@ -60,8 +60,8 @@ export const folderStructureConfig = createFolderStructure({
 			children: [
 				{ name: "_?{camelCase}", ruleId: "components-folder" },
 				{ name: "{PascalCase}(.lazy)?.tsx" },
-				{ name: "{PascalCase}.(utils|props|imports).ts" },
 				{ name: "{PascalCase}.module.css" },
+				{ name: "{camelCase}.(imports|types|utils).ts" },
 			],
 		},
 		"routes-folder": {

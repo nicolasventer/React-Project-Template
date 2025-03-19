@@ -199,11 +199,34 @@ export const typedUrlParamsObj = (filledValue: Object, urlParamsObj: StringOrObj
 };
 
 /**
+ * Removes duplicates from an array.
+ * @param array the array to remove duplicates from
+ * @returns the array with duplicates removed
+ */
+export const unique = <T>(array: T[]): T[] => Array.from(new Set(array));
+
+/**
+ * Sorts an array and removes duplicates.
+ * @param array the array to sort
+ * @returns the sorted array
+ */
+export const uniqueSort = <T>(array: T[]): T[] => unique(array).sort();
+
+/**
+ * Sorts the arrays in the given object and removes duplicates.
+ * @param object the object with arrays to sort
+ * @returns the object with sorted arrays
+ */
+export const uniqueSortObj = <T extends string, U>(object: Record<T, U[]>) =>
+	Object.fromEntries(Object.entries(object).map(([key, value]) => [key, uniqueSort(value as U[])])) as Record<T, U[]>;
+
+/**
  * Converts the input of a function from a string to an event.
  * @param fn the function to convert the input of
  * @returns the function that takes an event as input
  */
-export const evStringFn = (fn: (value: string) => void) => (ev: ChangeEvent<HTMLInputElement>) => fn(ev.currentTarget.value);
+export const evStringFn = (fn: (value: string) => void) => (ev: ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
+	fn(ev.currentTarget.value);
 
 /**
  * Converts the input of a function from a boolean to an event.
@@ -218,3 +241,13 @@ export const evBoolFn = (fn: (value: boolean) => void) => (ev: ChangeEvent<HTMLI
  * @returns the element with the given id
  */
 export const byId = <T extends HTMLElement = HTMLInputElement>(id: string) => document.getElementById(id) as T;
+
+/**
+ * Logs the given value and returns it.
+ * @param value the value to log
+ * @returns the given value
+ */
+export const logRet = <T>(value: T) => {
+	console.log(value);
+	return value;
+};

@@ -4,16 +4,8 @@ export type TypedOmit<Type, K extends keyof Type> = Omit<Type, K>;
 /** Typed version of the Extract utility. */
 export type TypedExtract<Type, K extends Type> = Extract<Type, K>;
 
-/** The type of an object with the keys as the values of the enum. */
-export type EnumObj<T extends Readonly<string>> = { [K in T]: K };
-
-/**
- * Ensure that the object is an EnumObj.
- * @template T The type of the enum.
- * @param _ The object to check.
- * @returns nothing.
- */
-export const checkEnumObj = <T extends Readonly<string>>(_: EnumObj<T>) => void 0;
+/** Typed version of the Exclude utility. */
+export type TypedExclude<Type, K extends Type> = Exclude<Type, K>;
 
 /**
  * Debounces the given function, be sure to store the debounced function in a variable to keep the reference.

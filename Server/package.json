@@ -2,9 +2,9 @@
 	"name": "server",
 	"type": "module",
 	"scripts": {
-		"dev": "bun --watch src/index.ts",
-		"start": "bun src/index.ts",
-		"starttest": "bun src/testIndex.ts",
+		"dev": "bun run --watch src/index.ts",
+		"start": "bun run src/index.ts",
+		"starttest": "bun run src/testIndex.ts",
 		"doc": "typedoc && cmd /c \"start typedoc_out/index.html\"",
 		"test": "bun test",
 		"cov": "bun test --coverage",

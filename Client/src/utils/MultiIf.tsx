@@ -1,58 +1,36 @@
 import { useMemo, type ReactNode } from "react";
 
-/**
- * A if statement in JSX.
- * @param props
- * @param props.condition the condition of the if statement
- * @param props.then the then branch of the if statement
- * @param props.else the else branch of the if statement
- * @returns the result of the if statement
- */
-export const If = ({ condition, then, else: else_ }: { condition: boolean; then: () => ReactNode; else?: () => ReactNode }) =>
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	useMemo(() => <>{condition ? then() : else_?.()}</>, [condition]);
-
-/**
- * The parameters of the SwitchV function
- * @template T the type of the value
- * @template V the type of the result
- * @template U the type of the transformed value
- */
-export type SwitchVProps<T, V, U = T> = {
-	/** The value to pass to the cases */
-	value: T;
-	/** The function to transform the value before passing it to the cases (default: identity function) */
-	transform?: (v: T) => U;
-	/** The branches of the switch statement */
-	cases: [U, (t: T, u: U) => V][];
-	/** The default branch, if none of the branches match */
-	defaultCase?: (t: T, u: U) => V;
+/** The parameters of the MultiIf function */
+export type MultiIfProps = {
+	/** The values that the multi if should check for re-rendering */
+	deps: unknown[];
+	/** The branches of the multi if statement */
+	branches: [condition: () => boolean, then: () => ReactNode][];
+	/** The else branch, if none of the branches match */
+	else?: () => ReactNode;
 };
 
 /**
- * A switch statement.
- * @template T the type of the value
- * @template V the type of the result
- * @template U the type of the transformed value
+ * A multi if statement in JSX.
  * @param props
- * @param props.value the value to pass to the cases
- * @param props.transform the function to transform the value before passing it to the cases (default: identity function)
- * @param props.cases the branches of the switch statement
- * @param props.defaultCase the default branch, if none of the branches match
- * @returns the result of the switch statement
+ * @param props.branches the branches of the multi if statement
+ * @param props.else the else branch, if none of the branches match
+ * @returns the result of the multi if statement
  */
-export const SwitchV = <T, V, U = T>({ value, transform, cases, defaultCase }: SwitchVProps<T, V, U>) => {
-	const transformedValue = transform ? transform(value) : (value as unknown as U);
-	const foundCase = cases.find(([u]) => u === transformedValue);
-	return foundCase ? foundCase[1](value, transformedValue) : defaultCase?.(value, transformedValue);
-};
+export const MultiIf = ({ deps, branches, else: else_ }: MultiIfProps) =>
+	useMemo(() => {
+		const branch = branches.find((branch) => branch[0]());
+		const Component = branch ? branch[1] : else_ ?? (() => null);
+		return <Component />;
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, deps);
 
 /**
  * The parameters of the SwitchVComp function
  * @template T the type of the value
  * @template U the type of the transformed value
  */
-export type SwitchVCompProps<T, U = T> = {
+export type SwitchVProps<T, U = T> = {
 	/** The value to pass to the cases */
 	value: T;
 	/** The function to transform the value before passing it to the cases (default: identity function) */
@@ -64,7 +42,6 @@ export type SwitchVCompProps<T, U = T> = {
 };
 
 /**
- * @see {@link SwitchV}
  * A switch statement component in JSX.
  * @template T the type of the value
  * @template U the type of the transformed value
@@ -75,31 +52,11 @@ export type SwitchVCompProps<T, U = T> = {
  * @param props.defaultCase the default branch, if none of the branches match
  * @returns the result of the switch statement
  */
-export const SwitchVComp = <T, U = T>({ value, transform, cases, defaultCase }: SwitchVCompProps<T, U>) =>
+export const SwitchV = <T, U = T>({ value, transform, cases, defaultCase }: SwitchVProps<T, U>) =>
 	useMemo(() => {
 		const transformedValue = transform ? transform(value) : (value as unknown as U);
 		const foundCase = cases.find(([u]) => u === transformedValue);
-		const Component = foundCase ? foundCase[1] : (defaultCase ?? (() => null));
+		const Component = foundCase ? foundCase[1] : defaultCase ?? (() => null);
 		return <Component value={value} transformedValue={transformedValue} />;
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [value]);
-
-/**
- * A multi if statement in JSX.
- * @param props
- * @param props.branches the branches of the multi if statement
- * @param props.else the else branch, if none of the branches match
- * @returns the result of the multi if statement
- */
-export const MultiIf = ({
-	branches,
-	else: else_,
-}: {
-	branches: { condition: boolean; then: () => ReactNode }[];
-	else?: () => ReactNode;
-}) =>
-	useMemo(() => {
-		const branch = branches.find((branch) => branch.condition);
-		return <>{branch ? branch.then() : else_?.()}</>;
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [branches]);

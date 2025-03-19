@@ -17,6 +17,8 @@ setRouterBaseRoute(clientEnv.BASE_URL);
 
 // define the startViewTransition function if it does not exist (for Firefox)
 if (!document.startViewTransition)
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
 	document.startViewTransition = (fn: () => void) => {
 		const ready = new Promise<undefined>((resolve) => resolve(undefined));
 		const finished = new Promise<undefined>((resolve) => (fn(), resolve(undefined)));

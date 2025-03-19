@@ -21,8 +21,6 @@ actions.console.type.update("both");
  * - {@link CustomConsole},
  * - {@link RouterRender} with the subPath "/", which renders the current route.
  * It also updates `actions.viewportSize` when the viewport size changes.
- * @param params
- * @param params.children the children to render
  * @returns the main layout of the application
  */
 // @routeExport

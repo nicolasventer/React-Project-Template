@@ -19,6 +19,9 @@ export const getTableSelector = (cssId = "default") => `.table-${cssId}`;
 // eslint-disable-next-line react-refresh/only-export-components
 export const getTableExcludeClass = (cssId = "default") => `table-${cssId}-exclude`;
 
+/** The class name to add to a row or a cell to not apply the highlight on hover */
+export const NO_HIGHLIGHT_ON_HOVER_CLASS = "no-highlight-on-hover";
+
 /** The Table component props */
 export type TableProps = {
 	/** Whether to set the table to full width (default: true) */
@@ -205,8 +208,9 @@ export const Table = ({
 
 					[`${tableSelector}.row-striped tbody > tr:nth-of-type(odd) > th,
 					${tableSelector}.row-striped tbody > tr:nth-of-type(odd) > td`]: { backgroundColor: stripedBackgroundColor },
-					[`${tableSelector}.row-highlightOnHover tbody > tr:hover > th,
-					${tableSelector}.row-highlightOnHover tbody > tr:hover > td`]: { backgroundColor: highlightBackgroundColor },
+					[`${tableSelector}.row-highlightOnHover tbody > tr:hover:not(.${NO_HIGHLIGHT_ON_HOVER_CLASS}) > th:not(.${NO_HIGHLIGHT_ON_HOVER_CLASS}),
+					${tableSelector}.row-highlightOnHover tbody > tr:hover:not(.${NO_HIGHLIGHT_ON_HOVER_CLASS}) > td:not(.${NO_HIGHLIGHT_ON_HOVER_CLASS})`]:
+						{ backgroundColor: highlightBackgroundColor },
 					[`${tableSelector}.sticky-header thead`]: { position: "sticky", top: "0", zIndex: "3" },
 					[`${tableSelector}.sticky-footer tfoot`]: { position: "sticky", bottom: "0", zIndex: "3" },
 				},

@@ -1,8 +1,18 @@
-import type { IActions, IColorScheme, IConsole, IData, ILanguage, IViewportSize, IWakeLock } from "@/actions/actions.interface";
+import type {
+	IActions,
+	IColorScheme,
+	IConsole,
+	IData,
+	IErrorMessage,
+	ILanguage,
+	IViewportSize,
+	IWakeLock,
+} from "@/actions/actions.interface";
 import { state } from "@/actions/actions.state";
 import { ColorSchemeImpl } from "@/actions/impl/ColorSchemeImpl";
 import { ConsoleImpl } from "@/actions/impl/ConsoleImpl";
 import { DataImpl } from "@/actions/impl/DataImpl";
+import { ErrorMessageImpl } from "@/actions/impl/ErrorMessageImpl";
 import { LanguageImpl } from "@/actions/impl/LanguageImpl";
 import { ViewportSizeImpl } from "@/actions/impl/ViewportSizeImpl";
 import { WakeLockImpl } from "@/actions/impl/WakeLockImpl";
@@ -40,6 +50,7 @@ class Actions implements IPartialActions {
 		public console: IConsole,
 		public wakeLock: IWakeLock,
 		public viewportSize: IViewportSize,
+		public errorMessage: IErrorMessage,
 		public data: IData
 	) {}
 }
@@ -50,6 +61,7 @@ export const actions: IActions = new Actions(
 	new ConsoleImpl(),
 	new WakeLockImpl(),
 	new ViewportSizeImpl(),
+	new ErrorMessageImpl(),
 	new DataImpl()
 );
 export const events = new Events({

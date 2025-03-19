@@ -6,6 +6,14 @@ export type ColumnManagerOptions<T extends string, U> = {
 	};
 };
 
+/** The type of the column state */
+export type ColumnState<T extends string> = {
+	/** The key of the column */
+	key: T;
+	/** Whether the column is visible */
+	isVisible: boolean;
+}[];
+
 /**
  * Class to manage the visibility of the columns in a table
  * @template T the type of the column keys
@@ -17,12 +25,7 @@ export class ColumnManager<T extends string, U> {
 		/** The type of the column keys */
 		key: "" as T,
 		/** The type of the column state */
-		columnState: [] as {
-			/** The key of the column */
-			key: T;
-			/** Whether the column is visible */
-			isVisible: boolean;
-		}[],
+		columnState: [] as ColumnState<T>,
 		/** The type of the column value */
 		value: null as unknown as U & {
 			/** The key of the column */
@@ -37,19 +40,27 @@ export class ColumnManager<T extends string, U> {
 	constructor(public columns: ColumnManagerOptions<T, U>) {}
 
 	/**
-	 * Create the column state
+	 * Create the column state, the order is defined by the order of the keys of the object used in the constructor
 	 * @param {T[]} [visibleColumns=[]] the columns that are visible (default: [])
 	 * @returns the column state
 	 */
-	createColumnState = (visibleColumns: T[] = []): ColumnManager<T, U>["types"]["columnState"] =>
+	createColumnState = (visibleColumns: T[] = []): ColumnState<T> =>
 		this.getAllKeys().map((key) => ({ key, isVisible: visibleColumns.includes(key) }));
+
+	/**
+	 * Create the column state, the order is defined by the order of the keys of the object used in this function
+	 * @param {Record<T, boolean>} columns all the columns with their visibility
+	 * @returns the column state
+	 */
+	createOrderedColumnState = (columns: Record<T, boolean>): ColumnState<T> =>
+		Object.entries(columns).map(([key, isVisible]) => ({ key: key as T, isVisible: isVisible as boolean }));
 
 	/**
 	 * Get the visible column values
 	 * @param columnState the column state
 	 * @returns the visible column values
 	 */
-	getVisibleColumnValues = (columnState: ColumnManager<T, U>["types"]["columnState"]) =>
+	getVisibleColumnsValues = (columnState: ColumnState<T>) =>
 		columnState.filter((column) => column.isVisible).map((column) => this.columns[column.key]);
 
 	/**
@@ -64,10 +75,7 @@ export class ColumnManager<T extends string, U> {
 	 * @param key the key of the column to toggle
 	 * @returns the updated column state
 	 */
-	toggleColumnVisibility = (
-		columnState: ColumnManager<T, U>["types"]["columnState"],
-		key: T
-	): ColumnManager<T, U>["types"]["columnState"] =>
+	toggleColumnVisibility = (columnState: ColumnState<T>, key: T): ColumnState<T> =>
 		columnState.map((k) => (k.key === key ? { ...k, isVisible: !k.isVisible } : k));
 
 	/**
@@ -76,6 +84,5 @@ export class ColumnManager<T extends string, U> {
 	 * @param key the key of the column to check
 	 * @returns whether the column is visible
 	 */
-	isColumnVisible = (columnState: ColumnManager<T, U>["types"]["columnState"], key: T) =>
-		!!columnState.find((k) => k.key === key)?.isVisible;
+	isColumnVisible = (columnState: ColumnState<T>, key: T) => !!columnState.find((k) => k.key === key)?.isVisible;
 }

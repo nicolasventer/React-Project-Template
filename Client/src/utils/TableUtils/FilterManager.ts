@@ -1,6 +1,9 @@
 /** The parameters of the constructor of the FilterManager class */
 export type FilterManagerOptions<T extends string, U> = Record<T, (singleData: U, values: string[]) => boolean>;
 
+/** The type of the filter state */
+export type FilterState<T extends string> = { [key in T]?: string[] };
+
 /**
  * Class to manage the filters of a table
  * @template T the type of the filter keys
@@ -14,7 +17,7 @@ export class FilterManager<T extends string, U> {
 		/** The type of the data */
 		data: null as unknown as U[],
 		/** The type of the filter state */
-		filterState: {} as { [key in T]?: string[] },
+		filterState: {} as FilterState<T>,
 	};
 
 	/**
@@ -28,9 +31,7 @@ export class FilterManager<T extends string, U> {
 	 * @param initialState the initial state of the filter
 	 * @returns the filter state
 	 */
-	createFilterState = (
-		initialState: FilterManager<T, U>["types"]["filterState"] = {}
-	): FilterManager<T, U>["types"]["filterState"] => initialState;
+	createFilterState = (initialState: FilterState<T> = {}): FilterState<T> => initialState;
 
 	/**
 	 * Filter the data
@@ -38,7 +39,7 @@ export class FilterManager<T extends string, U> {
 	 * @param filterState the filter state
 	 * @returns the filtered data
 	 */
-	filterData = <V extends U>(data: V[], filterState: FilterManager<T, U>["types"]["filterState"]) =>
+	filterData = <V extends U>(data: V[], filterState: FilterState<T>) =>
 		data.filter((t) => Object.entries(filterState).every(([key, values]) => this.filterFns[key as T](t, values as string[])));
 
 	/**
@@ -46,7 +47,7 @@ export class FilterManager<T extends string, U> {
 	 * @param filterState the filter state
 	 * @returns the validated filter state
 	 */
-	validFilterState = (filterState: FilterManager<T, U>["types"]["filterState"]): FilterManager<T, U>["types"]["filterState"] => {
+	validFilterState = (filterState: FilterState<T>): FilterState<T> => {
 		const result = { ...filterState };
 		for (const key of Object.keys(result)) if (!this.isFilterActive(filterState, key as T)) delete result[key as T];
 		return result;
@@ -64,8 +65,7 @@ export class FilterManager<T extends string, U> {
 	 * @param key the key of the filter to check
 	 * @returns whether the filter is active
 	 */
-	isFilterActive = (filterState: FilterManager<T, U>["types"]["filterState"], key: T) =>
-		(filterState[key]?.filter(Boolean).length ?? 0) > 0;
+	isFilterActive = (filterState: FilterState<T>, key: T) => (filterState[key]?.filter(Boolean).length ?? 0) > 0;
 }
 
 /**

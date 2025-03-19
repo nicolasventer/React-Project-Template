@@ -27,6 +27,7 @@ export const state = {
 		isLoading: signal(false),
 	},
 	viewportSize: signal<ViewportSize>({ height: 0, width: 0 }),
+	errorMessage: signal<string | null>(null),
 };
 
 export const computedState = {
@@ -34,3 +35,21 @@ export const computedState = {
 	openHeight: computed(() => state.viewportSize.value.height * 0.15),
 	maxConsoleHeight: computed(() => state.viewportSize.value.height * 0.5),
 };
+
+/**
+ * Logs the error and updates `state.errorMessage` before and optionally after the execution of the promise
+ * @param path the path of the function that called the promise
+ * @param promise the promise to handle
+ * @param bThrow if true, the error is rethrown (default: false)
+ * @returns the result of the promise if successful, otherwise the error is NOT rethrown
+ */
+export const handleError = <T>(path: string, promise: Promise<T>, bThrow = false) =>
+	new Promise<T>((resolve, reject) => {
+		state.errorMessage.value = null;
+		promise.then(resolve).catch((error) => {
+			console.log(`${path} error:`, error);
+			state.errorMessage.value =
+				typeof error === "object" && error && "message" in error ? (error.message as string) : "Unknown error";
+			if (bThrow) reject(error);
+		});
+	});

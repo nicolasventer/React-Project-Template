@@ -1,4 +1,5 @@
 import { WriteSelectors } from "@/utils/ComponentToolbox";
+import { useComputedColorScheme } from "@mantine/core";
 import { useEffect, useMemo, useState } from "react";
 
 /** The type of the column pinning */
@@ -19,6 +20,14 @@ type ObjWithKey<T extends string> = {
 	key: T;
 };
 
+/** The type of the pinning state */
+export type ColumnPinningState<T extends string> = {
+	/** The key of the column */
+	key: T;
+	/** The pinning type of the column */
+	pin: ColumnPinningType;
+}[];
+
 /**
  * Class to manage the pinning of the columns in a table
  * @template T the type of the column keys
@@ -29,12 +38,7 @@ export class ColumnPinningManager<T extends string> {
 		/** The type of the column keys */
 		key: "" as T,
 		/** The type of the column pinning state */
-		pinningState: [] as {
-			/** The key of the column */
-			key: T;
-			/** The pinning type of the column */
-			pin: ColumnPinningType;
-		}[],
+		pinningState: [] as ColumnPinningState<T>,
 	};
 
 	/**
@@ -42,7 +46,7 @@ export class ColumnPinningManager<T extends string> {
 	 * @param pinnedColumns the pinned columns
 	 * @returns the pinning state
 	 */
-	createPinningState = (pinnedColumns: typeof this.types.pinningState = []): typeof this.types.pinningState => pinnedColumns;
+	createPinningState = (pinnedColumns: ColumnPinningState<T> = []): ColumnPinningState<T> => pinnedColumns;
 
 	/**
 	 * Set the pinning state, if the pinning state is "none", the column is removed from the pinning state, \
@@ -52,11 +56,7 @@ export class ColumnPinningManager<T extends string> {
 	 * @param pin the pinning state to set
 	 * @returns the updated pinning state
 	 */
-	setPinningState = (
-		pinningState: ColumnPinningManager<T>["types"]["pinningState"],
-		key: T,
-		pin: ColumnPinningType
-	): ColumnPinningManager<T>["types"]["pinningState"] => {
+	setPinningState = (pinningState: ColumnPinningState<T>, key: T, pin: ColumnPinningType): ColumnPinningState<T> => {
 		const result = pinningState.filter((p) => p.key !== key);
 		if (pin === "none") return result;
 		return [...result, { key, pin }];
@@ -68,7 +68,7 @@ export class ColumnPinningManager<T extends string> {
 	 * @param key the key of the column to get the pinning type
 	 * @returns the pinning type
 	 */
-	getPinningType = (pinningState: ColumnPinningManager<T>["types"]["pinningState"], key: T): ColumnPinningType =>
+	getPinningType = (pinningState: ColumnPinningState<T>, key: T): ColumnPinningType =>
 		pinningState.find((p) => p.key === key)?.pin ?? "none";
 
 	/**
@@ -79,7 +79,7 @@ export class ColumnPinningManager<T extends string> {
 	 * @returns the compare by pin function
 	 */
 	compareByPinFn =
-		(pinningState: ColumnPinningManager<T>["types"]["pinningState"]) =>
+		(pinningState: ColumnPinningState<T>) =>
 		<U extends ObjWithKey<T>>(a: U, b: U) => {
 			const aPinIndex = pinningState.findIndex((p) => p.key === a.key);
 			const bPinIndex = pinningState.findIndex((p) => p.key === b.key);
@@ -117,6 +117,9 @@ export const WriteColumnPinningStyle = ({
 	tableSelector: string;
 	tableExcludeClass: string;
 }) => {
+	const theme = useComputedColorScheme();
+	const shadowColor = theme === "light" ? "#DFE2E6" : "#424242";
+
 	const [widthArray, setWidthArray] = useState<number[]>([]);
 	const cumulWidthArray = useMemo(() => {
 		const cumulWidthArray = [0];
@@ -170,7 +173,7 @@ export const WriteColumnPinningStyle = ({
 							position: "sticky",
 							left: `${cumulWidthArray[i]}px`,
 							zIndex: "2",
-							boxShadow: "inset -0.0625rem 0px 0px 0px #424242",
+							boxShadow: `inset -0.0625rem 0px 0px 0px ${shadowColor}`,
 						},
 					])
 				),
@@ -182,15 +185,15 @@ export const WriteColumnPinningStyle = ({
 				),
 				// html only to avoid key collision
 				["html " + getSelector(leftPinningCount, "left")]: {
-					boxShadow: "inset -0.625rem 0px 0.625rem -0.625rem #424242",
+					boxShadow: `inset -0.625rem 0px 0.625rem -0.625rem ${shadowColor}`,
 				},
 				// * only to avoid key collision
 				["html " + getSelector(rightPinningCount, "right")]: {
-					boxShadow: "inset 0.625rem 0px 0.625rem -0.625rem #424242",
+					boxShadow: `inset 0.625rem 0px 0.625rem -0.625rem ${shadowColor}`,
 				},
 			},
 			`.${tableExcludeClass}`
 		);
-	}, [leftPinningCount, rightPinningCount, tableExcludeClass, tableSelector, cumulWidthArray]);
+	}, [leftPinningCount, rightPinningCount, tableExcludeClass, tableSelector, cumulWidthArray, shadowColor]);
 	return <></>;
 };

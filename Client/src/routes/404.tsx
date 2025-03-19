@@ -15,30 +15,29 @@ import toast from "react-hot-toast";
  */
 export const NotFoundPage = () => {
 	const cancelled = useSignal(false);
-	useMount(() => void wait(3000).then(() => !cancelled.value && navigateToRouteFn("/")()));
 
 	const cancel = () => {
 		cancelled.value = true;
 		toast(tr.v["Redirect cancelled."], { duration: 3000 });
 	};
 
+	useMount(() => void wait(3000).then(() => !cancelled.value && navigateToRouteFn("/")()));
+
 	return (
-		<>
-			<Horizontal justifyContent="center" height="100%">
-				<Vertical justifyContent="center">
-					<Title order={1}>{tr.v["404 Not Found"]}</Title>
-					{!cancelled.value && <Text>{tr.v["Redirecting to the home page..."]}</Text>}
-					<Vertical marginTop={20} alignItems="center">
-						<div>
-							{cancelled.value ? (
-								<Button onClick={navigateToRouteFn("/")}>{tr.v["Go to Home page"]}</Button>
-							) : (
-								<Button onClick={cancel}>{tr.v.Cancel}</Button>
-							)}
-						</div>
-					</Vertical>
+		<Horizontal justifyContent="center" height="100%">
+			<Vertical justifyContent="center">
+				<Title order={1}>{tr.v["404 Not Found"]}</Title>
+				{!cancelled.value && <Text>{tr.v["Redirecting to the home page..."]}</Text>}
+				<Vertical marginTop={20} alignItems="center">
+					<div>
+						{cancelled.value ? (
+							<Button onClick={navigateToRouteFn("/")}>{tr.v["Go to Home page"]}</Button>
+						) : (
+							<Button onClick={cancel}>{tr.v.Cancel}</Button>
+						)}
+					</div>
 				</Vertical>
-			</Horizontal>
-		</>
+			</Vertical>
+		</Horizontal>
 	);
 };

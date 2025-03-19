@@ -20,6 +20,7 @@ export type IActions = {
 		toggle: () => void;
 	};
 	viewportSize: { _update: (viewportSize: ViewportSize) => void };
+	errorMessage: { clear: () => void };
 	data: {
 		import: (file: File | null) => void;
 		export: () => void;
@@ -31,4 +32,5 @@ export type ILanguage = IActions["language"];
 export type IConsole = IActions["console"];
 export type IWakeLock = IActions["wakeLock"];
 export type IViewportSize = IActions["viewportSize"];
+export type IErrorMessage = IActions["errorMessage"];
 export type IData = IActions["data"];
