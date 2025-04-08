@@ -14,14 +14,14 @@
 		"depgraph": "depcruise --version && depcruise --config depcruise-config.cjs --output-type archi src | dot -T svg | depcruise-wrap-stream-in-html > graph-dependencies.html && cmd /c \"start graph-dependencies.html\""
 	},
 	"devDependencies": {
-		"@eslint/js": "9.22.0",
-		"@types/bun": "1.2.5",
-		"@types/node": "22.13.10",
-		"dependency-cruiser": "16.10.0",
-		"eslint": "9.22.0",
+		"@eslint/js": "9.24.0",
+		"@types/bun": "1.2.8",
+		"@types/node": "22.14.0",
+		"dependency-cruiser": "16.10.1",
+		"eslint": "9.24.0",
 		"eslint-plugin-project-structure": "3.13.3",
 		"typedoc-plugin-missing-exports": "3.1.0",
-		"typescript-eslint": "8.26.1"
+		"typescript-eslint": "8.29.1"
 	},
 	"peerDependencies": {
 		"typescript": "5.5.4"
@@ -30,7 +30,7 @@
 		"@elysiajs/cors": "1.2.0",
 		"@elysiajs/eden": "1.2.0",
 		"@elysiajs/swagger": "1.2.2",
-		"@sinclair/typebox": "0.34.30",
+		"@sinclair/typebox": "0.34.33",
 		"elysia": "1.2.25"
 	}
 }
