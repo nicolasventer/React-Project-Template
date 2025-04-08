@@ -1,5 +1,5 @@
 // eslint-disable-next-line project-structure/independent-modules
-import type { RouterPathType } from "@/routerInstance.gen";
+import type { Route } from "@/routerInstance.gen";
 import { effect, type ReadonlySignal, untracked } from "@preact/signals";
 
 /** The parameters of the constructor of the Events class */
@@ -9,7 +9,7 @@ export type EventsOptions<T extends string> = {
 		/** The function to call */
 		fn: () => unknown;
 		/** The pages that trigger the function when loaded */
-		pages: RouterPathType[];
+		pages: Route[];
 	}[];
 	/** The functions to call when the interval is triggered (`untracked` of `@preact/signals` is used) */
 	intervals: Record<
@@ -74,7 +74,7 @@ export class Events<T extends string> {
 	 * Call the registered functions that depend on the current page
 	 * @param page the current page
 	 */
-	executeOnPageLoad = (page: RouterPathType) => {
+	executeOnPageLoad = (page: Route) => {
 		for (const value of this.events.onPageLoad) if (value.pages.includes(page)) value.fn();
 	};
 

@@ -1,7 +1,12 @@
 import type { IConsole } from "@/actions/actions.interface";
-import { computedState, state } from "@/actions/actions.state";
+import { state } from "@/actions/actions.state";
 import type { ConsoleType, LogType } from "@/actions/actions.types";
+import { computed } from "@preact/signals";
 import type { MouseEventHandler, TouchEventHandler } from "react";
+
+const closeHeight = computed(() => state.viewportSize.value.height * 0.05);
+const openHeight = computed(() => state.viewportSize.value.height * 0.15);
+const maxConsoleHeight = computed(() => state.viewportSize.value.height * 0.5);
 
 export class ConsoleImpl implements IConsole {
 	private oldConsoleLog = console.log;
@@ -51,14 +56,11 @@ export class ConsoleImpl implements IConsole {
 	};
 
 	private static HEIGHT_UPDATE = (newHeight: number, startConsoleHeight: number) => {
-		state.console.height.value = Math.max(
-			computedState.openHeight.value,
-			Math.min(computedState.maxConsoleHeight.value, newHeight)
-		);
-		if (newHeight <= computedState.closeHeight.value) {
+		state.console.height.value = Math.max(openHeight.value, Math.min(maxConsoleHeight.value, newHeight));
+		if (newHeight <= closeHeight.value) {
 			state.console.isDisplayed.value = false;
 			state.console.height.value = startConsoleHeight;
-		} else if (newHeight >= computedState.openHeight.value) {
+		} else if (newHeight >= openHeight.value) {
 			state.console.isDisplayed.value = true;
 		}
 	};

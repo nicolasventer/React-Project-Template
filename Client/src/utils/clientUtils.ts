@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-wrapper-object-types */
 // eslint-disable-next-line project-structure/independent-modules
 import { tr } from "@/gs";
-import type { ChangeEvent } from "react";
+import type { ChangeEvent, KeyboardEvent } from "react";
 import toast from "react-hot-toast";
 
 /**
@@ -225,8 +225,9 @@ export const uniqueSortObj = <T extends string, U>(object: Record<T, U[]>) =>
  * @param fn the function to convert the input of
  * @returns the function that takes an event as input
  */
-export const evStringFn = (fn: (value: string) => void) => (ev: ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
-	fn(ev.currentTarget.value);
+export const evStringFn =
+	(fn: (value: string) => void) => (ev: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
+		fn(ev.currentTarget.value);
 
 /**
  * Converts the input of a function from a boolean to an event.
@@ -234,6 +235,15 @@ export const evStringFn = (fn: (value: string) => void) => (ev: ChangeEvent<HTML
  * @returns the function that takes an event as input
  */
 export const evBoolFn = (fn: (value: boolean) => void) => (ev: ChangeEvent<HTMLInputElement>) => fn(ev.currentTarget.checked);
+
+/**
+ * Returns the function that executes the given function when the enter key is pressed.
+ * @param fn the function to execute
+ * @returns the function that executes the given function when the enter key is pressed
+ */
+export const onEnterFn = (fn: () => void) => (ev: KeyboardEvent<HTMLInputElement>) => {
+	if (ev.key === "Enter") fn();
+};
 
 /**
  * Returns the element with the given id.
@@ -251,3 +261,6 @@ export const logRet = <T>(value: T) => {
 	console.log(value);
 	return value;
 };
+
+/** Does nothing. Should be used in catch blocks of promises. */
+export const doNothing = () => {};

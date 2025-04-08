@@ -29,7 +29,7 @@ export class SortManager<T extends string, U> {
 	 * The constructor for the sort manager
 	 * @param compareFns the compare functions
 	 */
-	constructor(private compareFns: SortManagerOptions<T, U>) {}
+	constructor(public compareFns: SortManagerOptions<T, U>) {}
 
 	/**
 	 * Sort the data
@@ -78,23 +78,39 @@ export class SortManager<T extends string, U> {
 	};
 }
 
+const BooleanOrNumberOrNullComparer = (a: number | boolean | null, b: number | boolean | null) =>
+	b === null ? 1 : a === null ? -1 : Number(a) - Number(b);
+
 /**
  * Utility functions for the sort manager
  */
 export const SortUtils = {
 	/**
-	 * Compare two numbers or booleans, null is considered the smallest
+	 * Compare two booleans, null is considered the smallest
 	 * @param a the first value
 	 * @param b the second value
 	 * @returns the result of the comparison
 	 */
-	BooleanOrNullComparer: (a: number | boolean | null, b: number | boolean | null) =>
-		b === null ? -1 : a === null ? 1 : Number(a) - Number(b),
+	BooleanOrNullComparer: BooleanOrNumberOrNullComparer,
+	/**
+	 * Compare two numbers, null is considered the smallest
+	 * @param a the first value
+	 * @param b the second value
+	 * @returns the result of the comparison
+	 */
+	NumberOrNullComparer: BooleanOrNumberOrNullComparer,
 	/**
 	 * Compare two strings, null is considered the smallest
 	 * @param a the first value
 	 * @param b the second value
 	 * @returns the result of the comparison
 	 */
-	StringOrNullComparer: (a: string | null, b: string | null) => (b === null ? -1 : a === null ? 1 : a.localeCompare(b)),
+	StringOrNullComparer: (a: string | null, b: string | null) => (b === null ? 1 : a === null ? -1 : a.localeCompare(b)),
+	/**
+	 * Compare two values, null is considered the smallest
+	 * @param a the first value
+	 * @param b the second value
+	 * @returns the result of the comparison
+	 */
+	NullComparer: (a: unknown | null, b: unknown | null) => (b === null ? 1 : a === null ? -1 : 0),
 };

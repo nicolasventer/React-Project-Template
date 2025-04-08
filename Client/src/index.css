@@ -20,4 +20,11 @@
 ::-webkit-scrollbar-corner {
 	background-color: transparent;
 }
+
+.ellipsis-text {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
 */

@@ -76,7 +76,7 @@ export const WriteClasses = (styleId: string, classes: Record<string, Partial<CS
 export const WriteToolboxClasses = () => {
 	useEffect(() => {
 		WriteClasses("toolbox-css", {
-			horizontal: { display: "flex", flexDirection: "row" },
+			horizontal: { display: "flex", flexDirection: "row", alignItems: "center" },
 			vertical: { display: "flex", flexDirection: "column" },
 		});
 	}, []);
@@ -264,6 +264,7 @@ export const Layout = forwardRef(function Layout(
 		gap,
 
 		layout,
+		className,
 		...divProps
 	}: LayoutProps & { layout: LayoutType },
 	ref: ForwardedRef<HTMLDivElement>
@@ -272,7 +273,7 @@ export const Layout = forwardRef(function Layout(
 		<div
 			{...divProps}
 			ref={ref}
-			className={clsx(layout, divProps.className)}
+			className={clsx(layout, className)}
 			style={{
 				alignItems,
 				justifyContent,
@@ -304,13 +305,13 @@ export const Layout = forwardRef(function Layout(
 });
 
 /**
- * A horizontal flex box, with default alignItems="center"
+ * A horizontal flex box
  * @see {@link Layout}
  * @param props div props
  * @returns a div with the horizontal flex box properties
  */
 export const Horizontal = forwardRef(function Horizontal(props: LayoutProps, ref: ForwardedRef<HTMLDivElement>) {
-	return <Layout ref={ref} alignItems="center" {...props} layout="horizontal" />;
+	return <Layout ref={ref} {...props} layout="horizontal" />;
 });
 
 /**

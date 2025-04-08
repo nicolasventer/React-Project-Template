@@ -24,7 +24,7 @@ export class FilterManager<T extends string, U> {
 	 * The constructor for the filter manager
 	 * @param filterFns the filter functions
 	 */
-	constructor(private filterFns: FilterManagerOptions<T, U>) {}
+	constructor(public filterFns: FilterManagerOptions<T, U>) {}
 
 	/**
 	 * Create the filter state
@@ -73,64 +73,35 @@ export class FilterManager<T extends string, U> {
  */
 export const FilterUtils = {
 	/**
-	 * Create a filter function that filters a data whose text contains any of the values
+	 * Create a filter function that filters a data whose text contains some or all of the values depending on the specified type
+	 * @param type the type of the filter function ("or" or "and")
 	 * @param getText the function to get the text from the data
-	 * @param {boolean} [ignoreCase=true] whether to ignore the case of the text (default: true)
+	 * @param options the options for the filter function
+	 * @param {boolean} [options.ignoreCase=true] whether to ignore the case of the text (default: true)
+	 * @param {boolean} [options.wholeWord=false] whether to filter the data whose text contains all of the values (default: false)
 	 * @returns the filter function
 	 */
-	textOrFilterFn: <T>(getText: (t: T) => string | string[], ignoreCase = true) =>
-		ignoreCase
-			? (t: T, values: string[]) => {
-					const v = values.filter(Boolean);
-					return (
-						v.length === 0 ||
-						v.some((value) => {
-							const text = getText(t);
-							if (typeof text === "string") return text.toLowerCase().includes(value.toLowerCase());
-							return text.some((t) => t.toLowerCase().includes(value.toLowerCase()));
-						})
-					);
-			  }
-			: (t: T, values: string[]) => {
-					const v = values.filter(Boolean);
-					return (
-						v.length === 0 ||
-						v.some((value) => {
-							const text = getText(t);
-							if (typeof text === "string") return text.includes(value);
-							return text.some((t) => t.includes(value));
-						})
-					);
-			  },
+	textFilterFn: <T>(
+		type: "or" | "and",
+		getText: (t: T) => string | string[],
+		options: { ignoreCase?: boolean; wholeWord?: boolean } = {}
+	) => {
+		const { ignoreCase = true, wholeWord = false } = options;
 
-	/**
-	 * Create a filter function that filters a data whose text contains all of the values
-	 * @param getText the function to get the text from the data
-	 * @param {boolean} [ignoreCase=true] whether to ignore the case of the text (default: true)
-	 * @returns the filter function
-	 */
-	textAndFilterFn: <T>(getText: (t: T) => string | string[], ignoreCase = true) =>
-		ignoreCase
-			? (t: T, values: string[]) => {
-					const v = values.filter(Boolean);
-					return (
-						v.length === 0 ||
-						v.every((value) => {
-							const text = getText(t);
-							if (typeof text === "string") return text.toLowerCase().includes(value.toLowerCase());
-							return text.some((t) => t.toLowerCase().includes(value.toLowerCase()));
-						})
-					);
-			  }
-			: (t: T, values: string[]) => {
-					const v = values.filter(Boolean);
-					return (
-						v.length === 0 ||
-						v.every((value) => {
-							const text = getText(t);
-							if (typeof text === "string") return text.includes(value);
-							return text.some((t) => t.includes(value));
-						})
-					);
-			  },
+		return (t: T, values: string[]) => {
+			const matchFn = type === "or" ? "some" : "every";
+			let v = values.filter(Boolean);
+			let text = getText(t);
+			if (typeof text === "string") text = [text];
+			if (ignoreCase) {
+				v = v.map((value) => value.toLowerCase());
+				text = text.map((t) => t.toLowerCase());
+			}
+			if (wholeWord) {
+				const vRegexArray = v.map((value) => `\\b${value}\\b`).map((vRegex) => new RegExp(vRegex, ignoreCase ? "i" : ""));
+				return v.length === 0 || vRegexArray[matchFn]((vRegex) => text.some((t) => t.match(vRegex)));
+			}
+			return v.length === 0 || v[matchFn]((value) => text.some((t) => t.includes(value)));
+		};
+	},
 };

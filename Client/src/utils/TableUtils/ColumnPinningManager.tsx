@@ -1,6 +1,6 @@
-import { WriteSelectors } from "@/utils/ComponentToolbox";
+import { WriteClasses, WriteSelectors } from "@/utils/ComponentToolbox";
 import { useComputedColorScheme } from "@mantine/core";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 /** The type of the column pinning */
 export type ColumnPinningType = "left" | "none" | "right";
@@ -50,7 +50,7 @@ export class ColumnPinningManager<T extends string> {
 
 	/**
 	 * Set the pinning state, if the pinning state is "none", the column is removed from the pinning state, \
-	 * else the column is added or updated at the end of the pinning state.
+	 * else the column is added or updated for the left at the end of the pinning state and for the right at the beginning of the pinning state.
 	 * @param pinningState the pinning state
 	 * @param key the key of the column to set the pinning state
 	 * @param pin the pinning state to set
@@ -59,7 +59,7 @@ export class ColumnPinningManager<T extends string> {
 	setPinningState = (pinningState: ColumnPinningState<T>, key: T, pin: ColumnPinningType): ColumnPinningState<T> => {
 		const result = pinningState.filter((p) => p.key !== key);
 		if (pin === "none") return result;
-		return [...result, { key, pin }];
+		return pin === "left" ? [...result, { key, pin }] : [{ key, pin }, ...result];
 	};
 
 	/**
@@ -99,6 +99,46 @@ export class ColumnPinningManager<T extends string> {
 }
 
 /**
+ * Throttles the given function, be sure to store the throttled function in a variable to keep the reference. \
+ * The function will be called at most once every `ms` milliseconds and will be called with the last arguments passed. \
+ * You can also pass an `onCall` function that will be called with the result of the function. \
+ * This `onCall` function will not be triggered by cancelled calls.
+ * @example
+ * const throttledFn = throttleFn((text: string) => console.log(text), 1000);
+ * throttledFn("Hello"); // logs "Hello"
+ * throttledFn("World"); // waits 1000ms then logs "World"
+ * throttledFn("my friend"); // cancels the previous call and logs "my friend" after 1000ms
+ * @template T The type of the arguments of the function.
+ * @template U The return type of the function.
+ * @param fn The function to throttle.
+ * @param ms The milliseconds to wait before calling the function again.
+ * @param onCall A function that will be called with the result of the function.
+ * @returns The throttled function.
+ */
+const throttleFn = <T extends unknown[], U>(fn: (...args: T) => U, ms: number, onCall?: (result: U) => void) => {
+	let lastCalled = 0;
+	let timeout: Timer | undefined;
+	let lastValue: U;
+	return (...args: T) => {
+		const now = Date.now();
+		if (now - lastCalled >= ms) {
+			lastCalled = now;
+			lastValue = fn(...args);
+			onCall?.(lastValue);
+			return lastValue;
+		} else {
+			clearTimeout(timeout);
+			timeout = setTimeout(() => {
+				lastCalled = Date.now();
+				lastValue = fn(...args);
+				onCall?.(lastValue);
+			}, ms - (now - lastCalled));
+			return lastValue;
+		}
+	};
+};
+
+/**
  * Write the column pinning style
  * @param params
  * @param params.leftPinningCount the number of left pinned columns
@@ -111,48 +151,92 @@ export const WriteColumnPinningStyle = ({
 	rightPinningCount,
 	tableSelector,
 	tableExcludeClass,
+	getScrollableParent,
 }: {
 	leftPinningCount: number;
 	rightPinningCount: number;
 	tableSelector: string;
 	tableExcludeClass: string;
+	getScrollableParent?: () => HTMLElement;
 }) => {
 	const theme = useComputedColorScheme();
 	const shadowColor = theme === "light" ? "#DFE2E6" : "#424242";
 
 	const [widthArray, setWidthArray] = useState<number[]>([]);
 	const cumulWidthArray = useMemo(() => {
-		const cumulWidthArray = [0];
+		const cumulWidthArray = [2];
 		for (let i = 0; i < widthArray.length; i++) cumulWidthArray.push(cumulWidthArray[i] + widthArray[i]);
 		return cumulWidthArray;
 	}, [widthArray]);
+	const [scrollableParentRect, setScrollableParentRect] = useState<DOMRect>();
+
+	const shouldRefreshObserver = useRef(false);
+	useEffect(() => void (shouldRefreshObserver.current = true), [tableSelector, leftPinningCount, rightPinningCount]);
+
+	const [isHeightScrolled, setIsHeightScrolled] = useState(false);
+	const [isWidthScrolled, setIsWidthScrolled] = useState(false);
+
 	useEffect(() => {
 		const firstRowChildNodes: HTMLElement[] = [];
-		const resizeObserver = new ResizeObserver((entries) => {
-			const newWidthArray: number[] = [];
+		const resizeObserverCallback: ResizeObserverCallback = (entries) => {
+			const newWidthArray = Array(firstRowChildNodes.length).fill(-1);
 			entries.forEach((entry) => {
 				const childIndex = firstRowChildNodes.findIndex((child) => child === entry.target);
-				while (newWidthArray.length < childIndex + 1) newWidthArray.push(-1);
 				newWidthArray[childIndex] = entry.target.getBoundingClientRect().width;
 			});
 			if (newWidthArray.some((w) => w !== -1))
-				setWidthArray((widthArray) => newWidthArray.map((w, i) => (w === -1 ? widthArray[i] : w)));
-		});
-		const refreshWidthArray = () => {
+				setWidthArray((widthArray) => newWidthArray.map((w, i) => (w === -1 ? widthArray[i] ?? w : w)));
+		};
+		const tableResizeObserverCallback: ResizeObserverCallback = (entries) => {
+			const rect = entries.at(0)!.target.getBoundingClientRect();
+			setScrollableParentRect(rect);
+			const table = document.querySelector(tableSelector);
+			if (!table) return;
+			const tableRect = table.getBoundingClientRect();
+			setIsHeightScrolled(tableRect.height > rect.height);
+			setIsWidthScrolled(tableRect.width > rect.width);
+		};
+		const throttleResizeObserverCallback = throttleFn(resizeObserverCallback, 200);
+		const tableThrottleResizeObserverCallback = throttleFn(tableResizeObserverCallback, 200);
+		const resizeObserver = new ResizeObserver(throttleResizeObserverCallback);
+		const tableResizeObserver = new ResizeObserver(tableThrottleResizeObserverCallback);
+		const refreshFirstRowChildNodes = () => {
 			const firstRow = document.querySelector(`${tableSelector} tr`);
 			if (firstRow) {
+				firstRowChildNodes.length = 0;
+				resizeObserver.disconnect();
 				firstRow.childNodes.forEach((child) => {
 					if (child instanceof HTMLElement) {
 						firstRowChildNodes.push(child);
 						resizeObserver.observe(child);
 					}
 				});
+			}
+			return !!firstRow;
+		};
+		if (shouldRefreshObserver.current) {
+			shouldRefreshObserver.current = false;
+			refreshFirstRowChildNodes();
+		}
+		const refreshWidthArray = () => {
+			if (refreshFirstRowChildNodes()) {
 				clearInterval(intervalId);
+				const table = document.querySelector(tableSelector);
+				if (!table) return; // this should never happen
+				const getScrollableParentOfTable = () => {
+					let scrollableParent = table.parentElement;
+					// @ts-expect-error CSSStyleValue is wrongly typed
+					while (scrollableParent && scrollableParent.computedStyleMap().get("overflow-x")?.value !== "auto")
+						scrollableParent = scrollableParent.parentElement;
+					return scrollableParent;
+				};
+				const scrollableParent = getScrollableParent ? getScrollableParent() : getScrollableParentOfTable();
+				if (scrollableParent) tableResizeObserver.observe(scrollableParent);
 			}
 		};
 		const intervalId = setInterval(refreshWidthArray, 200);
 		return () => clearInterval(intervalId);
-	}, [tableSelector]);
+	}, [getScrollableParent, tableSelector]);
 	useEffect(() => {
 		const getSelector = (index: number, direction: "left" | "right") => {
 			const childSelector = direction === "left" ? "nth-child" : "nth-last-child";
@@ -172,15 +256,15 @@ export const WriteColumnPinningStyle = ({
 						{
 							position: "sticky",
 							left: `${cumulWidthArray[i]}px`,
-							zIndex: "2",
-							boxShadow: `inset -0.0625rem 0px 0px 0px ${shadowColor}`,
+							zIndex: "250",
+							// boxShadow: `inset -0.0625rem 0px 0px 0px ${shadowColor}`,
 						},
 					])
 				),
 				...Object.fromEntries(
 					Array.from({ length: rightPinningCount }, (_, i) => [
 						getSelector(i + 1, "right"),
-						{ position: "sticky", right: `${cumulWidthArray.at(-1)! - cumulWidthArray.at(-i - 1)!}px`, zIndex: "2" },
+						{ position: "sticky", right: `${cumulWidthArray.at(-1)! - cumulWidthArray.at(-i - 1)! + 2}px`, zIndex: "250" },
 					])
 				),
 				// html only to avoid key collision
@@ -195,5 +279,40 @@ export const WriteColumnPinningStyle = ({
 			`.${tableExcludeClass}`
 		);
 	}, [leftPinningCount, rightPinningCount, tableExcludeClass, tableSelector, cumulWidthArray, shadowColor]);
-	return <></>;
+	const LEFT_PINNING_BORDER_CLASS = "column-pinning-left-border";
+	const RIGHT_PINNING_BORDER_CLASS = "column-pinning-right-border";
+	useEffect(() => {
+		const horizontalOffset = isHeightScrolled ? 8 : 0; // 8px is ::-webkit-scrollbar width
+		const verticalOffset = isWidthScrolled ? 8 : 0; // 8px is ::-webkit-scrollbar height
+		WriteClasses(
+			`${tableSelector}-column-pinning-css-2`,
+			{
+				[LEFT_PINNING_BORDER_CLASS]: {
+					position: "fixed",
+					left: `${scrollableParentRect?.left}px`,
+					top: `${scrollableParentRect?.top}px`,
+					height: `${(scrollableParentRect?.height ?? 0) - verticalOffset}px`,
+					width: "2px",
+					backgroundColor: shadowColor,
+					zIndex: "300",
+				},
+				[RIGHT_PINNING_BORDER_CLASS]: {
+					position: "fixed",
+					left: `${(scrollableParentRect?.right ?? 0) - horizontalOffset - 2}px`, // 2px is the width of the border
+					top: `${scrollableParentRect?.top}px`,
+					height: `${(scrollableParentRect?.height ?? 0) - verticalOffset}px`,
+					width: "3px",
+					backgroundColor: shadowColor,
+					zIndex: "300",
+				},
+			},
+			`.${tableExcludeClass}`
+		);
+	}, [shadowColor, tableExcludeClass, scrollableParentRect, tableSelector, isHeightScrolled, isWidthScrolled]);
+	return (
+		<>
+			<div className={LEFT_PINNING_BORDER_CLASS} />
+			<div className={RIGHT_PINNING_BORDER_CLASS} />
+		</>
+	);
 };

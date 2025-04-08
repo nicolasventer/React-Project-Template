@@ -1,7 +1,7 @@
 import type { Log, ViewportSize } from "@/actions/actions.types";
 import { globalState } from "@/globalState";
 import { signalArray } from "@/utils/signalUtils";
-import { computed, signal } from "@preact/signals";
+import { signal } from "@preact/signals";
 
 export const state = {
 	colorScheme: {
@@ -30,26 +30,40 @@ export const state = {
 	errorMessage: signal<string | null>(null),
 };
 
-export const computedState = {
-	closeHeight: computed(() => state.viewportSize.value.height * 0.05),
-	openHeight: computed(() => state.viewportSize.value.height * 0.15),
-	maxConsoleHeight: computed(() => state.viewportSize.value.height * 0.5),
+const catchErrorFn = (path: string, bThrow: boolean) => (error: unknown) => {
+	console.log(`${path} error:`, error);
+	state.errorMessage.value =
+		typeof error === "object" && error && "message" in error ? (error.message as string) : "Unknown error";
+	if (bThrow) throw error;
 };
 
 /**
- * Logs the error and updates `state.errorMessage` before and optionally after the execution of the promise
+ * Logs the error and updates `state.errorMessage` before and optionally after the execution of the promise. \
+ * Careful: if bThrow is false and an error occurs, neither then, nor catch, nor finally, nor await will be executed.
  * @param path the path of the function that called the promise
  * @param promise the promise to handle
- * @param bThrow if true, the error is rethrown (default: false)
- * @returns the result of the promise if successful, otherwise the error is NOT rethrown
+ * @param bThrow if true, the error is rethrown
+ * @returns if bThrow is true, the result of the promise, otherwise nothing
  */
-export const handleError = <T>(path: string, promise: Promise<T>, bThrow = false) =>
+const handleError_ = <T>(path: string, promise: Promise<T>, bThrow: boolean) =>
 	new Promise<T>((resolve, reject) => {
 		state.errorMessage.value = null;
-		promise.then(resolve).catch((error) => {
-			console.log(`${path} error:`, error);
-			state.errorMessage.value =
-				typeof error === "object" && error && "message" in error ? (error.message as string) : "Unknown error";
-			if (bThrow) reject(error);
-		});
+		promise.then(resolve).catch(catchErrorFn(path, bThrow)).catch(reject);
 	});
+
+/**
+ * Logs the error and updates `state.errorMessage` before and optionally after the execution of the promise. \
+ * Careful: if an error occurs, neither then, nor catch, nor finally, nor await will be executed.
+ * @param path the path of the function that called the promise
+ * @param promise the promise to handle
+ * @returns nothing
+ */
+export const handleError = (path: string, promise: Promise<unknown>): void => void handleError_(path, promise, false);
+
+/**
+ * Logs the error and updates `state.errorMessage` before and optionally after the execution of the promise.
+ * @param path the path of the function that called the promise
+ * @param promise the promise to handle
+ * @returns the result of the promise if successful, otherwise the error is logged and rethrown
+ */
+export const handleErrorWithThrow = <T>(path: string, promise: Promise<T>) => handleError_(path, promise, true);

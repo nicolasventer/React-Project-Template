@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { objDiffStr } from "@/utils/clientUtils";
 import { effect, type ReadonlySignal, signal, Signal } from "@preact/signals";
 import { useEffect, useState } from "react";
@@ -180,7 +181,7 @@ export const syncSignalWithTime = <T>(signal1: SignalWithTime<T>, signal2: Signa
 /**
  * Creates a signal with the `use` method that returns a state with the value of the signal. \
  * *(This is a shortcut of the custom hook `useReact`.)* \
- * **This class should not be needed if `@preact/signals-react` is used.**
+ * **This class should not be needed if `@preact/signals` is used.**
  */
 export class SignalWithUse<T> extends Signal<T> {
 	/** Returns a state with the value of the signal. */

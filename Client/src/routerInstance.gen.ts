@@ -32,7 +32,7 @@ export const {
 );
 
 /** The type of the route paths. */
-export type RouterPathType = typeof currentRoute.value;
+export type Route = typeof currentRoute.value;
 /**
  * @template {string} RoutePath
  * Type of the parameters of a route path.
@@ -40,6 +40,6 @@ export type RouterPathType = typeof currentRoute.value;
  * @example
  * type A = RouteParams<"/a/:b/c?d">; // { b: string; d?: string; }
  */
-export type RouterParamsType<T extends RouterPathType> = RouteParams<T>;
+export type RouterParamsType<T extends Route> = RouteParams<T>;
 
 updateCurrentRoute();

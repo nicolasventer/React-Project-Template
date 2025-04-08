@@ -1,5 +1,4 @@
 import { WriteSelectors } from "@/utils/ComponentToolbox";
-import { useComputedColorScheme } from "@mantine/core";
 import clsx from "clsx";
 import { type ComponentPropsWithRef, useEffect, useMemo } from "react";
 
@@ -21,6 +20,22 @@ export const getTableExcludeClass = (cssId = "default") => `table-${cssId}-exclu
 
 /** The class name to add to a row or a cell to not apply the highlight on hover */
 export const NO_HIGHLIGHT_ON_HOVER_CLASS = "no-highlight-on-hover";
+
+/** The table style options that customize all the table features like striped or highlightOnHover */
+export type TableStyleOptions = {
+	/** The table border color */
+	borderColor: string | { table: string; col: string; row: string };
+	/** The table border width */
+	borderWidth: string | { table: string; col: string; row: string };
+	/** The table background color */
+	tableBackgroundColor: string;
+	/** The striped background color */
+	stripedBackgroundColor: string;
+	/** The highlight background color */
+	highlightBackgroundColor: string;
+	/** The cell padding */
+	cellPadding: string | { x: string; y: string };
+};
 
 /** The Table component props */
 export type TableProps = {
@@ -49,24 +64,7 @@ export type TableProps = {
 	/** Whether to write the css (default: true) (set to false if you want to overwrite the css for the specified css id) */
 	bWriteCss?: boolean;
 	/** The style options that customize all the table features like striped or highlightOnHover */
-	styleOptions?: {
-		/** The table border css (default: `0.0625rem solid ${theme === "light" ? "#DFE2E6" : "#424242"}`) */
-		tableBorder?: string;
-		/** The column border css (default: `0.0625rem solid ${theme === "light" ? "#DFE2E6" : "#424242"}`) */
-		colBorder?: string;
-		/** The row border css (default: `0.0625rem solid ${theme === "light" ? "#DFE2E6" : "#424242"}`) */
-		rowBorder?: string;
-		/** The striped background color (default: `theme === "light" ? "#F8F9FA" : "#2E2E2E"`) */
-		stripedBackgroundColor?: string;
-		/** The highlight background color (default: `theme === "light" ? "#F1F3F5" : "#3B3B3B"`) */
-		highlightBackgroundColor?: string;
-		/** The thead background color (default: `theme === "light" ? "#FFFFFF" : "#242424"`) */
-		theadBackgroundColor?: string;
-		/** The tfoot background color (default: `theme === "light" ? "#FFFFFF" : "#242424"`) */
-		tfootBackgroundColor?: string;
-		/** The cell padding (default: `0.4375rem 0.625rem`) */
-		cellPadding?: string;
-	};
+	styleOptions: TableStyleOptions;
 	/** The styles to apply to table elements (it is using the class name selector defined by the css id) */
 	styles?: {
 		/** The tr styles */
@@ -142,36 +140,39 @@ export const Table = ({
 	isResizeHeaderFirst,
 	cssId = "default",
 	bWriteCss = true,
-	styleOptions,
+	styleOptions: {
+		borderColor: borderColor_,
+		borderWidth: borderWidth_,
+		tableBackgroundColor,
+		stripedBackgroundColor,
+		highlightBackgroundColor,
+		cellPadding: cellPadding_,
+	},
 	styles,
 	tableProps,
 	children,
 }: TableProps) => {
-	const theme = useComputedColorScheme();
-
-	const {
-		tableBorder = `0.0625rem solid ${theme === "light" ? "#DFE2E6" : "#424242"}`,
-		colBorder = `0.0625rem solid ${theme === "light" ? "#DFE2E6" : "#424242"}`,
-		rowBorder = `0.0625rem solid ${theme === "light" ? "#DFE2E6" : "#424242"}`,
-		stripedBackgroundColor = theme === "light" ? "#F8F9FA" : "#2E2E2E",
-		highlightBackgroundColor = theme === "light" ? "#F1F3F5" : "#3B3B3B",
-		theadBackgroundColor = theme === "light" ? "#FFFFFF" : "#242424",
-		tfootBackgroundColor = theme === "light" ? "#FFFFFF" : "#242424",
-		cellPadding = "0.4375rem 0.625rem",
-	} = styleOptions ?? {};
-
 	const { other, ...mainStyles } = styles ?? {};
+
+	const borderColor =
+		typeof borderColor_ === "string" ? { table: borderColor_, col: borderColor_, row: borderColor_ } : borderColor_;
+	const borderWidth =
+		typeof borderWidth_ === "string" ? { table: borderWidth_, col: borderWidth_, row: borderWidth_ } : borderWidth_;
+	const cellPadding = typeof cellPadding_ === "string" ? cellPadding_ : `${cellPadding_.x} ${cellPadding_.y}`;
+
+	const tableBorder = `${borderWidth.table} solid ${borderColor.table}`;
+	const colBorder = `${borderWidth.col} solid ${borderColor.col}`;
+	const rowBorder = `${borderWidth.row} solid ${borderColor.row}`;
 
 	useEffect(() => {
 		if (bWriteCss) {
-			const tableBackgroundColor = theme === "light" ? "#FFFFFF" : "#242424";
-			const rowBorderColor = "#424242";
-			const colBorderColor = "#424242";
+			// const rowBorderColor = "#424242";
+			// const colBorderColor = "#424242";
 			const tableSelector = getTableSelector(cssId);
 			WriteSelectors(
 				`table-${cssId}-css`,
 				{
-					[`${tableSelector}`]: { borderCollapse: "collapse", fontSize: "0.875rem" },
+					[`${tableSelector}`]: { borderCollapse: "separate", fontSize: "0.875rem" },
 					[`${tableSelector}, ${tableSelector} *`]: { boxSizing: "border-box" },
 					[`${tableSelector} th`]: { textAlign: "left" },
 					[`${tableSelector} th *`]: { overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" },
@@ -180,22 +181,22 @@ export const Table = ({
 					[`${tableSelector}.table-full-width`]: { minWidth: "100%" },
 					[`${tableSelector}.table-full-height`]: { height: "100%" },
 					[`${tableSelector}.table-border`]: { border: tableBorder },
-					[`${tableSelector}.table-border > :first-child > tr:first-child,
-					${tableSelector}.table-border > :last-child > tr:last-child`]: {
-						// visible when table-border is set and not row-border
-						boxShadow: `inset 0px 0px 0px 0.0625rem ${rowBorderColor}`,
-					},
+					// [`${tableSelector}.table-border > :first-child > tr:first-child,
+					// ${tableSelector}.table-border > :last-child > tr:last-child`]: {
+					// 	// visible when table-border is set and not row-border
+					// 	boxShadow: `inset 0px 0px 0px 0.0625rem ${rowBorderColor}`,
+					// },
 					[`${tableSelector}.col-border th, ${tableSelector}.col-border td`]: {
 						borderLeft: colBorder,
-						borderRight: colBorder,
+						// borderRight: colBorder,
 						// visible when col-border is set and some columns are pinned
-						boxShadow: `inset 0.0625rem 0px 0px 0px ${colBorderColor}`,
+						// boxShadow: `inset 0.0625rem 0px 0px 0px ${colBorderColor}`,
 					},
 					[`${tableSelector}.row-border tr`]: {
 						borderTop: rowBorder,
 						borderBottom: rowBorder,
 						// visible when row-border is set and header or footer is sticky
-						boxShadow: `inset 0px 0px 0px 0.0625rem ${rowBorderColor}`,
+						// boxShadow: `inset 0px 0px 0px 0.0625rem ${rowBorderColor}`,
 					},
 					// visible when row-border is set and not table-border
 					[`${tableSelector}.row-border:not(.table-border) > :first-child > tr:first-child`]: { borderTop: "none" },
@@ -211,8 +212,8 @@ export const Table = ({
 					[`${tableSelector}.row-highlightOnHover tbody > tr:hover:not(.${NO_HIGHLIGHT_ON_HOVER_CLASS}) > th:not(.${NO_HIGHLIGHT_ON_HOVER_CLASS}),
 					${tableSelector}.row-highlightOnHover tbody > tr:hover:not(.${NO_HIGHLIGHT_ON_HOVER_CLASS}) > td:not(.${NO_HIGHLIGHT_ON_HOVER_CLASS})`]:
 						{ backgroundColor: highlightBackgroundColor },
-					[`${tableSelector}.sticky-header thead`]: { position: "sticky", top: "0", zIndex: "3" },
-					[`${tableSelector}.sticky-footer tfoot`]: { position: "sticky", bottom: "0", zIndex: "3" },
+					[`${tableSelector}.sticky-header thead`]: { position: "sticky", top: "0", zIndex: "260" },
+					[`${tableSelector}.sticky-footer tfoot`]: { position: "sticky", bottom: "0", zIndex: "260" },
 				},
 				`.${getTableExcludeClass(cssId)}`
 			);
@@ -235,10 +236,8 @@ export const Table = ({
 		other,
 		rowBorder,
 		stripedBackgroundColor,
+		tableBackgroundColor,
 		tableBorder,
-		tfootBackgroundColor,
-		theadBackgroundColor,
-		theme,
 	]);
 
 	const className = useMemo(
@@ -280,4 +279,23 @@ export const Table = ({
 			{children}
 		</table>
 	);
+};
+
+// eslint-disable-next-line react-refresh/only-export-components
+export const MANTINE_LIGHT_THEME: TableStyleOptions = {
+	borderColor: "#DFE2E6",
+	borderWidth: "0.0625rem",
+	tableBackgroundColor: "#FFFFFF",
+	stripedBackgroundColor: "#F8F9FA",
+	highlightBackgroundColor: "#F1F3F5",
+	cellPadding: "0.4375rem 0.625rem",
+};
+
+// eslint-disable-next-line react-refresh/only-export-components
+export const MANTINE_DARK_THEME: TableStyleOptions = {
+	...MANTINE_LIGHT_THEME,
+	borderColor: "#424242",
+	tableBackgroundColor: "#242424",
+	stripedBackgroundColor: "#2E2E2E",
+	highlightBackgroundColor: "#3B3B3B",
 };

@@ -15,7 +15,6 @@ import toast from "react-hot-toast";
  */
 export const NotFoundPage = () => {
 	const cancelled = useSignal(false);
-
 	const cancel = () => {
 		cancelled.value = true;
 		toast(tr.v["Redirect cancelled."], { duration: 3000 });
