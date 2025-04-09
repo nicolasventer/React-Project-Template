@@ -121,3 +121,30 @@ export const tryParseJson = <T>(jsonString: string, defaultValue: T) => {
  */
 export const jsonStringify = <T>(obj: T, replacer?: (number | string)[] | null, space?: string | number) =>
 	JSON.stringify(obj, replacer, space);
+
+/**
+ * Removes duplicates from an array.
+ * @param array the array to remove duplicates from
+ * @returns the array with duplicates removed
+ */
+export const unique = <T>(array: T[]): T[] => Array.from(new Set(array));
+
+/**
+ * Sorts an array and removes duplicates.
+ * @param array the array to sort
+ * @returns the sorted array
+ */
+export const uniqueSort = <T>(array: T[]): T[] => unique(array).sort();
+
+/**
+ * Logs the given value and returns it.
+ * @param value the value to log
+ * @returns the given value
+ */
+export const logRet = <T>(value: T) => {
+	console.log(value);
+	return value;
+};
+
+/** Does nothing. Should be used in catch blocks of promises. */
+export const doNothing = () => {};

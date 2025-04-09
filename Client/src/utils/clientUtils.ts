@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-wrapper-object-types */
 // eslint-disable-next-line project-structure/independent-modules
 import { tr } from "@/gs";
+// eslint-disable-next-line project-structure/independent-modules
+import { uniqueSort } from "@/Shared/SharedUtils";
 import type { ChangeEvent, KeyboardEvent } from "react";
 import toast from "react-hot-toast";
 
@@ -77,142 +78,6 @@ export const saveAs = (blob: Blob, filename: string) => {
 };
 
 /**
- * Returns a string that represents the difference between two objects.
- * The format of the string is: 'path: value1 --> value2'. For undefined values, '___' is used.
- * @param obj1 first object
- * @param obj2 second object
- * @returns the difference between the two objects as a string
- */
-export const objDiffStr = (obj1: Object, obj2: Object): string => {
-	const keys = new Set([...Object.keys(obj1 ?? {}), ...Object.keys(obj2 ?? {})]) as Set<keyof typeof obj1 | keyof typeof obj2>;
-	const result = [];
-	for (const k of keys) {
-		if (typeof obj1[k] === "object") {
-			if (typeof obj2[k] === "object") {
-				const diffStr = objDiffStr(obj1[k], obj2[k]);
-				if (diffStr) diffStr.split("\n").forEach((line) => result.push(`${k}.${line}`));
-			} else {
-				const diffStr = objDiffStr(obj1[k], {});
-				if (diffStr) diffStr.split("\n").forEach((line) => result.push(`${k}.${line}`));
-				else result.push(`${k}: ${obj1[k] ?? "___"} --> ${obj2[k]}`);
-			}
-		} else if (typeof obj2[k] === "object") {
-			const diffStr = objDiffStr({}, obj2[k]);
-			if (diffStr) diffStr.split("\n").forEach((line) => result.push(`${k}.${line}`));
-			else result.push(`${k}: ${obj1[k]} --> ${obj2[k] ?? "___"}`);
-		} else if (obj1[k] !== obj2[k]) {
-			result.push(`${k}: ${obj1[k] ?? "___"} --> ${obj2[k]}`);
-		}
-	}
-	return result.join("\n");
-};
-
-/**
- * Returns an object that represents the difference between two objects.
- * @param currentValue reference object
- * @param defaultValue default object
- * @returns the difference between the two objects
- */
-export const objDiffObj = (currentValue: Object, defaultValue: Object): Object => {
-	const result: any = {};
-	for (const [k, kCurrentValue] of Object.entries(currentValue ?? {})) {
-		const kDefaultValue = defaultValue[k as keyof typeof defaultValue];
-		if (typeof kCurrentValue === "object") {
-			if (typeof kDefaultValue === "object") {
-				const diffObj = objDiffObj(kCurrentValue, kDefaultValue);
-				if (Object.keys(diffObj).length) result[k] = diffObj;
-			} else if (Object.keys(kCurrentValue).length) result[k] = { ...kCurrentValue };
-		} else if (typeof kDefaultValue === "object") result[k] = kCurrentValue;
-		else if (kCurrentValue !== kDefaultValue) result[k] = kCurrentValue;
-	}
-	return result;
-};
-
-/**
- * Converts an object to URL parameters (key-value pairs).
- * @param obj the object to convert
- * @returns the URL parameters as key-value pairs
- */
-export const objToUrlParams = (obj: Object): Record<string, string> => {
-	const result: Record<string, string> = {};
-	for (const [k, v] of Object.entries(obj)) {
-		if (typeof v === "object") {
-			const nestedParams = objToUrlParams(v);
-			for (const [nestedK, nestedV] of Object.entries(nestedParams)) result[`${k}.${nestedK}`] = nestedV;
-		} else if (typeof v !== "undefined") result[k] = v.toString();
-	}
-	return result;
-};
-
-/**
- * Gets the function that transforms a string to the type of the given value.
- * @param value the value to get the transformer for
- * @returns the transformer function
- */
-const getTransformer = (value: any) =>
-	typeof value === "number"
-		? Number
-		: typeof value === "boolean"
-		? Boolean
-		: typeof value === "object"
-		? (value: string) => JSON.parse(value)
-		: String;
-
-/** Type with string as keys and string or object as values. */
-export type StringOrObject = { [K in string]: string | StringOrObject };
-
-/**
- * Converts URL parameters (key-value pairs) to a StringOrObject object.
- * @param urlParams the URL parameters to convert
- * @returns the StringOrObject object
- */
-export const basicUrlParamsToObj = (urlParams: Record<string, string>): StringOrObject => {
-	const result: any = {};
-	for (const [k, v] of Object.entries(urlParams)) {
-		const [key, ...rest] = k.split(".");
-		if (rest.length) result[key] = { ...result[key], ...basicUrlParamsToObj({ [rest.join(".")]: v }) };
-		else result[key] = v;
-	}
-	return result;
-};
-
-/**
- * Converts a StringOrObject object to an object with the same type as the given filled value object.
- * @param filledValue the filled value object
- * @param urlParamsObj the StringOrObject object to convert
- * @returns the object with the same type as the given filled value object
- */
-export const typedUrlParamsObj = (filledValue: Object, urlParamsObj: StringOrObject): Object => {
-	const result: any = {};
-	for (const [k, v] of Object.entries(urlParamsObj)) {
-		if (!(k in filledValue)) continue; // this should not happen
-		const filledV = filledValue[k as keyof typeof filledValue];
-		if (Array.isArray(filledV)) {
-			const transformer = getTransformer(filledV[0]);
-			result[k] =
-				typeof filledV[0] === "object"
-					? Object.values(v).map((value) => typedUrlParamsObj(filledV[0], value as StringOrObject))
-					: Object.values(v).map((value) => transformer(value as string));
-		} else result[k] = typeof v === "string" ? getTransformer(filledV)(v) : typedUrlParamsObj(filledV, v);
-	}
-	return result;
-};
-
-/**
- * Removes duplicates from an array.
- * @param array the array to remove duplicates from
- * @returns the array with duplicates removed
- */
-export const unique = <T>(array: T[]): T[] => Array.from(new Set(array));
-
-/**
- * Sorts an array and removes duplicates.
- * @param array the array to sort
- * @returns the sorted array
- */
-export const uniqueSort = <T>(array: T[]): T[] => unique(array).sort();
-
-/**
  * Sorts the arrays in the given object and removes duplicates.
  * @param object the object with arrays to sort
  * @returns the object with sorted arrays
@@ -251,16 +116,3 @@ export const onEnterFn = (fn: () => void) => (ev: KeyboardEvent<HTMLInputElement
  * @returns the element with the given id
  */
 export const byId = <T extends HTMLElement = HTMLInputElement>(id: string) => document.getElementById(id) as T;
-
-/**
- * Logs the given value and returns it.
- * @param value the value to log
- * @returns the given value
- */
-export const logRet = <T>(value: T) => {
-	console.log(value);
-	return value;
-};
-
-/** Does nothing. Should be used in catch blocks of promises. */
-export const doNothing = () => {};

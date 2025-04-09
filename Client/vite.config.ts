@@ -12,7 +12,7 @@ const langBuildWatcher = watch({
 });
 
 export default defineConfig({
-	base: "./",
+	base: "./", // remove base if deployed with vite commands (i.e. `bunx --bun vite build` && `vite preview`)
 	plugins: [
 		preact(),
 		...(env.USE_HTTPS ? [mkcert()] : []),

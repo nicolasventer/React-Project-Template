@@ -25,14 +25,29 @@ export const FullViewport = ({ selector = "#root", children }: { selector?: stri
 const _styleTmpEl = document.createElement("div");
 
 /**
+ * Make a css value important
+ * @param value the value to make important
+ * @returns the value
+ */
+// eslint-disable-next-line react-refresh/only-export-components
+export const important = (value: string) => ({ value, important: true });
+
+type CustomCSSStyleDeclaration = {
+	[K in keyof CSSStyleDeclaration]: string | { value: string; important: boolean };
+};
+
+/**
  * Converts a css object to a css string
  * @param css the css object
  * @returns the css string
  */
-export const Style = (css: Partial<CSSStyleDeclaration>) => {
+export const Style = (css: Partial<CustomCSSStyleDeclaration>) => {
 	try {
 		_styleTmpEl.style.cssText = "";
-		Object.assign(_styleTmpEl.style, css);
+		Object.entries(css).forEach(([key, value]) => {
+			if (value && typeof value === "object") _styleTmpEl.style.setProperty(key, value.value, value.important ? "important" : "");
+			else _styleTmpEl.style.setProperty(key, value ?? "");
+		});
 		return _styleTmpEl.style.cssText;
 	} catch {
 		console.warn(`css error with: ${JSON.stringify(css)}`);
@@ -46,7 +61,11 @@ export const Style = (css: Partial<CSSStyleDeclaration>) => {
  * @param selectors the selectors to write
  * @param scopeEnd the end of the scope
  */
-export const WriteSelectors = (styleId: string, selectors: Record<string, Partial<CSSStyleDeclaration>>, scopeEnd?: string) => {
+export const WriteSelectors = (
+	styleId: string,
+	selectors: Record<string, Partial<CustomCSSStyleDeclaration>>,
+	scopeEnd?: string
+) => {
 	let classStyleEl = document.getElementById(styleId);
 	if (!classStyleEl) {
 		classStyleEl = document.createElement("style");
@@ -66,10 +85,19 @@ export const WriteSelectors = (styleId: string, selectors: Record<string, Partia
  * @param styleId the id of the style element
  * @param classes the classes to write
  * @param scopeEnd the end of the scope
+ * @returns an object with the classes
  */
-export const WriteClasses = (styleId: string, classes: Record<string, Partial<CSSStyleDeclaration>>, scopeEnd?: string) => {
-	const selectors = Object.fromEntries(Object.entries(classes).map(([className, style]) => [`.${className}`, style]));
+export const WriteClasses = <T extends string>(
+	styleId: string,
+	classes: Record<T, Partial<CustomCSSStyleDeclaration>>,
+	scopeEnd?: string
+) => {
+	const selectors = Object.fromEntries(
+		Object.entries(classes).map(([className, style]) => [`.${className}`, style as Partial<CustomCSSStyleDeclaration>])
+	);
 	WriteSelectors(styleId, selectors, scopeEnd);
+	const classesObj = Object.fromEntries(Object.keys(classes).map((key) => [key, key])) as { [K in T]: K };
+	return classesObj;
 };
 
 /** Writes the toolbox classes, needs to use the component toolbox */

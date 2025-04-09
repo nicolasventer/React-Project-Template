@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { objDiffStr } from "@/utils/clientUtils";
 import { effect, type ReadonlySignal, signal, Signal } from "@preact/signals";
 import { useEffect, useState } from "react";
 
@@ -15,11 +14,6 @@ export type RecursiveReadOnlySignal<T> = T extends Signal<infer U>
 		? ReadonlySignal<RecursiveReadOnlySignal<U>> & {
 				/** Returns a state with the value of the signal. */
 				use: () => V;
-		  }
-		: T extends SignalWithTime<infer V>
-		? ReadonlySignal<RecursiveReadOnlySignal<U>> & {
-				/** The value of the signal. */
-				readonly vv: V;
 		  }
 		: ReadonlySignal<RecursiveReadOnlySignal<U>>
 	: T extends SignalArray<infer V>
@@ -108,75 +102,6 @@ export const valueToSignal = <T>(value: T): ValueToSignal<T> => {
 	}
 	return signal(value) as ValueToSignal<T>;
 };
-
-/**
- * Creates a signal that shows a toast with the difference between the old and new value.
- * @param initialValue the initial value of the signal
- * @param onDiff the function to call when a difference is detected
- * @returns the signal
- */
-export const signalWithDiff = <T>(initialValue: T, onDiff: (diffStr: string) => void) => {
-	const oldSignal = signal<T>(initialValue);
-	const newSignal = signal<T>(initialValue);
-	effect(() => {
-		const oldSignalValue = oldSignal.peek();
-		const newSignalValue = newSignal.value;
-		const diffStr =
-			typeof oldSignalValue === "object"
-				? objDiffStr(oldSignalValue ?? {}, typeof newSignalValue === "object" ? newSignalValue ?? {} : {})
-				: oldSignalValue !== newSignalValue
-				? `${oldSignalValue} --> ${newSignalValue}`
-				: "";
-		if (!diffStr) return;
-		onDiff(diffStr);
-		oldSignal.value = newSignal.value;
-	});
-	return newSignal;
-};
-
-/** Creates a signal with a time value. The time is updated every time the value is updated. */
-export class SignalWithTime<T> extends Signal<{
-	/** The value of the signal. */
-	val: T;
-	/** The time of the last update of the signal. */
-	time: number;
-}> {
-	/**
-	 * Creates a signal with a time value. The time is updated every time the value is updated.
-	 * @param initialValue the initial value of the signal
-	 * @param initialTime the initial time of the signal
-	 * @returns the signal
-	 */
-	constructor(initialValue: T, initialTime = Date.now()) {
-		super({ val: initialValue, time: initialTime });
-	}
-
-	/** Get the value of the signal. (not named `v` since it is already defined in Signal) */
-	get vv() {
-		return this.value.val;
-	}
-
-	/** Set the value of the signal. (not named `v` since it is already defined in Signal) */
-	set vv(v: T) {
-		this.value = { val: v, time: Date.now() };
-	}
-
-	/** Updates the time of the signal to the current time. */
-	refreshTime() {
-		this.value = { val: this.peek().val, time: Date.now() };
-	}
-}
-
-/** Creates a signal with a time value. The time is updated every time the value is updated. */
-export const signalWithTime = <T>(initialValue: T, time = Date.now()) => new SignalWithTime(initialValue, time);
-
-/**
- * Synchronizes two signals with a time value. The signal with the earliest time is updated with the value of the other signal.
- * @param signal1 the first signal
- * @param signal2 the second signal
- */
-export const syncSignalWithTime = <T>(signal1: SignalWithTime<T>, signal2: SignalWithTime<T>) =>
-	signal1.value.time < signal2.value.time ? (signal1.value = signal2.value) : (signal2.value = signal1.value);
 
 /**
  * Creates a signal with the `use` method that returns a state with the value of the signal. \
