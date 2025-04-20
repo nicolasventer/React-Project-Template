@@ -17,7 +17,7 @@ export default defineConfig({
 		react({ babel: { plugins: ["module:@preact/signals-react-transform"] } }),
 		...(env.USE_HTTPS ? [mkcert()] : []),
 		langBuildWatcher,
-		routerPlugin({ lazyComponent: { eslintDisableWarning: true } }),
+		routerPlugin(),
 	],
 	server: {
 		watch: {

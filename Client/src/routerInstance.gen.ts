@@ -6,21 +6,16 @@ export const {
 	RouteLink,
 	RouterRender,
 	buildRouteLink,
-	/** The current route of the app. It is set to undefined if the route is not found (see {@link notFoundRoute}). */
-	currentRoute,
-	getRouteParams,
-	isRouteLoaded,
-	isRouteLoading,
-	isRouteVisible,
+	useCurrentRoute,
+	useRouteParams,
+	useLoadingState,
+	useUrlState,
 	loadRouteFn,
 	navigateToCustomRouteFn,
 	navigateToRouteFn,
-	/** The route that is displayed when the current route is not found. */
-	notFoundRoute,
 	setRouterBaseRoute,
 	setUseRouteTransition,
 	updateCurrentRoute,
-	useRoutes,
 } = new Router(
 	{
 		[checkValidRoute("//")]: lazySingleLoader(() => import("./routes/index.index"), "HomePage"),
@@ -28,18 +23,19 @@ export const {
 	},
 	{
 		[checkValidRoute("/")]: lazySingleLoader(() => import("./routes/404"), "NotFoundPage"),
-	}
+	},
+	true
 );
 
 /** The type of the route paths. */
-export type Route = typeof currentRoute.value;
+export type RouterPathType = NonNullable<ReturnType<typeof useCurrentRoute>["currentRoute"]>;
 /**
  * @template {string} RoutePath
  * Type of the parameters of a route path.
  * `params` is optional if the route has no parameters.
  * @example
- * type A = RouteParams<"/a/:b/c?d">; // { b: string; d?: string; }
+ * type A = RouterParamsType<"/a/:b/c?d">; // { b: string; d?: string; }
  */
-export type RouterParamsType<T extends Route> = RouteParams<T>;
+export type RouterParamsType<T extends RouterPathType> = RouteParams<T>;
 
 updateCurrentRoute();

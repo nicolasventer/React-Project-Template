@@ -36,6 +36,8 @@ type CustomCSSStyleDeclaration = {
 	[K in keyof CSSStyleDeclaration]: string | { value: string; important: boolean };
 };
 
+const camelToKebabCase = (str: string) => str.replace(/([A-Z])/g, "-$1").toLowerCase();
+
 /**
  * Converts a css object to a css string
  * @param css the css object
@@ -45,8 +47,9 @@ export const Style = (css: Partial<CustomCSSStyleDeclaration>) => {
 	try {
 		_styleTmpEl.style.cssText = "";
 		Object.entries(css).forEach(([key, value]) => {
-			if (value && typeof value === "object") _styleTmpEl.style.setProperty(key, value.value, value.important ? "important" : "");
-			else _styleTmpEl.style.setProperty(key, value ?? "");
+			if (value && typeof value === "object")
+				_styleTmpEl.style.setProperty(camelToKebabCase(key), value.value, value.important ? "important" : "");
+			else _styleTmpEl.style.setProperty(camelToKebabCase(key), value ?? "");
 		});
 		return _styleTmpEl.style.cssText;
 	} catch {
@@ -139,36 +142,48 @@ export type LayoutType = (typeof LayoutValues)[number];
  * @param param
  * @param param.padding the padding value
  * @param param.paddingTop the padding top value
+ * @param param.paddingBottom the padding bottom value
  * @param param.paddingLeft the padding left value
+ * @param param.paddingRight the padding right value
  * @returns the padding properties
  */
 const getPadding = ({
 	padding,
 	paddingTop,
+	paddingBottom,
 	paddingLeft,
+	paddingRight,
 }: {
 	paddingTop?: CssProperty;
+	paddingBottom?: CssProperty;
 	paddingLeft?: CssProperty;
+	paddingRight?: CssProperty;
 	padding?: CssProperty;
-}) => (padding ? { padding } : { paddingTop, paddingLeft });
+}) => (padding ? { padding } : { paddingTop, paddingBottom, paddingLeft, paddingRight });
 
 /**
  * Get the margin properties
  * @param param
  * @param param.margin the margin value
  * @param param.marginTop the margin top value
+ * @param param.marginBottom the margin bottom value
  * @param param.marginLeft the margin left value
+ * @param param.marginRight the margin right value
  * @returns the margin properties
  */
 const getMargin = ({
 	margin,
 	marginTop,
+	marginBottom,
 	marginLeft,
+	marginRight,
 }: {
 	marginTop?: CssProperty;
+	marginBottom?: CssProperty;
 	marginLeft?: CssProperty;
+	marginRight?: CssProperty;
 	margin?: CssProperty;
-}) => (margin ? { margin } : { marginTop, marginLeft });
+}) => (margin ? { margin } : { marginTop, marginBottom, marginLeft, marginRight });
 
 /** The base properties of the box component */
 type BoxBaseProps = {
@@ -186,14 +201,22 @@ type BoxBaseProps = {
 	heightFull?: boolean;
 	/** the padding top */
 	paddingTop?: CssProperty;
+	/** the padding bottom */
+	paddingBottom?: CssProperty;
 	/** the padding left */
 	paddingLeft?: CssProperty;
+	/** the padding right */
+	paddingRight?: CssProperty;
 	/** the padding */
 	padding?: CssProperty;
 	/** the margin top */
 	marginTop?: CssProperty;
+	/** the margin bottom */
+	marginBottom?: CssProperty;
 	/** the margin left */
 	marginLeft?: CssProperty;
+	/** the margin right */
+	marginRight?: CssProperty;
 	/** the margin */
 	margin?: CssProperty;
 	/** the flex grow */
@@ -224,10 +247,14 @@ const computeBoxBaseStyle = ({
 	heightFull,
 	padding,
 	paddingTop,
+	paddingBottom,
 	paddingLeft,
+	paddingRight,
 	margin,
 	marginTop,
+	marginBottom,
 	marginLeft,
+	marginRight,
 	flexGrow,
 	overflowAuto,
 	positionAbsolute,
@@ -237,8 +264,8 @@ const computeBoxBaseStyle = ({
 }: BoxBaseProps): CSSProperties => ({
 	width: widthMaxContent ? "max-content" : widthFull ? "100%" : width,
 	height: heightMaxContent ? "max-content" : heightFull ? "100%" : height,
-	...getPadding({ padding, paddingTop, paddingLeft }),
-	...getMargin({ margin, marginTop, marginLeft }),
+	...getPadding({ padding, paddingTop, paddingBottom, paddingLeft, paddingRight }),
+	...getMargin({ margin, marginTop, marginBottom, marginLeft, marginRight }),
 	flexGrow: typeof flexGrow === "boolean" ? (flexGrow ? 1 : undefined) : flexGrow,
 	overflow: overflowAuto ? "auto" : undefined,
 	position: positionAbsolute ? "absolute" : positionRelative ? "relative" : undefined,
@@ -276,10 +303,14 @@ export const Layout = forwardRef(function Layout(
 		heightFull,
 		padding,
 		paddingTop,
+		paddingBottom,
 		paddingLeft,
+		paddingRight,
 		margin,
 		marginTop,
+		marginBottom,
 		marginLeft,
+		marginRight,
 		flexGrow,
 		overflowAuto,
 		positionAbsolute,
@@ -315,10 +346,14 @@ export const Layout = forwardRef(function Layout(
 					heightFull,
 					padding,
 					paddingTop,
+					paddingBottom,
 					paddingLeft,
+					paddingRight,
 					margin,
 					marginTop,
+					marginBottom,
 					marginLeft,
+					marginRight,
 					flexGrow,
 					overflowAuto,
 					positionAbsolute,
