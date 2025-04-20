@@ -37,7 +37,6 @@ export default tseslint.config(
 			globals: globals.browser,
 		},
 		plugins: {
-			// @ts-expect-error invalid type for reactHooks
 			"react-hooks": reactHooks,
 			"react-refresh": reactRefresh,
 			"no-relative-import-paths": noRelativeImportPlugin,

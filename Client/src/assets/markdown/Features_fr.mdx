@@ -1,0 +1,126 @@
+### Routage client (coté client)
+
+Le routage est fait avec la librairie `easy-react-router`, voir [easy-react-router](https://github.com/nicolasventer/Easy-React-Router) pour plus d'informations.
+
+### Lazy loading (coté client)
+
+Le lazy loading est fait avec la librairie `easy-react-router`, voir [easy-react-router](https://github.com/nicolasventer/Easy-React-Router) pour plus d'informations.
+
+### Memoization automatique (coté client)
+
+{/* La memoization automatique est faite avec la librairie `react-auto-memo`, voir [react-auto-memo](https://github.com/nicolasventer/React-Auto-Memo) pour plus d'informations. */}
+
+La memoization automatique est faite avec le plugin `auto-memo`.
+
+### Structure du code
+
+Le code est structuré avec le plugin `eslint-plugin-project-structure`, voir [eslint-plugin-project-structure](https://github.com/Igorkowalski94/eslint-plugin-project-structure) pour plus d'informations.
+
+Il y a 2 parties de ce plugin qui sont utilisées:
+
+- `folder-structure`: qui garantit le nom des fichiers et des dossiers créés,
+- `independent-modules`: qui garantit les dépendances entre les fichiers.
+
+vérifier visuellement que la structure du code est respectée:
+
+```sh
+bun run depgraph
+```
+
+<details>
+<summary><h4 style={{ display: "inline-block" }}>Structure du projet client</h4></summary>
+
+<img src="src/assets/images/client_project_structure.png" alt="client_project_structure" width="auto" height={1000} />
+
+- `(readOnlyGlobalState)` n'est pas un dossier.
+- Tous les composants placés dans un dossier qui commence par `_` sont des composants communs.
+
+</details>
+
+#### _Structure du projet serveur (WIP)_
+
+### Tests et couverture
+
+Exécuter les tests avec:
+
+```sh
+bun run test
+```
+
+Exécuter la couverture des tests avec:
+
+```sh
+bun run cov
+```
+
+#### Tests coté client
+
+Le client utilise [PlayWright](https://playwright.dev/) pour les tests et [monocart-coverage-reports](https://github.com/cenfun/monocart-coverage-reports) pour la couverture.
+
+Une [extension VS Code pour PlayWright](https://marketplace.visualstudio.com/items?itemName=ms-playwright.playwright) est également disponible.
+
+Ouvrir l'interface de PlayWright avec:
+
+```sh
+bun run testui
+```
+
+Ouvrir le générateur de tests PlayWright avec:
+
+```sh
+bun run codegen
+```
+
+Activer le mock de l'API en appelant la fonction `enableApiMock` dans le fichier `src/index.ts`.
+
+#### Tests coté serveur
+
+Le serveur utilise [bun test](https://bun.sh/docs/cli/test) pour les tests et [lcov](https://community.chocolatey.org/packages/lcov) pour la couverture.
+
+Une [extension VS Code pour Coverage Gutter](https://marketplace.visualstudio.com/items?itemName=ryanluker.vscode-coverage-gutters) est également disponible.
+
+Pour les comportements spécifiques aux tests, utiliser la variable `testConfig.enable` définie dans `src/testConfig.ts`.
+
+### Documentation
+
+La documentation du code est faite avec [TypeDoc](https://typedoc.org/).
+
+Générer la documentation du code avec:
+
+```sh
+bun run doc
+```
+
+Les images utilisées dans la documentation du projet sont faites avec [D2](https://d2lang.com/).
+
+Le dossier contenant les fichiers D2 contient le script `build_2d.sh` pour générer les images.
+
+### Linting
+
+Le linting est fait avec [ESLint](https://eslint.org/).
+
+Obtenir le rapport de linting avec:
+
+```sh
+bun run lint
+```
+
+Corriger les erreurs de linting avec:
+
+```sh
+bun run lintfix
+```
+
+### Typage de l'API
+
+Le typage de l'API côté client est fait avec [Eden treaty](https://elysiajs.com/eden/treaty/overview.html).
+
+Au lieu de récupérer le typage de l'API à partir du serveur, il est généré du côté client avec:
+
+```sh
+bun run genApi
+```
+
+_La manière habituelle ralentie beaucoup trop VS Code._
+
+Modifier le fichier `_genApi.ts` si vous voulez changer la génération de l'API.

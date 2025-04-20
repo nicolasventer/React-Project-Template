@@ -1,0 +1,7 @@
+code {
+	background-color: #e0e0e0;
+}
+
+.dark code {
+	background-color: #171717;
+}

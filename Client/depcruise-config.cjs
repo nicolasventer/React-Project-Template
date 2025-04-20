@@ -7,7 +7,7 @@ module.exports = {
 
 		includeOnly: "^src",
 
-		exclude: ["^src/utils", "^src/tr", "^src/globalState.ts", "^src/gs.ts", "^src/actions/actions.impl.ts"],
+		exclude: ["^src/utils", "^src/globalState.ts"],
 
 		tsPreCompilationDeps: false,
 

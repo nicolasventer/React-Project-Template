@@ -1,41 +1,65 @@
-import { actions, st } from "@/actions/actions.impl";
-import { CustomConsole } from "@/components/_app/CustomConsole";
-import { RouterRender } from "@/routerInstance.gen";
+import { actions } from "@/actions/actions.impl";
+import { Shell } from "@/components/shell/Shell";
+import { dict } from "@/dict";
+import { appStore, LOCAL_STORAGE_KEY, localStorageStateStore, trStore, useInit, useSetAppEnabled, useTr } from "@/globalState";
+import { navigateToCustomRouteFn } from "@/routerInstance.gen";
 import { FullViewport, WriteToolboxClasses } from "@/utils/ComponentToolbox";
-import { createTheme, MantineProvider } from "@mantine/core";
-import { useViewportSize } from "@mantine/hooks";
+import { useDebug } from "@/utils/GlobalDebugOneFile";
+import { configurePreview } from "@/utils/withPreview";
+import { MantineProvider } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 import { useEffect } from "react";
-import { Toaster } from "react-hot-toast";
 
-const theme = createTheme({});
+configurePreview("static", false);
 
-actions.console.type.update("both");
-
-/**
- * The main layout of the application. \
- * It renders:
- * - {@link FullViewport},
- * - {@link WriteToolboxClasses},
- * - `MantineProvider` with the theme and `st.colorScheme.current.value`,
- * - `Toaster` with the position "bottom-center" and the toast options duration 2000,
- * - {@link CustomConsole},
- * - {@link RouterRender} with the subPath "/", which renders the current route.
- * It also updates `actions.viewportSize` when the viewport size changes.
- * @returns the main layout of the application
- */
 // @routeExport
 export const MainLayout = () => {
-	const { height, width } = useViewportSize();
-	useEffect(() => actions.viewportSize._update({ height, width }), [height, width]);
+	// initialize the app state and the redux store
+	const app = useInit();
+
+	// load the translations when the language changes
+	trStore.useEffect((setTr) => void dict[app.lang.value]().then(setTr), [app.lang.value]);
+
+	// sync the app state with the media query
+	const isAboveXl = !!useMediaQuery("(min-width: 88em)");
+	const isAboveMd = !!useMediaQuery("(min-width: 62em)");
+	appStore.useEffect(() => actions.shell.isAboveXl.update(isAboveXl), [isAboveXl]);
+	appStore.useEffect(() => actions.shell.isAboveMd.update(isAboveMd), [isAboveMd]);
+
+	// navigate to the app state url
+	useEffect(() => navigateToCustomRouteFn(app.url)(), [app.url]);
+
+	// sync the local storage state with the app state
+	const lang = app.lang.value;
+	const colorScheme = app.colorScheme.value;
+	const isAsideOpened = app.shell.aside.isOpened;
+	const isNavbarOpened = app.shell.navbar.isOpened;
+	const usersFilter = app.users.filter;
+	localStorageStateStore.useEffect(
+		(setLocalStorageState) => setLocalStorageState({ lang, colorScheme, isAsideOpened, isNavbarOpened, usersFilter }),
+		[lang, colorScheme, isAsideOpened, isNavbarOpened, usersFilter]
+	);
+
+	// save the local storage state to the local storage
+	const localStorageState = localStorageStateStore.use();
+	useEffect(() => localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(localStorageState)), [localStorageState]);
+
+	// update the body class when the color scheme changes
+	useEffect(() => void document.body.classList.toggle("dark", app.colorScheme.value === "dark"), [app.colorScheme.value]);
+
+	// control the update of the app state
+	const [isSetAppEnabled, setIsSetAppEnabled] = useSetAppEnabled();
+	useDebug("boolean", "isSetAppEnabled", [isSetAppEnabled, setIsSetAppEnabled]);
+
+	const tr = useTr();
 
 	return (
-		<FullViewport>
+		<MantineProvider forceColorScheme={app.colorScheme.value}>
 			<WriteToolboxClasses />
-			<MantineProvider theme={theme} forceColorScheme={st.colorScheme.current.value}>
-				<CustomConsole />
-				<Toaster position="bottom-center" toastOptions={{ duration: 2000 }} />
-				<RouterRender subPath="/" />
-			</MantineProvider>
-		</FullViewport>
+			<FullViewport>
+				<Shell app={app} isSetAppEnabled={isSetAppEnabled} tr={tr} />
+			</FullViewport>
+			{/* <RenderDebug expand position="bottom-left" /> */}
+		</MantineProvider>
 	);
 };

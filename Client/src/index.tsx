@@ -1,5 +1,3 @@
-import "preact/debug";
-
 import { enableApiMock } from "@/api/api.config";
 
 import "@/index.css";
@@ -8,12 +6,18 @@ import "@mantine/core/styles.css";
 import { clientEnv } from "@/clientEnv";
 import { setRouterBaseRoute } from "@/routerInstance.gen";
 import { MainLayout } from "@/routes";
+import { configurePreview } from "@/utils/withPreview";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
 enableApiMock();
 
 setRouterBaseRoute(clientEnv.BASE_URL);
+
+configurePreview("static", false);
+
+// need to disable strict mode to use the autoEnableSetApp feature of the redux devtools
+const bStrictMode = true;
 
 // define the startViewTransition function if it does not exist (for Firefox)
 if (!document.startViewTransition)
@@ -28,7 +32,11 @@ if (!document.startViewTransition)
 	};
 
 createRoot(document.getElementById("root")!).render(
-	<StrictMode>
+	bStrictMode ? (
+		<StrictMode>
+			<MainLayout />
+		</StrictMode>
+	) : (
 		<MainLayout />
-	</StrictMode>
+	)
 );

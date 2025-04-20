@@ -1,4 +1,4 @@
-import { type ReadonlySignal, signal } from "@preact/signals";
+import { store } from "@/utils/Store";
 
 /**
  * A class that allows you to undo and redo changes to a state.
@@ -7,8 +7,8 @@ import { type ReadonlySignal, signal } from "@preact/signals";
 export class StateHistoryManager<T> {
 	private stateList: T[] = [];
 	private historyIndex = -1;
-	private canUndo_ = signal(false);
-	private canRedo_ = signal(false);
+	private canUndo_ = store(false).private;
+	private canRedo_ = store(false).private;
 
 	/**
 	 * Create a new instance of the StateHistoryManager.
@@ -18,10 +18,10 @@ export class StateHistoryManager<T> {
 	 */
 	constructor(private p: { getState: () => T; setState: (state: T) => void }) {}
 
-	/** Signal that indicates whether the state can be undone. */
-	public canUndo = this.canUndo_ as ReadonlySignal<boolean>;
-	/** Signal that indicates whether the state can be redone. */
-	public canRedo = this.canRedo_ as ReadonlySignal<boolean>;
+	/** Hook that returns the canUndo value. */
+	public useCanUndo = this.canUndo_.use;
+	/** Hook that returns the canRedo value. */
+	public useCanRedo = this.canRedo_.use;
 
 	/** get the current state and push it to the history. */
 	public pushHistory = () => {

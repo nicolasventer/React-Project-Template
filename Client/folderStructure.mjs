@@ -17,8 +17,8 @@ export const folderStructureConfig = createFolderStructure({
 				{ name: "clientEnv.ts" },
 				// src/globalState.ts
 				{ name: "globalState.ts" },
-				// src/gs.ts
-				{ name: "gs.ts" },
+				// src/dict.ts
+				{ name: "dict.ts" },
 				// src/index.css
 				{ name: "index.css" },
 				// src/index.tsx
@@ -35,16 +35,11 @@ export const folderStructureConfig = createFolderStructure({
 				{ name: "utils", children: [] },
 				// src/routes/
 				{ ruleId: "routes-folder" },
-				// src/tr/
-				{ name: "tr", children: [{ name: "{snake_case}.(ts|js)" }] },
+				{ name: "tr", children: [{ name: "{snake_case}.ts" }] },
 				// src/actions/
 				{
 					name: "actions",
-					children: [
-						{ name: "actions.(impl|interface|state|types|utils).ts" },
-						{ name: "_*.ts" },
-						{ ruleId: "actions-subfolder" },
-					],
+					children: [{ name: "actions.(impl|interface).ts" }, { name: "_*.ts" }, { ruleId: "actions-subfolder" }],
 				},
 				// src/components/
 				{ ruleId: "components-folder" },
@@ -61,12 +56,11 @@ export const folderStructureConfig = createFolderStructure({
 				{ name: "_?{camelCase}", ruleId: "components-folder" },
 				{ name: "{PascalCase}(.lazy)?.tsx" },
 				{ name: "{PascalCase}.module.css" },
-				{ name: "{camelCase}.(imports|types|utils).ts" },
 			],
 		},
 		"routes-folder": {
 			name: "routes",
-			children: [{ name: "*.tsx" }, { name: "*", ruleId: "routes-folder" }],
+			children: [{ name: "*.tsx" }, { name: "*.module.css" }, { name: "*", ruleId: "routes-folder" }],
 		},
 		"assets-folder": {
 			name: "assets",
@@ -76,6 +70,8 @@ export const folderStructureConfig = createFolderStructure({
 				{ ruleId: "audios-folder" },
 				{ ruleId: "data-folder" },
 				{ ruleId: "fonts-subfolder", children: [{ name: "font.css" }] },
+				{ ruleId: "markdown-folder" },
+				{ ruleId: "other-folder" },
 				{ name: "*", ruleId: "assets-folder" },
 			],
 		},
@@ -99,9 +95,17 @@ export const folderStructureConfig = createFolderStructure({
 			name: "fonts",
 			children: [{ name: "*.(eot|ttf|woff|woff2)" }, { name: "*", ruleId: "fonts-subfolder" }],
 		},
+		"markdown-folder": {
+			name: "markdown",
+			children: [{ name: "*.(md|mdx)" }, { name: "*", ruleId: "markdown-folder" }],
+		},
+		"other-folder": {
+			name: "other",
+			children: [{ name: "*" }, { name: "*", ruleId: "other-folder" }],
+		},
 		"actions-subfolder": {
 			name: "impl",
-			children: [{ name: "{PascalCase}Impl.ts" }, { name: "{camelCase}", ruleId: "actions-subfolder" }],
+			children: [{ name: "{camelCase}.ts" }, { name: "{camelCase}", ruleId: "actions-subfolder" }],
 		},
 	},
 });

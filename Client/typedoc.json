@@ -12,5 +12,5 @@
 	"excludeExternals": true,
 	// "projectDocuments": ["README.md", "src/**/*.md"],
 	"plugin": ["typedoc-plugin-missing-exports"],
-	"exclude": ["src/**/*.d.ts"]
+	"exclude": ["src/**/*.d.ts", "src/utils/Redux/ReduxType.ts", "src/utils/debug/*", "src/utils/GlobalDebugOneFile.tsx"]
 }

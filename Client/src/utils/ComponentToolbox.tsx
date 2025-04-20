@@ -24,16 +24,27 @@ export const FullViewport = ({ selector = "#root", children }: { selector?: stri
 
 const _styleTmpEl = document.createElement("div");
 
+/** The type of a css value */
+export type CustomCSSStyleValue =
+	| string
+	| {
+			/** The value of the css property */
+			value: string;
+			/** Whether the css property is marked as important */
+			important: boolean;
+	  };
+
 /**
  * Make a css value important
  * @param value the value to make important
  * @returns the value
  */
 // eslint-disable-next-line react-refresh/only-export-components
-export const important = (value: string) => ({ value, important: true });
+export const important = (value: string): CustomCSSStyleValue => ({ value, important: true });
 
-type CustomCSSStyleDeclaration = {
-	[K in keyof CSSStyleDeclaration]: string | { value: string; important: boolean };
+/** The type of a css style declaration */
+export type CustomCSSStyleDeclaration = {
+	[K in keyof CSSStyleDeclaration]: CustomCSSStyleValue;
 };
 
 const camelToKebabCase = (str: string) => str.replace(/([A-Z])/g, "-$1").toLowerCase();
@@ -325,7 +336,10 @@ export const Layout = forwardRef(function Layout(
 		layout,
 		className,
 		...divProps
-	}: LayoutProps & { layout: LayoutType },
+	}: LayoutProps & {
+		/** The layout of the layout component */
+		layout: LayoutType;
+	},
 	ref: ForwardedRef<HTMLDivElement>
 ) {
 	return (

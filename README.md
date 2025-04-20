@@ -1,7 +1,7 @@
-# Preact Project Template
+# React Project Template
 
-This is a template for a opinionated Preact project with many features already set up.  
-There are 4 links, each link corresponding to `Preact`/`React` `Full`/`Light` Template.
+This is an opinionated template for a React project with many features already set up.  
+There are 2 links, each link corresponding to `React` `Full`/`Light` Template.
 
 | ![full_screenshot](./misc/full_screenshot.jpeg) | ![light_screenshot](./misc/light_screenshot.jpeg) |
 | :---------------------------------------------: | :-----------------------------------------------: |
@@ -9,25 +9,18 @@ There are 4 links, each link corresponding to `Preact`/`React` `Full`/`Light` Te
 
 ### [Try it online](https://nicolasventer.github.io/Preact-Project-Template/)
 
-**Note:** `memo` is not used in React version.
-
-**Note 2:** The `React compiler` is not yet used since **unstable** and currently does not work well with `preact signals`.
-
-<!-- **Note 2:** It is expected in the future that **_all Preact versions will be deleted_** since memoization is handled by React with its compiler. -->
-
-The `Light versions` remove the dependencies with `typebox`, `mantine`, `react-hot-toast`, `lucide-react` and `react-icons`.
+The `Light version` remove the dependencies with `typebox`, `mantine`, `react-hot-toast`, `lucide-react` and `react-icons`.
 
 ## Links
 
-- [Preact Full Template](https://github.com/nicolasventer/Preact-Project-Template/tree/preact/full)
-- [Preact Light Template](https://github.com/nicolasventer/Preact-Project-Template/tree/preact/light)
-- [React Full Template](https://github.com/nicolasventer/Preact-Project-Template/tree/react/full)
-- [React Light Template](https://github.com/nicolasventer/Preact-Project-Template/tree/react/light)
+- [React Full Template](https://github.com/nicolasventer/React-Project-Template/tree/full)
+- [React Light Template](https://github.com/nicolasventer/React-Project-Template/tree/light)
 
 ## Features
 
 - [x] File base routing (client) (using [Easy-React-Router](https://github.com/nicolasventer/Easy-React-Router))
 - [x] Lazy loading (client) (using [Easy-React-Router](https://github.com/nicolasventer/Easy-React-Router))
+- [x] Auto memoization (client)
 - [x] Structured code (server and client)
 - [x] Tests (server and client)
 - [x] Code coverage (server and client)
@@ -73,8 +66,8 @@ copy_shared.bat
 #### Installation
 
 ```sh
-git clone https://github.com/nicolasventer/Preact-Project-Template.git
-cd Preact-Project-Template
+git clone https://github.com/nicolasventer/React-Project-Template.git
+cd React-Project-Template
 ./all_init_on_cloned.sh
 ```
 

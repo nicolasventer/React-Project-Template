@@ -1,4 +1,4 @@
-// 46114287767612e1d26fdcf5fb4a9f45d695ed3106079c9ce7e5122f78b9c7c9
+// 828b3fabcd7a73af93c35affe65195d2decaf7aaa7294462e14526e414c07881
 import { checkValidRoute, lazySingleLoader, type RouteParams, Router } from "easy-react-router";
 
 export const {
@@ -18,7 +18,10 @@ export const {
 	updateCurrentRoute,
 } = new Router(
 	{
-		[checkValidRoute("//")]: lazySingleLoader(() => import("./routes/index.index"), "HomePage"),
+		[checkValidRoute("/code-features")]: lazySingleLoader(() => import("./routes/code-features"), "CodeFeatures"),
+		[checkValidRoute("/example-users")]: lazySingleLoader(() => import("./routes/example-users"), "ExampleUsers"),
+		[checkValidRoute("/features")]: lazySingleLoader(() => import("./routes/features"), "Features"),
+		[checkValidRoute("//")]: lazySingleLoader(() => import("./routes/index.index"), "Home"),
 		[checkValidRoute("/")]: lazySingleLoader(() => import("./routes/index"), "MainLayout"),
 	},
 	{

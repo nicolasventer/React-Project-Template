@@ -1,23 +1,22 @@
+import mdx from "@mdx-js/rollup";
 import react from "@vitejs/plugin-react";
 import { routerPlugin } from "easy-react-router/plugin";
 import path from "path";
 import { env } from "process";
 import { defineConfig } from "vite";
 import mkcert from "vite-plugin-mkcert";
-import { watch } from "vite-plugin-watch";
-
-const langBuildWatcher = watch({
-	pattern: "src/tr/*.ts",
-	command: (file) => `bun run ./_lang_build.ts ${file}`,
-});
+import autoMemo from "./auto-memo";
 
 export default defineConfig({
-	base: "./", // remove base if deployed with vite commands (i.e. `bunx --bun vite build` && `vite preview`)
+	// remove base if deployed with vite commands (i.e. `bunx --bun vite build` && `vite preview`)
+	// deployment with vite commands is required when some path are dynamic (i.e. `/hello/:name`)
+	base: "./",
 	plugins: [
-		react({ babel: { plugins: ["module:@preact/signals-react-transform"] } }),
-		...(env.USE_HTTPS ? [mkcert()] : []),
-		langBuildWatcher,
+		autoMemo(),
 		routerPlugin(),
+		{ enforce: "pre", ...mdx() },
+		react({ include: /\.(jsx|js|mdx|md|tsx|ts)$/ }),
+		...(env.USE_HTTPS ? [mkcert()] : []),
 	],
 	server: {
 		watch: {

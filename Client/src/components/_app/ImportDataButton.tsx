@@ -8,7 +8,7 @@ export const ImportDataButton = () => (
 		accept="application/json"
 		placeholder="Click to import data or drag and drop file"
 		rightSection={<FileJson />}
-		onChange={actions.data.import}
+		onChange={actions.localStorageIo.importFn(false)}
 		value={null}
 	/>
 );

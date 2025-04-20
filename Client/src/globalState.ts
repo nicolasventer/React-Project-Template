@@ -1,101 +1,109 @@
-import { api } from "@/api/api";
-import type { ColorSchemeType, DynDict, LanguageType, TranslationCategoryType } from "@/Shared/SharedModel";
-import type { Tr } from "@/tr/en";
-import type { RecursiveReadOnlySignal, SignalToValue } from "@/utils/signalUtils";
-import { computed, effect, signal, type Signal } from "@preact/signals";
+import type { Lang } from "@/dict";
+import type { ColorSchemeType, ExampleUser } from "@/Shared/SharedModel";
+import { en } from "@/tr/en";
+import type { NotArray } from "@/utils/Redux/GlobalApp";
+import { GlobalApp } from "@/utils/Redux/GlobalApp";
+import type { TypeOfStore } from "@/utils/Store";
+import { store } from "@/utils/Store";
+import { getUrl } from "@/utils/useNavigate";
 
 export const LOCAL_STORAGE_KEY = "template_globalState" as const;
 
-export type GlobalState = {
-	colorScheme: Signal<ColorSchemeType>;
-	language: Signal<LanguageType>;
-	isLanguageLoading: Signal<boolean>;
-	isConsoleDisplayed: Signal<boolean>;
-	consoleHeight: Signal<number>;
-	tr: Signal<Tr>;
-	trDynDict: Signal<DynDict<string>>;
+export type LocalStorageState = {
+	lang: Lang;
+	colorScheme: ColorSchemeType;
+	isAsideOpened: boolean;
+	isNavbarOpened: boolean;
+	usersFilter: string;
 };
-
-type LocalStorageState = SignalToValue<Pick<GlobalState, "colorScheme" | "language" | "isConsoleDisplayed" | "consoleHeight">>;
-
-const defaultDynDict: DynDict<string> = { en: { test: {} }, fr: { test: {} } };
-
-/**
- * Load the global state from the local storage. Can be called to fully set the global state.
- * @returns The new global state. Still needs to be assigned to the global state.
- * @example
- * localStorage.setItem("globalState", JSON.stringify({ colorScheme: "light" }));
- * const newGlobalState = loadGlobalState();
- * Object.assign(globalState, newGlobalState);
- * setTimeout(() => window.location.reload(), 2000); // refresh the page
- */
-export const loadGlobalState = (): GlobalState => {
-	const storedGlobalState = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) ?? "{}") as Partial<
-		SignalToValue<LocalStorageState>
-	>;
+export const loadLocalStorageState = (): LocalStorageState => {
+	const storedLocalStorageState = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) ?? "{}") as Partial<LocalStorageState>;
 
 	return {
-		colorScheme: signal(storedGlobalState.colorScheme ?? "dark"),
-		language: signal(storedGlobalState.language ?? "en"),
-		isLanguageLoading: signal(false),
-		isConsoleDisplayed: signal(storedGlobalState.isConsoleDisplayed ?? false),
-		consoleHeight: signal(storedGlobalState.consoleHeight ?? 300),
-		tr: signal({} as Tr), // temporary value
-		trDynDict: signal(defaultDynDict),
+		lang: storedLocalStorageState.lang ?? "en",
+		colorScheme: storedLocalStorageState.colorScheme ?? "dark",
+		isAsideOpened: storedLocalStorageState.isAsideOpened ?? false,
+		isNavbarOpened: storedLocalStorageState.isNavbarOpened ?? false,
+		usersFilter: storedLocalStorageState.usersFilter ?? "",
 	};
 };
+const localStorageState = loadLocalStorageState();
+export const localStorageStateStore = store(localStorageState);
 
-export const globalState: GlobalState = loadGlobalState();
-
-export const gs = globalState as RecursiveReadOnlySignal<GlobalState>;
-
-export const tr = {
-	get v() {
-		return gs.tr.value;
+export const { appStore, setAppWithUpdate, useInit, useSetAppEnabled } = new GlobalApp({
+	url: getUrl(),
+	lang: {
+		value: localStorageState.lang,
+		isLoading: false,
 	},
-};
+	colorScheme: {
+		value: localStorageState.colorScheme,
+		isLoading: false,
+	},
+	wakeLock: {
+		isEnabled: false,
+		isLoading: false,
+	},
+	errorMessage: null as string | null,
+	shell: {
+		isAboveXl: false,
+		isAboveMd: false,
+		aside: {
+			isOpened: localStorageState.isAsideOpened,
+		},
+		navbar: {
+			isOpened: localStorageState.isNavbarOpened,
+		},
+		main: {
+			isScrollable: false,
+		},
+	},
+	users: {
+		all: [] as { current: ExampleUser; edit: ExampleUser | null }[],
+		isLoading: false,
+		filter: localStorageState.usersFilter,
+	},
+});
+export type AppState = TypeOfStore<typeof appStore>;
+export const useApp = () => appStore.use();
 
-/**
- * Translate a word.
- * @param word The word to translate.
- * @returns The translated word or the original word if it is not found.
- */
-export const trFn = (word: keyof Tr) => gs.tr.value[word] ?? word;
+export const trStore = store(en);
+export const useTr = () => trStore.use();
 
-/**
- * Get a function that translate a word from a dynamic dictionary.
- * @param category The category of the word.
- * @returns The translation function.
- */
-export const trDynFn = (category: TranslationCategoryType) => (word: string) =>
-	gs.trDynDict.value[gs.language.value]?.[category]?.[word] ?? word;
+export const mainContentStore = store<HTMLDivElement | null>(null);
 
-/** Load the translation file based on the language. */
-effect(
-	() => (
-		(globalState.isLanguageLoading.value = true),
-		void Promise.all([
-			import(`./tr/${gs.language.value}.js`),
-			api.v1["dyn-dict"]({ language: gs.language.value })
-				.get()
-				.catch(() => ({ data: defaultDynDict.en })),
-		]).then(([{ default: tr }, dynDict]) => {
-			globalState.tr.value = tr;
-			globalState.trDynDict.value = { ...globalState.trDynDict.value, [gs.language.value]: dynDict.data };
-			globalState.isLanguageLoading.value = false;
+export const handlePromise = <T>(
+	promise: Promise<T>,
+	{
+		functionName,
+		functionParams = [],
+		onUpdateLoading,
+		onSuccess,
+		onError,
+	}: {
+		functionName: string;
+		functionParams?: NotArray<unknown>[];
+		onUpdateLoading: (prev: AppState, isLoading: boolean) => void;
+		onSuccess: (prev: AppState, value: T) => void;
+		onError?: (prev: AppState) => void;
+	}
+) => {
+	const loadingFunctionName = `${functionName}Loading`;
+	setAppWithUpdate(loadingFunctionName, functionParams, (prev) => onUpdateLoading(prev, true));
+	return promise
+		.then((value) => {
+			setAppWithUpdate(functionName, functionParams, (prev) => {
+				prev.errorMessage = null;
+				onSuccess(prev, value);
+				onUpdateLoading(prev, false);
+			});
 		})
-	)
-);
-
-const localStorageState = computed(
-	(): LocalStorageState => ({
-		colorScheme: gs.colorScheme.value,
-		language: gs.language.value,
-		isConsoleDisplayed: gs.isConsoleDisplayed.value,
-		consoleHeight: gs.consoleHeight.value,
-	})
-);
-
-effect(() => localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(localStorageState.value)));
-
-effect(() => void document.body.classList.toggle("dark", gs.colorScheme.value === "dark"));
+		.catch((error) => {
+			setAppWithUpdate(functionName, functionParams, (prev) => {
+				prev.errorMessage =
+					typeof error === "object" && error && "message" in error ? (error.message as string) : "Unknown error";
+				onError?.(prev);
+				onUpdateLoading(prev, false);
+			});
+		});
+};

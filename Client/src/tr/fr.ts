@@ -1,18 +1,14 @@
-import type { Tr } from "./en";
+import type { Tr } from "@/tr/en";
 
-const _tr: Tr = {
-	Loading: "Chargement",
-	Error: "Erreur",
-	"not found": "non trouvé",
-	"is not implemented yet": "n'est pas encore implémenté",
-	// Home
-	Home: "Accueil",
-	// NotFound
+export const fr: Tr = {
 	"404 Not Found": "404 Non trouvé",
-	"Redirecting to the home page...": "Redirection vers la page d'accueil...",
-	Cancel: "Annuler",
 	"Redirect cancelled.": "Redirection annulée.",
+	"Redirecting to the home page...": "Redirection vers la page d'accueil...",
 	"Go to Home page": "Aller à la page d'accueil",
-};
+	Cancel: "Annuler",
 
-export default _tr;
+	Home: "Accueil",
+	"Example users": "Exemple Utilisateurs",
+	Features: "Fonctionnalités",
+	"Code features": "Fonctionnalités de code",
+};

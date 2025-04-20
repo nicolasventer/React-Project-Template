@@ -1,19 +1,26 @@
-import { actions, st } from "@/actions/actions.impl";
+import { actions } from "@/actions/actions.impl";
 import { responsiveSize } from "@/utils/clientUtils";
 import { ActionIcon } from "@mantine/core";
 import { Moon, Sun } from "lucide-react";
 
-export const DarkModeButton = ({ useTransition }: { useTransition: boolean }) => (
-	<ActionIcon loading={st.colorScheme.isLoading.value}>
-		{st.colorScheme.current.value === "dark" && (
+export const DarkModeButton = ({
+	isDark,
+	isLoading,
+	useTransition,
+}: {
+	isDark: boolean;
+	isLoading: boolean;
+	useTransition: boolean;
+}) => (
+	<ActionIcon loading={isLoading}>
+		{isDark ? (
 			<Sun
 				width={responsiveSize(3.5, 6)}
 				id={"light-mode-button"}
 				onClick={actions.colorScheme.updateFn("light", useTransition)}
 				style={{ marginBottom: 1 }}
 			/>
-		)}
-		{st.colorScheme.current.value === "light" && (
+		) : (
 			<Moon
 				width={responsiveSize(3.5, 6)}
 				id={"dark-mode-button"}

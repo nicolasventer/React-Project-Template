@@ -34,9 +34,9 @@
 	},
 	"devDependencies": {
 		"@eslint/js": "9.24.0",
+		"@mdx-js/rollup": "3.1.0",
 		"@playwright/test": "1.51.1",
-		"@preact/preset-vite": "2.10.1",
-		"@preact/signals-react-transform": "0.5.1",
+		"@redux-devtools/extension": "3.3.0",
 		"@types/bun": "1.2.8",
 		"@types/dom-view-transitions": "1.0.6",
 		"@types/node": "22.14.0",
@@ -60,14 +60,13 @@
 		"tslib": "2.8.1",
 		"typedoc-plugin-missing-exports": "4.0.0",
 		"typescript-eslint": "8.29.1",
+		"vite": "6.2.5",
 		"vite-plugin-mkcert": "1.17.8"
 	},
 	"dependencies": {
 		"@elysiajs/eden": "1.2.0",
 		"@mantine/core": "7.17.4",
 		"@mantine/hooks": "7.17.4",
-		"@preact/signals": "npm:@preact/signals-react",
-		"@preact/signals-react": "3.0.1",
 		"@sinclair/typebox": "0.34.33",
 		"clsx": "2.1.1",
 		"easy-react-router": "easy-react-router-1.0.0.tgz",

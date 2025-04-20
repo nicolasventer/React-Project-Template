@@ -1,3 +1,4 @@
+import type { CustomCSSStyleDeclaration } from "@/utils/ComponentToolbox";
 import { WriteSelectors } from "@/utils/ComponentToolbox";
 import clsx from "clsx";
 import { type ComponentPropsWithRef, useEffect, useMemo } from "react";
@@ -24,9 +25,27 @@ export const NO_HIGHLIGHT_ON_HOVER_CLASS = "no-highlight-on-hover";
 /** The table style options that customize all the table features like striped or highlightOnHover */
 export type TableStyleOptions = {
 	/** The table border color */
-	borderColor: string | { table: string; col: string; row: string };
+	borderColor:
+		| string
+		| {
+				/** The table border color */
+				table: string;
+				/** The column border color */
+				col: string;
+				/** The row border color */
+				row: string;
+		  };
 	/** The table border width */
-	borderWidth: string | { table: string; col: string; row: string };
+	borderWidth:
+		| string
+		| {
+				/** The table border width */
+				table: string;
+				/** The column border width */
+				col: string;
+				/** The row border width */
+				row: string;
+		  };
 	/** The table background color */
 	tableBackgroundColor: string;
 	/** The striped background color */
@@ -34,7 +53,14 @@ export type TableStyleOptions = {
 	/** The highlight background color */
 	highlightBackgroundColor: string;
 	/** The cell padding */
-	cellPadding: string | { x: string; y: string };
+	cellPadding:
+		| string
+		| {
+				/** The cell padding x */
+				x: string;
+				/** The cell padding y */
+				y: string;
+		  };
 };
 
 /** The Table component props */
@@ -68,39 +94,39 @@ export type TableProps = {
 	/** The styles to apply to table elements (it is using the class name selector defined by the css id) */
 	styles?: {
 		/** The tr styles */
-		tr?: Partial<CSSStyleDeclaration>;
+		tr?: Partial<CustomCSSStyleDeclaration>;
 		/** The th styles */
-		th?: Partial<CSSStyleDeclaration>;
+		th?: Partial<CustomCSSStyleDeclaration>;
 		/** The td styles */
-		td?: Partial<CSSStyleDeclaration>;
+		td?: Partial<CustomCSSStyleDeclaration>;
 		/** The table styles */
-		table?: Partial<CSSStyleDeclaration>;
+		table?: Partial<CustomCSSStyleDeclaration>;
 		/** The thead styles */
-		thead?: Partial<CSSStyleDeclaration>;
+		thead?: Partial<CustomCSSStyleDeclaration>;
 		/** The tbody styles */
-		tbody?: Partial<CSSStyleDeclaration>;
+		tbody?: Partial<CustomCSSStyleDeclaration>;
 		/** The tfoot styles */
-		tfoot?: Partial<CSSStyleDeclaration>;
+		tfoot?: Partial<CustomCSSStyleDeclaration>;
 		/** The other styles */
-		other?: Record<string, Partial<CSSStyleDeclaration>>;
+		other?: Record<string, Partial<CustomCSSStyleDeclaration>>;
 		/** The thead > tr styles */
-		"thead > tr"?: Partial<CSSStyleDeclaration>;
+		"thead > tr"?: Partial<CustomCSSStyleDeclaration>;
 		/** The thead > tr > th styles */
-		"thead > tr > th"?: Partial<CSSStyleDeclaration>;
+		"thead > tr > th"?: Partial<CustomCSSStyleDeclaration>;
 		/** The thead > tr > td styles */
-		"thead > tr > td"?: Partial<CSSStyleDeclaration>;
+		"thead > tr > td"?: Partial<CustomCSSStyleDeclaration>;
 		/** The tbody > tr styles */
-		"tbody > tr"?: Partial<CSSStyleDeclaration>;
+		"tbody > tr"?: Partial<CustomCSSStyleDeclaration>;
 		/** The tbody > tr > th styles */
-		"tbody > tr > th"?: Partial<CSSStyleDeclaration>;
+		"tbody > tr > th"?: Partial<CustomCSSStyleDeclaration>;
 		/** The tbody > tr > td styles */
-		"tbody > tr > td"?: Partial<CSSStyleDeclaration>;
+		"tbody > tr > td"?: Partial<CustomCSSStyleDeclaration>;
 		/** The tfoot > tr styles */
-		"tfoot > tr"?: Partial<CSSStyleDeclaration>;
+		"tfoot > tr"?: Partial<CustomCSSStyleDeclaration>;
 		/** The tfoot > tr > th styles */
-		"tfoot > tr > th"?: Partial<CSSStyleDeclaration>;
+		"tfoot > tr > th"?: Partial<CustomCSSStyleDeclaration>;
 		/** The tfoot > tr > td styles */
-		"tfoot > tr > td"?: Partial<CSSStyleDeclaration>;
+		"tfoot > tr > td"?: Partial<CustomCSSStyleDeclaration>;
 	};
 	/** The <table> props */
 	tableProps?: Omit<ComponentPropsWithRef<"table">, "children">;
@@ -281,6 +307,7 @@ export const Table = ({
 	);
 };
 
+/** The mantine light theme */
 // eslint-disable-next-line react-refresh/only-export-components
 export const MANTINE_LIGHT_THEME: TableStyleOptions = {
 	borderColor: "#DFE2E6",
@@ -291,6 +318,7 @@ export const MANTINE_LIGHT_THEME: TableStyleOptions = {
 	cellPadding: "0.4375rem 0.625rem",
 };
 
+/** The mantine dark theme */
 // eslint-disable-next-line react-refresh/only-export-components
 export const MANTINE_DARK_THEME: TableStyleOptions = {
 	...MANTINE_LIGHT_THEME,

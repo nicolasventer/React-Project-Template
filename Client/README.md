@@ -121,11 +121,26 @@ Edit the file [\_genApi.ts](./_genApi.ts) if you want to change the api generati
 
 ![client_project_structure](./misc/d2/client_project_structure.png)
 
-- There is no restriction within `actions` folder, only the most relevant imports are shown.
 - `(readOnlyGlobalState)` is not a folder.
 - All components placed in a folder that start with `_` are common components.
-- `imports` should only re-export from other component folders.
 
 ## Enable api mock
 
 To enable the api mock, it is recommended to add `enableApiMock()` in the `src/index.ts` file.
+
+## Configure the UI preview
+
+You can configure the UI preview by calling the `configurePreview` function in the `src/index.ts` file.  
+When the UI preview is enabled, the components implemented with the `withPreview` HOC will render the preview UI instead of the real UI.
+If the `configurePreview` function is called with the `dynamic` preview type, it will returns an object that can be used to dynamically switch between the real UI and the preview UI.
+
+```jsx
+const bPreview = configurePreview("dynamic", false);
+
+const Main = () => {
+	const [isPreview, setIsPreview] = useState(false);
+	bPreview.useEffect((setPreview) => setPreview(isPreview), [isPreview]);
+
+	return <Checkbox checked={isPreview} onChange={() => setIsPreview(!isPreview)} />;
+};
+```

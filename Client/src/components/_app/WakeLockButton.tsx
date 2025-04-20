@@ -1,13 +1,21 @@
-import { actions, computedSt, st } from "@/actions/actions.impl";
+import { actions } from "@/actions/actions.impl";
 import { responsiveSize } from "@/utils/clientUtils";
 import { ActionIcon } from "@mantine/core";
 import { Lock, LockOpen } from "lucide-react";
 
-export const WakeLockButton = () => (
+const isWakeLockAvailable = "wakeLock" in navigator || "keepAwake" in screen;
+
+export const WakeLockButton = ({
+	isWakeLockEnabled,
+	isWakeLockLoading,
+}: {
+	isWakeLockEnabled: boolean;
+	isWakeLockLoading: boolean;
+}) => (
 	<>
-		{computedSt.isWakeLockAvailable && (
-			<ActionIcon loading={st.wakeLock.isLoading.value} pb={1}>
-				{st.wakeLock.isEnabled.value ? (
+		{isWakeLockAvailable && (
+			<ActionIcon loading={isWakeLockLoading} pb={1}>
+				{isWakeLockEnabled ? (
 					<Lock onClick={actions.wakeLock.toggle} width={responsiveSize(3.5, 6)} />
 				) : (
 					<LockOpen onClick={actions.wakeLock.toggle} width={responsiveSize(3.5, 6)} />

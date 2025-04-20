@@ -31,7 +31,7 @@ bun run start
 
 ## Test
 
-For behaviour specific to tests, use the variable `testConfig.enable` defined in `src/testConfig.ts`.
+For behavior specific to tests, use the variable `testConfig.enable` defined in `src/testConfig.ts`.
 
 Execute tests with:
 
