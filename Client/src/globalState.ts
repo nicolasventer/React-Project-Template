@@ -1,3 +1,4 @@
+import { clientEnv } from "@/clientEnv";
 import type { Lang } from "@/dict";
 import type { ColorSchemeType, ExampleUser } from "@/Shared/SharedModel";
 import { en } from "@/tr/en";
@@ -31,7 +32,7 @@ const localStorageState = loadLocalStorageState();
 export const localStorageStateStore = store(localStorageState);
 
 export const { appStore, setAppWithUpdate, useInit, useSetAppEnabled } = new GlobalApp({
-	url: getUrl(),
+	url: getUrl().replace(clientEnv.BASE_URL, ""),
 	lang: {
 		value: localStorageState.lang,
 		isLoading: false,

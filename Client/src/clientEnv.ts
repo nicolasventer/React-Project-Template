@@ -6,7 +6,7 @@ export type ClientEnv = {
 
 export const clientEnv: ClientEnv = B_PROD
 	? {
-			BASE_URL: "/Preact-Project-Template/react_full",
+			BASE_URL: "/React-Project-Template", // should be /React-Project-Template/full when light version is ready
 	  }
 	: {
 			BASE_URL: "",

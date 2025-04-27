@@ -1,4 +1,5 @@
 import { actions } from "@/actions/actions.impl";
+import { clientEnv } from "@/clientEnv";
 import { Shell } from "@/components/shell/Shell";
 import { dict } from "@/dict";
 import { appStore, LOCAL_STORAGE_KEY, localStorageStateStore, trStore, useInit, useSetAppEnabled, useTr } from "@/globalState";
@@ -27,7 +28,7 @@ export const MainLayout = () => {
 	appStore.useEffect(() => actions.shell.isAboveMd.update(isAboveMd), [isAboveMd]);
 
 	// navigate to the app state url
-	useEffect(() => navigateToCustomRouteFn(app.url)(), [app.url]);
+	useEffect(() => navigateToCustomRouteFn(clientEnv.BASE_URL + app.url)(), [app.url]);
 
 	// sync the local storage state with the app state
 	const lang = app.lang.value;

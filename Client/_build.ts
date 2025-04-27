@@ -4,7 +4,6 @@ import fs from "fs";
 fs.rmSync("./dist", { recursive: true, force: true });
 console.log("dist folder removed");
 
-// temporary solution for building with plugin @preact/signals-react-transform
 const result = await Bun.$`bunx --bun vite build`;
 
 if (result.exitCode) {
@@ -15,9 +14,7 @@ if (result.exitCode) {
 console.log("build done");
 fs.copyFileSync("./bun_index.html", "./dist/index.html");
 console.log("bun_index.html copied");
-fs.mkdirSync("./dist/tr");
-for (const file of fs.readdirSync("./src/tr")) {
-	if (!file.endsWith(".js")) continue;
-	fs.copyFileSync(`./src/tr/${file}`, `./dist/tr/${file}`);
-}
-console.log("tr folder copied");
+fs.mkdirSync("./dist/src/assets/images", { recursive: true });
+for (const file of fs.readdirSync("./src/assets/images"))
+	fs.copyFileSync(`./src/assets/images/${file}`, `./dist/src/assets/images/${file}`);
+console.log("images folder copied");

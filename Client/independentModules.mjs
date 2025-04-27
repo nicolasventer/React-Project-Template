@@ -77,6 +77,7 @@ export const independentModulesConfig = createIndependentModules({
 			"src/dict.ts",
 			"src/tr/en.ts",
 			"src/globalState.ts",
+			"src/clientEnv.ts",
 			"src/actions/actions.impl.ts",
 			"src/*.gen.ts",
 			"src/utils/**",
