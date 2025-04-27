@@ -1,0 +1,1 @@
+import{r as t,j as o}from"./index.js";import{m as n}from"./globalState.chunk.js";const s=()=>{const e=t.useRef(null);return n.useEffect(r=>r(e.current),[e.current]),o.jsx("div",{ref:e,children:"Code Features (TODO)"})},a=t.memo(s);export{a as CodeFeatures,s as CodeFeatures_};
