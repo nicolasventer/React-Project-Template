@@ -7,16 +7,20 @@ import { Box, Horizontal, Vertical } from "@/utils/ComponentToolbox";
 import { Button, MultiSelect, Table, TextInput, Title } from "@mantine/core";
 import { useEffect, useMemo, useRef } from "react";
 
-const filterUsers = ({ users, filter }: { users: AppState["users"]["all"]; filter: string }) =>
-	users.filter((user) => {
-		if (user.edit) return true;
-		const { name, email, permissions } = user.current;
-		return (
-			name.toLowerCase().includes(filter.toLowerCase()) ||
-			email.toLowerCase().includes(filter.toLowerCase()) ||
-			permissions.some((permission) => permission.toLowerCase().includes(filter.toLowerCase()))
-		);
-	});
+type FilterUser = { index: number; current: ExampleUser; edit: ExampleUser | null };
+
+const filterUsers = ({ users, filter }: { users: AppState["users"]["all"]; filter: string }): FilterUser[] =>
+	users
+		.map((user, index) => ({ ...user, index }))
+		.filter((user) => {
+			if (user.edit) return true;
+			const { name, email, permissions } = user.current;
+			return (
+				name.toLowerCase().includes(filter.toLowerCase()) ||
+				email.toLowerCase().includes(filter.toLowerCase()) ||
+				permissions.some((permission) => permission.toLowerCase().includes(filter.toLowerCase()))
+			);
+		});
 
 const Row = ({ userCurrent, index }: { userCurrent: ExampleUser; index: number }) => (
 	<Table.Tr key={index}>
@@ -65,20 +69,18 @@ const FilterZone = ({ filter }: { filter: string }) => (
 	</Horizontal>
 );
 
-const Body = ({ filteredUsers, isLoading }: { filteredUsers: AppState["users"]["all"]; isLoading: boolean }) => (
+const Body = ({ filteredUsers, isLoading }: { filteredUsers: FilterUser[]; isLoading: boolean }) => (
 	<Table.Tbody>
 		{isLoading ? (
 			<Table.Tr>
 				<Table.Td colSpan={4}>Loading...</Table.Td>
 			</Table.Tr>
 		) : (
-			filteredUsers.map((user, index) =>
+			filteredUsers.map((user) =>
 				user.edit ? (
-					// eslint-disable-next-line react/no-array-index-key
-					<EditRow key={index} userEdit={user.edit} index={index} />
+					<EditRow key={user.index} userEdit={user.edit} index={user.index} />
 				) : (
-					// eslint-disable-next-line react/no-array-index-key
-					<Row key={index} userCurrent={user.current} index={index} />
+					<Row key={user.index} userCurrent={user.current} index={user.index} />
 				)
 			)
 		)}
