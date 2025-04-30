@@ -1,5 +1,5 @@
 import { actions } from "@/actions/actions.impl";
-import { Lang } from "@/dict";
+import type { Lang } from "@/dict";
 import { useCurrentRoute, type RouterPathType } from "@/routerInstance.gen";
 import type { Tr } from "@/tr/en";
 import { Vertical } from "@/utils/ComponentToolbox";

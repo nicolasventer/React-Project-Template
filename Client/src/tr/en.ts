@@ -9,6 +9,8 @@ export const en = {
 	"Example users": "Example users",
 	Features: "Features",
 	"Code features": "Code features",
+
+	"Table of contents": "Table of contents",
 };
 
 export type Tr = typeof en;

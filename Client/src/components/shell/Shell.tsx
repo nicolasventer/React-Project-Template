@@ -32,6 +32,7 @@ export const Shell = ({ app, isSetAppEnabled, tr }: { app: AppState; isSetAppEna
 				isAboveXl={app.shell.isAboveXl}
 				isAsideOpened={app.shell.aside.isOpened}
 				isMainScrollable={app.shell.main.isScrollable}
+				tr={tr}
 			/>
 		</Horizontal>
 	</Vertical>

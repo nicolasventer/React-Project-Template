@@ -11,4 +11,6 @@ export const fr: Tr = {
 	"Example users": "Exemple Utilisateurs",
 	Features: "Fonctionnalités",
 	"Code features": "Fonctionnalités de code",
+
+	"Table of contents": "Table des matières",
 };

@@ -1,20 +1,27 @@
 import { actions } from "@/actions/actions.impl";
 import { mainContentStore } from "@/globalState";
+import type { Tr } from "@/tr/en";
 import { Horizontal, Vertical } from "@/utils/ComponentToolbox";
 import { ActionIcon, Affix, TableOfContents, Text, Transition } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
 import { TableOfContentsIcon } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 export const Aside = ({
 	isAboveXl,
 	isAsideOpened,
 	isMainScrollable,
+	tr,
 }: {
 	isAboveXl: boolean;
 	isAsideOpened: boolean;
 	isMainScrollable: boolean;
+	tr: Tr;
 }) => {
+	const verticalRef = useRef<HTMLDivElement>(null);
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const verticalTop = useMemo(() => verticalRef.current?.getBoundingClientRect().top, [verticalRef.current]);
+
 	const toggleAside = () => actions.shell.aside.isOpened.update(!isAsideOpened);
 	const closeAside = () => actions.shell.aside.isOpened.update(false);
 	const asideRef = useClickOutside(closeAside);
@@ -26,13 +33,13 @@ export const Aside = ({
 	useEffect(() => void (mainElement && reinitializeRef.current()), [mainElement]);
 
 	return (
-		<Vertical heightFull width={isAsideMounted ? 330 : 0}>
+		<Vertical heightFull width={isAsideMounted ? 330 : 0} ref={verticalRef}>
 			<Transition transition="slide-left" mounted={isAsideMounted}>
 				{(transitionStyles) => (
 					<Vertical style={transitionStyles} ref={asideRef} padding={12}>
 						<Horizontal gap={6} marginBottom={6}>
 							<TableOfContentsIcon size={16} />
-							<Text>Table of contents</Text>
+							<Text>{tr["Table of contents"]}</Text>
 						</Horizontal>
 						<TableOfContents
 							minDepthToOffset={2}
@@ -58,19 +65,21 @@ export const Aside = ({
 					</Vertical>
 				)}
 			</Transition>
-			<Affix position={{ top: 70, right: isMainScrollable ? 8 : 0 }}>
-				<Transition transition="slide-left" mounted={!isAsideMounted}>
-					{(transitionStyles) => (
-						<ActionIcon
-							style={{ ...transitionStyles, borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
-							onClick={toggleAside}
-							variant="filled"
-						>
-							<TableOfContentsIcon />
-						</ActionIcon>
-					)}
-				</Transition>
-			</Affix>
+			{verticalTop && (
+				<Affix position={{ top: verticalTop + 12, right: isMainScrollable ? 8 : 0 }}>
+					<Transition transition="slide-left" mounted={!isAsideMounted}>
+						{(transitionStyles) => (
+							<ActionIcon
+								style={{ ...transitionStyles, borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
+								onClick={toggleAside}
+								variant="filled"
+							>
+								<TableOfContentsIcon />
+							</ActionIcon>
+						)}
+					</Transition>
+				</Affix>
+			)}
 		</Vertical>
 	);
 };

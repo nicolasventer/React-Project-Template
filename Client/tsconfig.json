@@ -6,8 +6,7 @@
 		"module": "ESNext",
 		"skipLibCheck": true,
 		"paths": {
-			"@/*": ["./src/*"],
-			"@preact/signals": ["./node_modules/@preact/signals-react/"]
+			"@/*": ["./src/*"]
 		},
 
 		/* Bundler mode */
