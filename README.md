@@ -1,11 +1,11 @@
 # React Project Template
 
 This is an opinionated template for a React project with many features already set up.  
-There are 2 links, each link corresponding to `React` `Full`/`Light` Template.
+There are 2 links, each link corresponding to `React` `Full`/`Light` Template. _(The `Light` version is WIP)_
 
-| ![full_screenshot](./misc/full_screenshot.jpeg) | ![light_screenshot](./misc/light_screenshot.jpeg) |
-| :---------------------------------------------: | :-----------------------------------------------: |
-|                      Full                       |                       Light                       |
+[![home_screenshot](./misc/home_screenshot_small.jpeg)](./misc/home_screenshot.jpeg)
+[![users_screenshot](./misc/users_screenshot_small.jpeg)](./misc/users_screenshot.jpeg)
+[![features_screenshot](./misc/features_screenshot_small.jpeg)](./misc/features_screenshot.jpeg)
 
 ### [Try it online](https://nicolasventer.github.io/Preact-Project-Template/)
 
