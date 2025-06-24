@@ -7,11 +7,23 @@ import { navigateToCustomRouteFn } from "@/routerInstance.gen";
 import { FullViewport, WriteToolboxClasses } from "@/utils/ComponentToolbox";
 import { useDebug } from "@/utils/GlobalDebugOneFile";
 import { configurePreview } from "@/utils/withPreview";
+import { StatusBar, Style } from "@capacitor/status-bar";
 import { MantineProvider } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
+import type { ReactNode } from "react";
 import { useEffect } from "react";
 
 configurePreview("static", false);
+
+const SafeAreaInset = ({ children }: { children?: ReactNode }) => (
+	<div style={{ height: "100%" }}>
+		<div className="safe-area-inset-top" />
+		<div className="safe-area-inset-bottom" />
+		<div className="safe-area-inset-left" />
+		<div className="safe-area-inset-right" />
+		<div className="safe-area-inset">{children}</div>
+	</div>
+);
 
 // @routeExport
 export const MainLayout = () => {
@@ -46,7 +58,10 @@ export const MainLayout = () => {
 	useEffect(() => localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(localStorageState)), [localStorageState]);
 
 	// update the body class when the color scheme changes
-	useEffect(() => void document.body.classList.toggle("dark", app.colorScheme.value === "dark"), [app.colorScheme.value]);
+	useEffect(() => {
+		document.body.classList.toggle("dark", app.colorScheme.value === "dark");
+		StatusBar.setStyle({ style: app.colorScheme.value === "dark" ? Style.Dark : Style.Light });
+	}, [app.colorScheme.value]);
 
 	// control the update of the app state
 	const [isSetAppEnabled, setIsSetAppEnabled] = useSetAppEnabled();
@@ -58,7 +73,9 @@ export const MainLayout = () => {
 		<MantineProvider forceColorScheme={app.colorScheme.value}>
 			<WriteToolboxClasses />
 			<FullViewport>
-				<Shell app={app} isSetAppEnabled={isSetAppEnabled} tr={tr} />
+				<SafeAreaInset>
+					<Shell app={app} isSetAppEnabled={isSetAppEnabled} tr={tr} />
+				</SafeAreaInset>
 			</FullViewport>
 			{/* <RenderDebug expand position="bottom-left" /> */}
 		</MantineProvider>
