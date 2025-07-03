@@ -77,6 +77,7 @@
 		"easy-react-router": "easy-react-router-1.0.0.tgz",
 		"elysia": "1.2.25",
 		"lucide-react": "0.503.0",
+		"motion": "12.22.0",
 		"react": "19.1.0",
 		"react-dom": "19.1.0",
 		"react-hot-toast": "2.5.2",

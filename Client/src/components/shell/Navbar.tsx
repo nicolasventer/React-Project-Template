@@ -1,19 +1,11 @@
 import { actions } from "@/actions/actions.impl";
+import { pages } from "@/components/shell/pages"; // TODO: see where pages should be placed
 import type { Lang } from "@/dict";
 import { useCurrentRoute, type RouterPathType } from "@/routerInstance.gen";
 import type { Tr } from "@/tr/en";
 import { Vertical } from "@/utils/ComponentToolbox";
 import { ActionIcon, Button, Transition } from "@mantine/core";
-import { ChevronsLeft, ChevronsRight, CodeIcon, HomeIcon, UserIcon } from "lucide-react";
-import type { ReactNode } from "react";
-import { BsListStars } from "react-icons/bs";
-
-const pages = [
-	{ title: "Home", path: "/", icon: HomeIcon },
-	{ title: "Example users", path: "/example-users", icon: UserIcon },
-	{ title: "Features", path: "/features", icon: BsListStars },
-	{ title: "Code features", path: "/code-features", icon: CodeIcon },
-] as const satisfies { title: string; path: RouterPathType; icon: (props: { size: number }) => ReactNode }[];
+import { ChevronsLeft, ChevronsRight } from "lucide-react";
 
 const navbarWidth: Record<Lang, number> = {
 	en: 178,

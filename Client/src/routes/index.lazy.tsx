@@ -60,7 +60,7 @@ export const MainLayout = () => {
 	// update the body class when the color scheme changes
 	useEffect(() => {
 		document.body.classList.toggle("dark", app.colorScheme.value === "dark");
-		StatusBar.setStyle({ style: app.colorScheme.value === "dark" ? Style.Dark : Style.Light });
+		StatusBar.setStyle({ style: app.colorScheme.value === "dark" ? Style.Dark : Style.Light }).catch(() => {});
 	}, [app.colorScheme.value]);
 
 	// control the update of the app state
