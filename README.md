@@ -25,6 +25,7 @@ The `Light version` remove the dependencies with `typebox`, `mantine`, `react-ho
 - [x] Tests (server and client)
 - [x] Code coverage (server and client)
 - [x] Documentation (client) _(WIP: add of Storybook on client, and see for Server)_
+- [x] Ready for Native (client)
 - [x] Dependency graph (server and client)
 - [x] Linting (server and client)
 - [x] API type safety (server and client)

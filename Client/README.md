@@ -117,6 +117,8 @@ bun run genApi
 
 Edit the file [\_genApi.ts](./_genApi.ts) if you want to change the api generation.
 
+TODO: capacitor
+
 # Project structure
 
 ![client_project_structure](./misc/d2/client_project_structure.png)

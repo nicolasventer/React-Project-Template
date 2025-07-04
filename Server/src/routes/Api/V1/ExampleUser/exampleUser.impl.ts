@@ -12,7 +12,7 @@ export class UserImpl {
 
 	public get(req: Context, getUserParams: { email: string }) {
 		const foundUsers = this.find(req, getUserParams);
-		if (foundUsers.length === 0) return req.error("Not Found", "User not found");
+		if (foundUsers.length === 0) return req.status("Not Found", "User not found");
 		return foundUsers[0];
 	}
 
@@ -29,14 +29,14 @@ export class UserImpl {
 
 	public create(req: Context, user: ExampleUser) {
 		const foundUsers = this.find(req, { email: user.email });
-		if (foundUsers.length > 0) return req.error("Conflict", "User already exists");
+		if (foundUsers.length > 0) return req.status("Conflict", "User already exists");
 		this.users.push(user);
 		return user;
 	}
 
 	public update(req: Context, findUserParams: FindUser, user: ExampleUser) {
 		const foundUsers = this.find(req, findUserParams);
-		if (foundUsers.length === 0) return req.error("Not Found", "User not found");
+		if (foundUsers.length === 0) return req.status("Not Found", "User not found");
 		const foundUser = foundUsers[0];
 		const index = this.users.indexOf(foundUser);
 		this.users[index] = user;
@@ -45,7 +45,7 @@ export class UserImpl {
 
 	public delete(req: Context, deleteUserParams: { email: string }) {
 		const foundUsers = this.find(req, deleteUserParams);
-		if (foundUsers.length === 0) return req.error("Not Found", "User not found");
+		if (foundUsers.length === 0) return req.status("Not Found", "User not found");
 		const foundUser = foundUsers[0];
 		const index = this.users.indexOf(foundUser);
 		this.users.splice(index, 1);

@@ -5,8 +5,15 @@ export const independentModulesConfig = createIndependentModules({
 		{
 			name: "Root",
 			pattern: ["src/*", "*"],
-			allowImportsFrom: ["{root}", "src/routes/**", "src/Shared/**", "{misc}", "{toOrganize}"],
-			errorMessage: "🔥 The Root module should access to Root, Routes and Shared modules. 🔥",
+			allowImportsFrom: ["{root}", "src/utils/**", "src/routes/**", "src/Shared/**", "{misc}", "{toOrganize}"],
+			errorMessage: "🔥 The Root module should access to Root, Utils, Routes and Shared modules. 🔥",
+		},
+
+		{
+			name: "Utils",
+			pattern: "src/utils/**",
+			allowImportsFrom: ["src/utils/**", "{externalLibs}"],
+			errorMessage: "🔥 The Utils module should access to Utils modules only. 🔥",
 		},
 
 		{
@@ -26,8 +33,8 @@ export const independentModulesConfig = createIndependentModules({
 		{
 			name: "Routes",
 			pattern: "src/routes/**",
-			allowImportsFrom: ["src/Shared/**", "{misc}", "{dirname}/**"],
-			errorMessage: "🔥 The Routes module should only access Shared modules and Route folder and subfolders. 🔥",
+			allowImportsFrom: ["src/Shared/**", "src/utils/**", "{misc}", "{dirname}/**"],
+			errorMessage: "🔥 The Routes module should only access Shared modules, Utils and Route folder and subfolders. 🔥",
 		},
 
 		{

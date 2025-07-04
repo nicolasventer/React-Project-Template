@@ -3,11 +3,14 @@ import { apiApp } from "@/routes/Api/api.routes";
 import cors from "@elysiajs/cors";
 import type { treaty } from "@elysiajs/eden";
 import swagger from "@elysiajs/swagger";
+import type { BunRequest } from "bun";
 import Elysia from "elysia";
 
 export const app = new Elysia()
 	.use(cors())
 	.use(swagger())
+	.on("request", ((ctx: { request: BunRequest }) => console.log(`${ctx.request.method} ${ctx.request.url}`)) as any)
+	.on("error", console.error)
 	.get("/", () => "Server is running")
 	// use apiApp
 	.use(apiApp)

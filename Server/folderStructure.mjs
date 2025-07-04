@@ -29,6 +29,8 @@ export const folderStructureConfig = createFolderStructure({
 				{ name: "routes", children: [{ name: "routes.ts" }, { ruleId: "routes-subfolder" }] },
 				// src/Shared/
 				{ name: "Shared", children: [] },
+				// src/utils/
+				{ name: "utils", children: [] },
 				// src/toOrganize/
 				{ name: "toOrganize", children: [] }, // TODO: toOrganize folder should be removed, now it can contain folders like database
 			],
