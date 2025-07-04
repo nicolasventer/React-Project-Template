@@ -30,7 +30,8 @@
 		"codegen": "bunx playwright codegen # --viewport-size=\"1600,920\"",
 		"lint": "eslint .",
 		"lintfix": "eslint --fix .",
-		"depgraph": "depcruise --version && depcruise --config depcruise-config.cjs --output-type archi src | dot -T svg | depcruise-wrap-stream-in-html > graph-dependencies.html && cmd /c \"start graph-dependencies.html\""
+		"depgraph": "depcruise --version && depcruise --config depcruise-config.cjs --output-type archi src | dot -T svg | depcruise-wrap-stream-in-html > graph-dependencies.html && cmd /c \"start graph-dependencies.html\"",
+		"cap": "bunx cap open # bunx cap init, bunx cap sync"
 	},
 	"devDependencies": {
 		"@capacitor/cli": "^7.2.0",

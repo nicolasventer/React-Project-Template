@@ -145,3 +145,4 @@ projectStructure.cache.json
 bun.lock
 bun.lockb
 graph-dependencies.html
+android/
