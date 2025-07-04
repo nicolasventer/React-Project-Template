@@ -1,4 +1,4 @@
-// 8db0ba5cc01387593d9338988ac10ef91cbd8e7d1ab8cccf54298f0c5499ea40
+// 7d28ef063b14fd854be428711e02943831919bfbd06b874a3e3701b0382221ce
 import { checkValidRoute, lazySingleLoader, type RouteParams, Router } from "easy-react-router";
 
 export const {
@@ -19,11 +19,11 @@ export const {
 	updateCurrentRoute,
 } = new Router(
 	{
-		[checkValidRoute("/code-features")]: lazySingleLoader(() => import("./routes/code-features"), "CodeFeatures"),
-		[checkValidRoute("/example-users")]: lazySingleLoader(() => import("./routes/example-users"), "ExampleUsers"),
-		[checkValidRoute("/features")]: lazySingleLoader(() => import("./routes/features"), "Features"),
 		[checkValidRoute("//")]: lazySingleLoader(() => import("./routes/index.index"), "Home"),
 		[checkValidRoute("/")]: lazySingleLoader(() => import("./routes/index.lazy"), "MainLayout"),
+		[checkValidRoute("/profile")]: lazySingleLoader(() => import("./routes/profile"), "Profile"),
+		[checkValidRoute("/reset-password?token")]: lazySingleLoader(() => import("./routes/reset-password$token"), "ResetPasswordPage"),
+		[checkValidRoute("/users")]: lazySingleLoader(() => import("./routes/users"), "UsersPage"),
 	},
 	{
 		[checkValidRoute("/")]: lazySingleLoader(() => import("./routes/404"), "NotFoundPage"),

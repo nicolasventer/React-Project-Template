@@ -21,7 +21,7 @@ export const LanguageButton = ({
 }) => (
 	<Popover position="bottom-end" withArrow>
 		<Popover.Target>
-			<ActionIcon loading={isLoading}>
+			<ActionIcon loading={isLoading} variant="light">
 				<Languages />
 			</ActionIcon>
 		</Popover.Target>

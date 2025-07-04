@@ -1,29 +1,33 @@
 import { actions } from "@/actions/actions.impl";
 import { clientEnv } from "@/clientEnv";
-import { Shell } from "@/components/shell/Shell";
+import { Header } from "@/components/mainLayout/Header";
 import { dict } from "@/dict";
 import { appStore, LOCAL_STORAGE_KEY, localStorageStateStore, trStore, useInit, useSetAppEnabled, useTr } from "@/globalState";
-import { navigateToCustomRouteFn } from "@/routerInstance.gen";
-import { FullViewport, WriteToolboxClasses } from "@/utils/ComponentToolbox";
+import { navigateToCustomRouteFn, RouterRender, useCurrentRoute } from "@/routerInstance.gen";
+import { FullViewport, Vertical, WriteToolboxClasses } from "@/utils/ComponentToolbox";
 import { useDebug } from "@/utils/GlobalDebugOneFile";
-import { configurePreview } from "@/utils/withPreview";
 import { StatusBar, Style } from "@capacitor/status-bar";
-import { MantineProvider } from "@mantine/core";
+import { createTheme, MantineProvider, Modal } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import type { ReactNode } from "react";
 import { useEffect } from "react";
+import { Toaster } from "react-hot-toast";
+import { Tooltip } from "react-tooltip";
 
-configurePreview("static", false);
+// const SafeAreaInset = ({ children }: { children?: ReactNode }) => (
+// 	<div style={{ height: "100%" }}>
+// 		<div className="safe-area-inset-top" />
+// 		<div className="safe-area-inset-bottom" />
+// 		<div className="safe-area-inset-left" />
+// 		<div className="safe-area-inset-right" />
+// 		<div className="safe-area-inset">{children}</div>
+// 	</div>
+// );
 
-const SafeAreaInset = ({ children }: { children?: ReactNode }) => (
-	<div style={{ height: "100%" }}>
-		<div className="safe-area-inset-top" />
-		<div className="safe-area-inset-bottom" />
-		<div className="safe-area-inset-left" />
-		<div className="safe-area-inset-right" />
-		<div className="safe-area-inset">{children}</div>
-	</div>
-);
+const theme = createTheme({
+	components: {
+		Modal: Modal.extend({ defaultProps: { zIndex: 500 } }),
+	},
+});
 
 // @routeExport
 export const MainLayout = () => {
@@ -45,12 +49,27 @@ export const MainLayout = () => {
 	// sync the local storage state with the app state
 	const lang = app.lang.value;
 	const colorScheme = app.colorScheme.value;
-	const isAsideOpened = app.shell.aside.isOpened;
-	const isNavbarOpened = app.shell.navbar.isOpened;
-	const usersFilter = app.users.filter;
+	const userRole = app.auth.user.role;
+	const authToken = app.auth.token.get();
+	const imageView = app.imageView;
+	const userSortState = app.users.sort;
+	const userFilterState = app.users.filter;
+	const userColumnState = app.users.column;
+	const userIsSortAdditive = app.users.isSortAdditive;
 	localStorageStateStore.useEffect(
-		(setLocalStorageState) => setLocalStorageState({ lang, colorScheme, isAsideOpened, isNavbarOpened, usersFilter }),
-		[lang, colorScheme, isAsideOpened, isNavbarOpened, usersFilter]
+		(setLocalStorageState) =>
+			setLocalStorageState({
+				lang,
+				colorScheme,
+				userRole,
+				authToken,
+				imageView,
+				userSortState,
+				userFilterState,
+				userColumnState,
+				userIsSortAdditive,
+			}),
+		[lang, colorScheme, userRole, authToken, imageView, userSortState, userFilterState, userColumnState, userIsSortAdditive]
 	);
 
 	// save the local storage state to the local storage
@@ -68,15 +87,39 @@ export const MainLayout = () => {
 	useDebug("boolean", "isSetAppEnabled", [isSetAppEnabled, setIsSetAppEnabled]);
 
 	const tr = useTr();
+	const { currentRoute } = useCurrentRoute();
+
+	const isAuthenticated = !!app.auth.user.role;
+	const password = app.auth.user.password.get();
 
 	return (
-		<MantineProvider forceColorScheme={app.colorScheme.value}>
+		<MantineProvider forceColorScheme={app.colorScheme.value} theme={theme}>
 			<WriteToolboxClasses />
 			<FullViewport>
-				<SafeAreaInset>
-					<Shell app={app} isSetAppEnabled={isSetAppEnabled} tr={tr} />
-				</SafeAreaInset>
+				{/* <SafeAreaInset> */}
+				<Vertical gap={6} padding={12} heightFull>
+					<Header
+						isAuthenticated={isAuthenticated}
+						tr={tr}
+						isModalOpened={app.auth.isModalOpened}
+						email={app.auth.user.email}
+						password={password}
+						authError={app.auth.error}
+						isAuthLoading={app.auth.isLoading}
+						loginView={app.auth.loginView}
+						lang={app.lang.value}
+						isLangLoading={app.lang.isLoading}
+						colorScheme={app.colorScheme.value}
+						isColorSchemeLoading={app.colorScheme.isLoading}
+						role={app.auth.user.role}
+						currentRoute={currentRoute}
+					/>
+					<RouterRender subPath="/" />
+				</Vertical>
+				{/* </SafeAreaInset> */}
 			</FullViewport>
+			<Toaster position="bottom-center" toastOptions={{ duration: 3000 }} />
+			<Tooltip id="main-tooltip" />
 			{/* <RenderDebug expand position="bottom-left" /> */}
 		</MantineProvider>
 	);

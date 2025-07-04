@@ -1,14 +1,12 @@
 import type { TypedOmit } from "@/Shared/SharedUtils";
 import { Checkbox, type CheckboxProps } from "@mantine/core";
 
-export const ThreeStateCheckbox = ({
-	checked,
-	setChecked,
-	...props
-}: TypedOmit<CheckboxProps, "indeterminate" | "checked" | "onChange"> & {
+export type ThreeStateCheckboxProps = TypedOmit<CheckboxProps, "indeterminate" | "checked" | "onChange"> & {
 	checked: boolean | null;
 	setChecked: (checked: boolean | null) => void;
-}) => (
+};
+
+export const ThreeStateCheckbox = ({ checked, setChecked, ...props }: ThreeStateCheckboxProps) => (
 	<Checkbox
 		indeterminate={checked === null}
 		checked={!!checked}

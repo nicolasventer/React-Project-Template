@@ -1,51 +1,111 @@
-import type { ExampleUser } from "@/Shared/SharedModel";
-import { handlePromise, setAppWithUpdate } from "@/globalState";
+import { api } from "@/api/api";
+import type { UserFilterState, UserSortState } from "@/components/users/UsersManagers";
+import { checkAndRefreshToken, setAppWithUpdate } from "@/globalState";
+import type { MultiUserOutput, RoleType, UserOutput } from "@/Shared/SharedModel";
+import { deepEqual } from "@/utils/Redux/ISerializable";
+import { toast } from "react-hot-toast";
 
-const updateUsersAll = (promiseUsers: Promise<ExampleUser[]>) =>
-	handlePromise(promiseUsers, {
-		functionName: "updateUsersAll",
-		onUpdateLoading: (prev, isLoading) => (prev.users.isLoading = isLoading),
-		onSuccess: (prev, users) => (prev.users.all = users.map((user) => ({ current: user, edit: null }))),
+const _updateUsersLoading = () =>
+	setAppWithUpdate("updateUsersLoading", (prev) => {
+		prev.users.isLoading = true;
 	});
 
-const updateUsersFilter = (filter: string) =>
-	setAppWithUpdate("updateUsersFilter", [filter], (prev) => (prev.users.filter = filter));
-const startEditUserFn = (index: number) => () =>
-	setAppWithUpdate("startEditUser", [index], (prev) => (prev.users.all[index].edit = { ...prev.users.all[index].current }));
-const cancelEditUserFn = (index: number) => () =>
-	setAppWithUpdate("cancelEditUser", [index], (prev) => (prev.users.all[index].edit = null));
-const saveUserFn = (index: number) => () =>
-	setAppWithUpdate("saveUser", [index], (prev) => {
-		prev.users.all[index].current = prev.users.all[index].edit ?? prev.users.all[index].current;
-		prev.users.all[index].edit = null;
+const _updateUsers = ({ users }: MultiUserOutput) =>
+	setAppWithUpdate("updateUsers", (prev) => {
+		prev.users.isLoading = false;
+		prev.users.values = users;
 	});
-const addUser = () =>
-	setAppWithUpdate("addUser", (prev) =>
-		prev.users.all.unshift({ current: { name: "", email: "", permissions: [] }, edit: { name: "", email: "", permissions: [] } })
-	);
-const deleteUserFn = (index: number) => () => setAppWithUpdate("deleteUser", [index], (prev) => prev.users.all.splice(index, 1));
-const updateEditUserNameFn = (index: number) => (name: string) =>
-	setAppWithUpdate("updateEditUserName", [index, name], (prev) => (prev.users.all[index].edit!.name = name));
-const updateEditUserEmailFn = (index: number) => (email: string) =>
-	setAppWithUpdate("updateEditUserEmail", [index, email], (prev) => (prev.users.all[index].edit!.email = email));
-const updateEditUserPermissionsFn = (index: number) => (permissions: string[]) =>
-	setAppWithUpdate(
-		"updateEditUserPermissions",
-		[index, permissions],
-		(prev) => (prev.users.all[index].edit!.permissions = permissions as ExampleUser["permissions"])
-	);
+
+const _updateUsersError = (error: string) =>
+	setAppWithUpdate("updateUsersError", [error], (prev) => {
+		prev.users.error = error;
+		prev.users.isLoading = false;
+	});
+
+const getUsers = async (token: string) => {
+	const validToken = await checkAndRefreshToken(token);
+	_updateUsersLoading();
+	return api.v1.users
+		.get({ headers: { "x-token": validToken } })
+		.then(async ({ data, error }) => {
+			if (data) _updateUsers(data);
+			else {
+				toast.error("Failed to get users");
+				if (error.status === 401) _updateUsersError(error.value);
+				else if (error.status === 422) _updateUsersError(error.value.summary ?? "Validation error");
+				else throw error;
+			}
+		})
+		.catch((error) => {
+			_updateUsersError(typeof error === "object" && error && "message" in error ? (error.message as string) : "Unknown error");
+		});
+};
+
+const updateSortState = (sortState: UserSortState) =>
+	setAppWithUpdate("updateSortState", (prev) => {
+		prev.users.sort = sortState;
+	});
+
+const updateFilterState = (filterState: UserFilterState) =>
+	setAppWithUpdate("updateFilterState", (prev) => {
+		prev.users.filter = filterState;
+	});
+
+const toggleSortAdditive = () =>
+	setAppWithUpdate("toggleSortAdditive", (prev) => {
+		prev.users.isSortAdditive = !prev.users.isSortAdditive;
+	});
+
+const updateEditedUserRole = (userId: number, role: RoleType) =>
+	setAppWithUpdate("updateEditedValueRole", [userId, role], (prev) => {
+		const user = prev.users.values.find((u) => u.userId === userId);
+		const editedValue = prev.users.editedValues[userId] ?? user;
+		if (!editedValue) return;
+		const newEditedValue = { ...editedValue, role };
+		if (deepEqual(newEditedValue, user)) prev.users.editedValues[userId] = null;
+		else prev.users.editedValues[userId] = newEditedValue;
+	});
+
+const saveEditedUserFn = (token: string, editedValue: UserOutput) => async () => {
+	const validToken = await checkAndRefreshToken(token);
+	_updateUsersLoading();
+	return api.v1
+		.users({ id: editedValue.userId })
+		.patch({ role: editedValue.role }, { headers: { "x-token": validToken } })
+		.then(async ({ data, error }) => {
+			if (data) {
+				setAppWithUpdate("saveUserUpdate", [editedValue.userId, editedValue.role], (prev) => {
+					const user = prev.users.values.find((u) => u.userId === editedValue.userId);
+					if (user) user.role = editedValue.role;
+					delete prev.users.editedValues[editedValue.userId];
+					prev.users.isLoading = false;
+				});
+				toast.success("Role updated");
+			} else {
+				toast.error("Failed to update role");
+				if (error.status === 401) _updateUsersError(error.value);
+				else if (error.status === 422) _updateUsersError(error.value.summary ?? "Validation error");
+				else throw error;
+			}
+		})
+		.catch((error) => {
+			_updateUsersError(typeof error === "object" && error && "message" in error ? (error.message as string) : "Unknown error");
+		});
+};
+
+const cancelEditedUserFn = (userId: number) => () =>
+	setAppWithUpdate("cancelEditedUser", [userId], (prev) => {
+		prev.users.editedValues[userId] = null;
+	});
 
 export const users = {
-	all: { update: updateUsersAll },
-	filter: { update: updateUsersFilter },
-	edit: {
-		startFn: startEditUserFn,
-		cancelFn: cancelEditUserFn,
-		saveFn: saveUserFn,
-		name: { updateFn: updateEditUserNameFn },
-		email: { updateFn: updateEditUserEmailFn },
-		permissions: { updateFn: updateEditUserPermissionsFn },
+	get: getUsers,
+	sortState: { update: updateSortState },
+	filterState: { update: updateFilterState },
+	sortAdditive: { toggle: toggleSortAdditive },
+	edited: {
+		role: { update: updateEditedUserRole },
+		saveFn: saveEditedUserFn,
+		cancelFn: cancelEditedUserFn,
 	},
-	add: addUser,
-	deleteFn: deleteUserFn,
 };

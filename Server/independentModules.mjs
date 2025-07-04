@@ -3,6 +3,13 @@ import { createIndependentModules } from "eslint-plugin-project-structure";
 export const independentModulesConfig = createIndependentModules({
 	modules: [
 		{
+			name: "Drizzle",
+			pattern: ["src/drizzle.ts", "src/drizzle/**"],
+			allowImportsFrom: ["src/drizzle/**", "src/env.ts", "src/Shared/SharedModel.ts"],
+			errorMessage: "🔥 The Drizzle module should access to Drizzle modules and SharedModel. 🔥",
+		},
+
+		{
 			name: "Root",
 			pattern: ["src/*", "*"],
 			allowImportsFrom: ["{root}", "src/utils/**", "src/routes/**", "src/Shared/**", "{misc}", "{toOrganize}"],
@@ -12,7 +19,7 @@ export const independentModulesConfig = createIndependentModules({
 		{
 			name: "Utils",
 			pattern: "src/utils/**",
-			allowImportsFrom: ["src/utils/**", "{externalLibs}"],
+			allowImportsFrom: ["src/utils/**"],
 			errorMessage: "🔥 The Utils module should access to Utils modules only. 🔥",
 		},
 
@@ -33,7 +40,7 @@ export const independentModulesConfig = createIndependentModules({
 		{
 			name: "Routes",
 			pattern: "src/routes/**",
-			allowImportsFrom: ["src/Shared/**", "src/utils/**", "{misc}", "{dirname}/**"],
+			allowImportsFrom: ["src/Shared/**", "src/utils/**", "{root_files}", "{misc}", "{dirname}/**"],
 			errorMessage: "🔥 The Routes module should only access Shared modules, Utils and Route folder and subfolders. 🔥",
 		},
 
@@ -55,6 +62,15 @@ export const independentModulesConfig = createIndependentModules({
 	reusableImportPatterns: {
 		misc: ["src/assets/**"],
 		root: ["src/*"],
+		root_files: [
+			"src/dao.ts",
+			"src/drizzle.ts",
+			"src/elysiaPlugins.ts",
+			"src/impl.ts",
+			"src/jwt.ts",
+			"src/mail.ts",
+			"src/srv_config.ts",
+		],
 		toOrganize: ["src/toOrganize/**"],
 	},
 });

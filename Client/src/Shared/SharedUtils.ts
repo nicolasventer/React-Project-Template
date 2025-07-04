@@ -123,18 +123,32 @@ export const jsonStringify = <T>(obj: T, replacer?: (number | string)[] | null, 
 	JSON.stringify(obj, replacer, space);
 
 /**
- * Removes duplicates from an array.
+ * Creates a new array with unique values.
  * @param array the array to remove duplicates from
  * @returns the array with duplicates removed
  */
 export const unique = <T>(array: T[]): T[] => Array.from(new Set(array));
 
 /**
- * Sorts an array and removes duplicates.
- * @param array the array to sort
- * @returns the sorted array
+ * Creates a new array with unique values and sorts it.
+ * @param array the array to remove duplicates and sort
+ * @returns the sorted array with unique values
  */
 export const uniqueSort = <T>(array: T[]): T[] => unique(array).sort();
+
+/**
+ * Creates a new array with shuffled values.
+ * @param array the array to shuffle
+ * @returns the shuffled array
+ */
+export const shuffle = <T>(array: T[]): T[] => {
+	const newArray = [...array];
+	for (let i = newArray.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+	}
+	return newArray;
+};
 
 /**
  * Logs the given value and returns it.

@@ -10,9 +10,6 @@ const IMPORT_DATA = (readData: string, onSuccess: () => void) => {
 		setAppWithUpdate("importLocalStorageState", (prev) => {
 			prev.colorScheme.value = newLocalStorageState.colorScheme;
 			prev.lang.value = newLocalStorageState.lang;
-			prev.shell.aside.isOpened = newLocalStorageState.isAsideOpened;
-			prev.shell.navbar.isOpened = newLocalStorageState.isNavbarOpened;
-			prev.users.filter = newLocalStorageState.usersFilter;
 		});
 		onSuccess();
 	} catch (error) {

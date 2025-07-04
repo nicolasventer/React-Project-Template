@@ -1,0 +1,211 @@
+# Cursor Rules for React Project Template
+
+## Project Overview
+This is a full-stack React starter template with:
+- **Server**: Bun, ElysiaJS, TypeBox, Drizzle ORM, Bun:test
+- **Client**: Bun, React with Vite, ElysiaJS/Eden, TypeBox, Playwright
+- **State Management**: Custom implementation with globalState and setAppWithUpdate
+- **Router**: Custom implementation auto-generated from routes folder
+- **Translation**: Custom implementation with src/tr/* files
+- **API**: Auto-generated with bun run genApi
+
+## General Coding Standards
+
+### TypeScript Usage
+- Always use TypeScript for both Server and Client
+- Provide proper type definitions for all functions, parameters, and return values
+- Use TypeBox schemas for API input/output validation
+
+### Naming Conventions
+- **Variables and functions**: camelCase
+- **Classes**: PascalCase ending with type (Impl, Dao, Service)
+- **Files**: kebab-case or camelCase matching the component/feature name
+- **Components**: PascalCase
+
+### Function Style
+- Prefer arrow functions over regular functions
+- Use arrow functions for class methods when possible
+- Destructure parameters when possible
+- Avoid braces for simple arrow functions when appropriate
+
+## Server-Side Development
+
+### Architecture
+- **Root file**: src/index.ts
+- **Services**: Individual files in src/ (JwtService, MailService, etc.)
+- **Database**: Tables and relations in src/drizzle/*
+- **Schemas**: API input/output schemas in src/Shared/SharedModel.ts
+- **Routes**: src/routes/**/*.routes.ts (file path corresponds to API path)
+- **Implementations**: Classes in src/routes/**/*.impl.ts, instantiated in src/impl.ts
+- **Data Access**: Classes in src/routes/**/*.dao.ts, instantiated in src/dao.ts
+
+### Class Structure
+```typescript
+// Example Dao class
+export class UserDao {
+  findById = async (id: string) => {
+    // Database interaction
+  };
+}
+
+// in src/dao.ts
+export const dao = {
+  user: new UserDao(),
+};
+
+// Example Impl class
+export class UserImpl {
+  getUser = async ({ id }: { id: string }) => {
+    return await dao.user.findById(id);
+  };
+}
+```
+
+### API Development
+- Use TypeBox for request/response validation
+- Follow RESTful conventions
+- Implement proper error handling
+- Use dependency injection pattern for services
+
+### Testing
+- Write integration tests that start the server
+- Test by making API calls and checking responses
+- Use bun:test for test execution
+
+## Client-Side Development
+
+### Architecture
+- **Root file**: src/index.tsx → src/routes/index.lazy.tsx
+- **State management**: All states in src/globalState.ts with setAppWithUpdate
+- **Routes**: Declared in src/routes/, auto-generated in src/routerInstance.gen.ts
+- **Components**: Organized by feature in src/components/
+- **Shared components**: In folders starting with '_'
+- **Actions**: API calls and state updates in src/actions/
+- **Utils**: Helper functions in src/utils/, especially ComponentToolbox.tsx
+
+### Component Structure
+```typescript
+// Route file (page level)
+const UsersPage = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  
+  useEffect(() => {
+    // Page-level logic
+  }, []);
+  
+  return <Users users={users} />;
+};
+
+// Component file
+interface UsersProps {
+  users: User[];
+}
+
+const Users = ({ users }: UsersProps) => {
+  return (
+    <Vertical>
+      {users.map(user => (
+        <UserItem key={user.id} user={user} />
+      ))}
+    </Vertical>
+  );
+};
+
+export default Users;
+```
+
+### Component Guidelines
+- Use function components only
+- One exported component per file (can have multiple internal components)
+- Use arrow functions, avoid braces when possible
+- Destructure props
+- Create props interface when more than 4 props
+- Use ComponentToolbox utilities (Horizontal, Vertical, etc.)
+
+### State Management
+- All global state in src/globalState.ts
+- Use setAppWithUpdate for state changes
+- LocalStorageState for persistence
+- Actions in src/actions/ for API calls and state updates
+
+### Routing
+- Routes auto-generated from src/routes/ folder structure
+- Route files contain page-level state and effects
+- Components receive props from route files
+- Use routerInstance.gen.ts exported functions
+
+### Translation
+- All translatable text in src/tr/en.ts
+- Corresponding translations in other language files
+- Use translation keys consistently
+
+### API Integration
+- Use auto-generated API types from src/api/api.gen.ts
+- Run `bun run genApi` to regenerate types
+- Use ElysiaJS/Eden for type-safe API calls
+
+### Testing
+- Write E2E tests with Playwright
+- Start both server and client before tests
+- Test user interactions and UI responses
+- Focus on user workflows and interface behavior
+
+## Development Workflow
+
+### Code Generation
+- Generate only requested code without additional implementation
+- For API client generation, use `bun run genApi`
+- For route generation, follow the folder structure convention
+
+### Error Handling
+- When encountering hard-to-resolve errors:
+  - Provide clear error description
+  - Leave generated code in error state
+  - Don't attempt automatic fixes unless specifically requested
+
+### File Organization
+- Follow eslint-plugin-project-structure rules
+- Maintain clear separation between features
+- Use appropriate folder structure for module dependencies
+
+### Common Tasks
+1. **Creating new pages**: Add route file in src/routes/, create components in src/components/
+2. **API integration**: Use actions in src/actions/, update globalState
+3. **Component development**: Use ComponentToolbox utilities, follow props interface pattern
+4. **Database operations**: Create DAO classes, implement in Impl classes
+5. **Testing**: Write integration tests for server, E2E tests for client
+
+## Technology-Specific Guidelines
+
+### Bun
+- Use Bun for package management and running scripts
+- Leverage Bun's performance benefits for development
+
+### ElysiaJS
+- Use TypeBox schemas for validation
+- Follow ElysiaJS patterns for route definitions
+- Use Eden for type-safe client-side API calls
+
+### Drizzle ORM
+- Define schemas in src/drizzle/schema.ts
+- Define relations in src/drizzle/relations.ts
+- Use proper typing for database operations
+
+### Vite
+- Use Vite for fast development builds
+- Leverage Vite's hot module replacement
+
+### Capacitor (Mobile)
+- Use Capacitor for mobile development
+- Follow Capacitor-specific patterns when needed
+
+## Code Quality
+- Use ESLint and Prettier for code formatting
+- Follow project structure rules
+- Maintain consistent code style across the project
+- Write meaningful commit messages
+
+## Performance
+- No specific performance requirements mentioned
+- Focus on code clarity and maintainability
+- Use React best practices for component optimization when needed 

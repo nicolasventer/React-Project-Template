@@ -1,8 +1,6 @@
-import type { LanguageType, PermissionType } from "@/Shared/SharedModel";
 import type { Treaty } from "@elysiajs/eden";
 
-type GoodTreatyResponse<T extends Record<number, unknown>> = Treaty.TreatyResponse<T>;
-type TreatyResponse<T extends Record<number, unknown>> = { [K in keyof T]: GoodTreatyResponse<{ [_ in K]: T[K] }> }[keyof T];
+type TreatyResponse<T extends Record<number, unknown>> = Treaty.TreatyResponse<T>;
 
 /**
  * @ignore
@@ -18,6 +16,57 @@ export type Api = {
 			  }
 			| undefined
 	) => Promise<TreatyResponse<{ 200: string }>>;
+	compile: {
+		post: (
+			body?: unknown,
+			options?:
+				| {
+						headers?: Record<string, unknown> | undefined;
+						query?: Record<string, unknown> | undefined;
+						fetch?: RequestInit | undefined;
+				  }
+				| undefined
+		) => Promise<
+			TreatyResponse<{
+				200: string | { error: string };
+				401: "Token expired" | "Invalid token" | "superAdmin role required";
+				422: {
+					type: "validation";
+					on: string;
+					summary?: string | undefined;
+					message?: string | undefined;
+					found?: unknown;
+					property?: string | undefined;
+					expected?: string | undefined;
+				};
+			}>
+		>;
+	};
+	execute: {
+		post: (
+			body: { body: any; url: string },
+			options?:
+				| {
+						headers?: Record<string, unknown> | undefined;
+						query?: Record<string, unknown> | undefined;
+						fetch?: RequestInit | undefined;
+				  }
+				| undefined
+		) => Promise<
+			TreatyResponse<{
+				200: Response;
+				422: {
+					type: "validation";
+					on: string;
+					summary?: string | undefined;
+					message?: string | undefined;
+					found?: unknown;
+					property?: string | undefined;
+					expected?: string | undefined;
+				};
+			}>
+		>;
+	};
 	v1: {
 		get: (
 			options?:
@@ -27,44 +76,28 @@ export type Api = {
 						fetch?: RequestInit | undefined;
 				  }
 				| undefined
-		) => Promise<TreatyResponse<{ 200: string }>>;
-		"dyn-dict": ((params: { language: LanguageType }) => {
-			get: (
-				options?:
-					| {
-							headers?: Record<string, unknown> | undefined;
-							query?: Record<string, unknown> | undefined;
-							fetch?: RequestInit | undefined;
-					  }
-					| undefined
+		) => Promise<
+			TreatyResponse<{
+				200: "v1 is running";
+				422: {
+					type: "validation";
+					on: string;
+					summary?: string | undefined;
+					message?: string | undefined;
+					found?: unknown;
+					property?: string | undefined;
+					expected?: string | undefined;
+				};
+			}>
+		>;
+		users: ((params: { id: string | number }) => {
+			patch: (
+				body: { role: "user" | "superAdmin" | "admin" },
+				options: { headers: { "x-token": string }; query?: Record<string, unknown> | undefined; fetch?: RequestInit | undefined }
 			) => Promise<
 				TreatyResponse<{
-					200: { test: Record<string, string> };
-					422: {
-						type: "validation";
-						on: string;
-						summary?: string | undefined;
-						message?: string | undefined;
-						found?: unknown;
-						property?: string | undefined;
-						expected?: string | undefined;
-					};
-				}>
-			>;
-		}) & {};
-		users: ((params: { email: string | number }) => {
-			get: (
-				options?:
-					| {
-							headers?: Record<string, unknown> | undefined;
-							query?: Record<string, unknown> | undefined;
-							fetch?: RequestInit | undefined;
-					  }
-					| undefined
-			) => Promise<
-				TreatyResponse<{
-					200: { name: string; email: string; permissions: ("delete" | "create" | "update" | "read" | "admin")[] };
-					404: "User not found";
+					200: { userId: number };
+					401: "Token expired" | "Invalid token" | "admin role required";
 					422: {
 						type: "validation";
 						on: string;
@@ -77,18 +110,12 @@ export type Api = {
 				}>
 			>;
 			delete: (
-				body?: unknown,
-				options?:
-					| {
-							headers?: Record<string, unknown> | undefined;
-							query?: Record<string, unknown> | undefined;
-							fetch?: RequestInit | undefined;
-					  }
-					| undefined
+				body: unknown,
+				options: { headers: { "x-token": string }; query?: Record<string, unknown> | undefined; fetch?: RequestInit | undefined }
 			) => Promise<
 				TreatyResponse<{
-					200: "User deleted";
-					404: "User not found";
+					200: { userId: number };
+					401: "Token expired" | "Invalid token" | "admin role required";
 					422: {
 						type: "validation";
 						on: string;
@@ -101,7 +128,8 @@ export type Api = {
 				}>
 			>;
 		}) & {
-			get: (
+			post: (
+				body: { email: string; password: string },
 				options?:
 					| {
 							headers?: Record<string, unknown> | undefined;
@@ -111,26 +139,73 @@ export type Api = {
 					| undefined
 			) => Promise<
 				TreatyResponse<{
-					200: { name: string; email: string; permissions: ("delete" | "create" | "update" | "read" | "admin")[] }[];
+					200: { userId: number; email: string; role: "user" | "superAdmin" | "admin"; lastLoginTime: number };
+					422: {
+						type: "validation";
+						on: string;
+						summary?: string | undefined;
+						message?: string | undefined;
+						found?: unknown;
+						property?: string | undefined;
+						expected?: string | undefined;
+					};
 				}>
 			>;
-			find: {
-				post: (
-					body: {
-						name?: string | undefined;
-						email?: string | undefined;
-						permissions?: ("delete" | "create" | "update" | "read" | "admin")[] | undefined;
-					} | null,
-					options?:
-						| {
-								headers?: Record<string, unknown> | undefined;
-								query?: Record<string, unknown> | undefined;
-								fetch?: RequestInit | undefined;
-						  }
-						| undefined
+			get: (options: {
+				headers: { "x-token": string };
+				query?: Record<string, unknown> | undefined;
+				fetch?: RequestInit | undefined;
+			}) => Promise<
+				TreatyResponse<{
+					200: { users: { userId: number; email: string; role: "user" | "superAdmin" | "admin"; lastLoginTime: number }[] };
+					401: "Token expired" | "Invalid token" | "admin role required";
+					422: {
+						type: "validation";
+						on: string;
+						summary?: string | undefined;
+						message?: string | undefined;
+						found?: unknown;
+						property?: string | undefined;
+						expected?: string | undefined;
+					};
+				}>
+			>;
+			current: {
+				patch: (
+					body: { password: string },
+					options: {
+						headers: { "x-token": string };
+						query?: Record<string, unknown> | undefined;
+						fetch?: RequestInit | undefined;
+					}
 				) => Promise<
 					TreatyResponse<{
-						200: { name: string; email: string; permissions: ("delete" | "create" | "update" | "read" | "admin")[] }[];
+						200: "User updated";
+						401: "Token expired" | "Invalid token";
+						404: "User not found";
+						422: {
+							type: "validation";
+							on: string;
+							summary?: string | undefined;
+							message?: string | undefined;
+							found?: unknown;
+							property?: string | undefined;
+							expected?: string | undefined;
+						};
+					}>
+				>;
+				delete: (
+					body: unknown,
+					options: {
+						headers: { "x-token": string };
+						query?: Record<string, unknown> | undefined;
+						fetch?: RequestInit | undefined;
+					}
+				) => Promise<
+					TreatyResponse<{
+						200: "User deleted";
+						401: "Token expired" | "Invalid token";
+						404: "User not found";
 						422: {
 							type: "validation";
 							on: string;
@@ -143,19 +218,123 @@ export type Api = {
 					}>
 				>;
 			};
-			post: (
-				body: { name: string; email: string; permissions: PermissionType[] },
-				options?:
-					| {
-							headers?: Record<string, unknown> | undefined;
-							query?: Record<string, unknown> | undefined;
-							fetch?: RequestInit | undefined;
-					  }
-					| undefined
+		};
+		auth: {
+			login: {
+				post: (
+					body: { email: string; password: string },
+					options?:
+						| {
+								headers?: Record<string, unknown> | undefined;
+								query?: Record<string, unknown> | undefined;
+								fetch?: RequestInit | undefined;
+						  }
+						| undefined
+				) => Promise<
+					TreatyResponse<{
+						200: { role: "user" | "superAdmin" | "admin"; token: string };
+						401: "Invalid email or password";
+						422: {
+							type: "validation";
+							on: string;
+							summary?: string | undefined;
+							message?: string | undefined;
+							found?: unknown;
+							property?: string | undefined;
+							expected?: string | undefined;
+						};
+					}>
+				>;
+			};
+			token: {
+				refresh: {
+					get: (options: {
+						headers: { "x-token": string };
+						query?: Record<string, unknown> | undefined;
+						fetch?: RequestInit | undefined;
+					}) => Promise<
+						TreatyResponse<{
+							200: { role: "user" | "superAdmin" | "admin"; token: string };
+							401: "Invalid token";
+							422: {
+								type: "validation";
+								on: string;
+								summary?: string | undefined;
+								message?: string | undefined;
+								found?: unknown;
+								property?: string | undefined;
+								expected?: string | undefined;
+							};
+						}>
+					>;
+				};
+			};
+		};
+		password: {
+			"request-reset": {
+				post: (
+					body: { email: string },
+					options?:
+						| {
+								headers?: Record<string, unknown> | undefined;
+								query?: Record<string, unknown> | undefined;
+								fetch?: RequestInit | undefined;
+						  }
+						| undefined
+				) => Promise<
+					TreatyResponse<{
+						200: "Reset password link sent" | { link: string };
+						404: "User not found";
+						500: "Failed to send reset password link";
+						422: {
+							type: "validation";
+							on: string;
+							summary?: string | undefined;
+							message?: string | undefined;
+							found?: unknown;
+							property?: string | undefined;
+							expected?: string | undefined;
+						};
+					}>
+				>;
+			};
+			reset: {
+				put: (
+					body: { password: string },
+					options?:
+						| {
+								headers?: Record<string, unknown> | undefined;
+								query?: Record<string, unknown> | undefined;
+								fetch?: RequestInit | undefined;
+						  }
+						| undefined
+				) => Promise<
+					TreatyResponse<{
+						200: "Password updated";
+						401: "Token expired" | "Invalid token";
+						404: "User not found or token already used";
+						422: {
+							type: "validation";
+							on: string;
+							summary?: string | undefined;
+							message?: string | undefined;
+							found?: unknown;
+							property?: string | undefined;
+							expected?: string | undefined;
+						};
+					}>
+				>;
+			};
+		};
+		votes: ((params: { id: string | number }) => {
+			patch: (
+				body: { isPositive: boolean },
+				options: { headers: { "x-token": string }; query?: Record<string, unknown> | undefined; fetch?: RequestInit | undefined }
 			) => Promise<
 				TreatyResponse<{
-					200: { name: string; email: string; permissions: ("delete" | "create" | "update" | "read" | "admin")[] };
-					409: "User already exists";
+					200: "Vote updated";
+					401: "Token expired" | "Invalid token";
+					404: "Vote not found";
 					422: {
 						type: "validation";
 						on: string;
@@ -167,19 +346,65 @@ export type Api = {
 					};
 				}>
 			>;
-			put: (
-				body: { name: string; email: string; permissions: PermissionType[] },
-				options?:
-					| {
-							headers?: Record<string, unknown> | undefined;
-							query?: Record<string, unknown> | undefined;
-							fetch?: RequestInit | undefined;
-					  }
-					| undefined
+			delete: (
+				body: unknown,
+				options: { headers: { "x-token": string }; query?: Record<string, unknown> | undefined; fetch?: RequestInit | undefined }
 			) => Promise<
 				TreatyResponse<{
-					200: { name: string; email: string; permissions: ("delete" | "create" | "update" | "read" | "admin")[] };
-					404: "User not found";
+					200: "Vote deleted";
+					401: "Token expired" | "Invalid token";
+					404: "Vote not found";
+					422: {
+						type: "validation";
+						on: string;
+						summary?: string | undefined;
+						message?: string | undefined;
+						found?: unknown;
+						property?: string | undefined;
+						expected?: string | undefined;
+					};
+				}>
+			>;
+		}) & {
+			post: (
+				body: { imageId: number; isPositive: boolean },
+				options: { headers: { "x-token": string }; query?: Record<string, unknown> | undefined; fetch?: RequestInit | undefined }
+			) => Promise<
+				TreatyResponse<{
+					200: { voteId: number };
+					401: "Token expired" | "Invalid token";
+					422: {
+						type: "validation";
+						on: string;
+						summary?: string | undefined;
+						message?: string | undefined;
+						found?: unknown;
+						property?: string | undefined;
+						expected?: string | undefined;
+					};
+				}>
+			>;
+		};
+		images: {
+			get: (options: {
+				headers: Partial<{ "x-token": string }>;
+				query?: Record<string, unknown> | undefined;
+				fetch?: RequestInit | undefined;
+			}) => Promise<
+				TreatyResponse<{
+					200: {
+						images: {
+							url: string;
+							imageId: number;
+							positiveVotes: number;
+							negativeVotes: number;
+							totalVotes: number;
+							score: number;
+							userVote: number | null;
+							userVoteId: number | null;
+						}[];
+					};
+					401: "Token expired" | "Invalid token";
 					422: {
 						type: "validation";
 						on: string;

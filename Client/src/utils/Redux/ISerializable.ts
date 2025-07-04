@@ -141,7 +141,7 @@ const BuildProxy = <T extends object>(target: T, diffObj: DiffObj<T>): T =>
 const cleanupDiffObj = <T extends object>(target: T, diffObj: DiffObj<T>): DiffObj<T> => {
 	for (const k in diffObj) {
 		const v = diffObj[k];
-		if (v && typeof v === "object") {
+		if (v && typeof v === "object" && v instanceof Map === false) {
 			const value = target ? (target as any)[k] : undefined;
 			const proxyTarget = getTarget(v);
 			if (proxyTarget) diffObj[k] = proxyTarget as DiffObj<T>[typeof k];

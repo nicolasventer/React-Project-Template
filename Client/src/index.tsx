@@ -1,21 +1,20 @@
-import { enableApiMock } from "@/api/api.config";
-
 import "@/index.css";
 import "@mantine/core/styles.css";
+
+import "@mantine/carousel/styles.css";
 
 import { clientEnv } from "@/clientEnv";
 import { setRouterBaseRoute } from "@/routerInstance.gen";
 import { MainLayout } from "@/routes";
-import { configurePreview } from "@/utils/withPreview";
 import { App } from "@capacitor/app";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
-enableApiMock();
+dayjs.extend(relativeTime);
 
 setRouterBaseRoute(clientEnv.BASE_URL);
-
-configurePreview("static", false);
 
 App.addListener("backButton", ({ canGoBack }) => (canGoBack ? window.history.back() : App.exitApp()));
 
