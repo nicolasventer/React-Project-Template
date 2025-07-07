@@ -1,4 +1,6 @@
 import type { ExampleUser, FindUser } from "@/Shared/SharedModel";
+import { db, json_group_array, schema } from "@/drizzle";
+import { eq } from "drizzle-orm";
 import type { Context } from "elysia";
 
 export class UserImpl {
@@ -10,7 +12,15 @@ export class UserImpl {
 		{ name: "Melanie Roberts", email: "lsullivan@yahoo.com", permissions: ["create"] },
 	];
 
-	public get(req: Context, getUserParams: { email: string }) {
+	public async get(req: Context, getUserParams: { email: string }) {
+		const usersSql = db
+			.select({ email: schema.user.email, role: schema.user.role, permissions: json_group_array(schema.permission.name) })
+			.from(schema.user)
+			.innerJoin(schema.permission, eq(schema.user.role, schema.permission.role))
+			.groupBy(schema.user.email);
+		console.log(`usersSql.toSQL().sql: ${usersSql.toSQL().sql}`);
+		const users = await usersSql.execute();
+		console.log(users);
 		const foundUsers = this.find(req, getUserParams);
 		if (foundUsers.length === 0) return req.status("Not Found", "User not found");
 		return foundUsers[0];
@@ -27,7 +37,7 @@ export class UserImpl {
 		});
 	}
 
-	public create(req: Context, user: ExampleUser) {
+	public async create(req: Context, user: ExampleUser) {
 		const foundUsers = this.find(req, { email: user.email });
 		if (foundUsers.length > 0) return req.status("Conflict", "User already exists");
 		this.users.push(user);

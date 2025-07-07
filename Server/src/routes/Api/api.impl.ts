@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+import { db, json_group_array, relations, schema } from "@/drizzle";
 import { impl } from "@/impl";
 import type { Execute } from "@/Shared/SharedModel";
 import { tsToJs } from "@/utils/ts-to-js";
@@ -5,11 +7,14 @@ import type { Context, MaybePromise } from "elysia";
 import { Elysia } from "elysia";
 
 export class ApiImpl {
+	// eslint-disable-next-line no-unused-private-class-members
 	#_() {
-		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 		impl;
-		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 		Elysia;
+		db;
+		schema;
+		relations;
+		json_group_array;
 	}
 
 	compile(_: Context, code: string) {

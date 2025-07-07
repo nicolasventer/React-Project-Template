@@ -180,3 +180,5 @@ src/Shared/
 bun.lock
 bun.lockb
 graph-dependencies.html
+*-audit.json
+*.db

@@ -11,3 +11,6 @@ impl.api.execute = (_: Context, body: Execute) =>
 		.get("/api", () => "Hello API")
 		.get("/user/:id", (ctx: Context) => `Hello ${ctx.params.id}`)
 		.fetch(new Request(`http://a.com${body.url}`));
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+impl.user.get = (_, getUserParams) => `Hello ${getUserParams.email}` as any;

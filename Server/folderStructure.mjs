@@ -23,6 +23,16 @@ export const folderStructureConfig = createFolderStructure({
 				{ name: "testConfig.ts" },
 				// src/api.ts
 				{ name: "api.ts" },
+				// src/env.ts
+				{ name: "env.ts" },
+				// src/winston.ts
+				{ name: "winston.ts" },
+				// src/_overrride.ts
+				{ name: "_overrride.ts" },
+				// src/drizzle.ts
+				{ name: "drizzle.ts" },
+				// src/drizzle/
+				{ name: "drizzle", children: [{ name: "schema.ts" }, { name: "relations.ts" }] },
 				// src/*.gen.ts
 				{ name: "*.gen.ts" },
 				// src/assets/

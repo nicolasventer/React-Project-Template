@@ -1,17 +1,18 @@
 import { PORT, SRV_URL } from "@/Shared/SharedConfig";
 import { apiApp } from "@/routes/Api/api.routes";
+import { initWinston } from "@/winston";
 import cors from "@elysiajs/cors";
 import type { treaty } from "@elysiajs/eden";
 import swagger from "@elysiajs/swagger";
-import type { BunRequest } from "bun";
 import Elysia from "elysia";
+
+initWinston();
 
 export const app = new Elysia()
 	.use(cors())
 	.use(swagger())
-	.on("request", ((ctx: { request: BunRequest }) => console.log(`${ctx.request.method} ${ctx.request.url}`)) as any)
-	.on("error", ((ctx: { request: BunRequest; error: Error }) =>
-		console.error(`${ctx.request.method} ${ctx.request.url} ${ctx.error}\n${ctx.error.stack}`)) as any)
+	.onRequest(({ request }) => void console.log(`${request.method} ${new URL(request.url).pathname}`))
+	.onError(({ error, code, path }) => void console.error(`${code} ${path} ${error}`))
 	.get("/", () => "Server is running")
 	// use apiApp
 	.use(apiApp)

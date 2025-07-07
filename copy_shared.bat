@@ -1,1 +1,1 @@
-copy "Server/src/Shared" "Client/src/Shared"
+robocopy /e "Client/src/Shared" "Server/src/Shared"
