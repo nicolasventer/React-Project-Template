@@ -12,7 +12,7 @@ export class UserImpl {
 		JwtService.checkRole(req, "admin") || dao.user.update(idNum, updateUser);
 
 	public updateSelf = (req: Context, updateUser: UpdateUser) => {
-		const verified = JwtService.getVerifiedToken(req);
+		const verified = JwtService.getVerifiedLoginToken(req);
 		if (verified === true) return req.status("Unauthorized", "Token expired");
 		if (verified === false) return req.status("Unauthorized", "Invalid token");
 		const idNum = { id: verified.id };
@@ -22,7 +22,7 @@ export class UserImpl {
 	public delete = (req: Context<{ params: IdNum }>, idNum: IdNum) => JwtService.checkRole(req, "admin") || dao.user.delete(idNum);
 
 	public deleteSelf = (req: Context) => {
-		const verified = JwtService.getVerifiedToken(req);
+		const verified = JwtService.getVerifiedLoginToken(req);
 		if (verified === true) return req.status("Unauthorized", "Token expired");
 		if (verified === false) return req.status("Unauthorized", "Invalid token");
 		const idNum = { id: verified.id };

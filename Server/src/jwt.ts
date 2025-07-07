@@ -21,20 +21,38 @@ const verifyLoginToken = (token: string): LoginPayload | boolean => {
 	}
 };
 
-const getVerifiedToken = (req: Context | Context<{ params: IdNum }>) =>
+const getVerifiedLoginToken = (req: Context | Context<{ params: IdNum }>) =>
 	!!req.headers.xToken && verifyLoginToken(req.headers.xToken);
 
 // returns undefined if token is valid
 // usage: checkRole(req, "admin") || dao.user.create(createUser);
 const checkRole = (req: Context | Context<{ params: IdNum }>, role: RoleType) => {
-	const verified = getVerifiedToken(req);
+	const verified = getVerifiedLoginToken(req);
 	if (verified === true) return req.status("Unauthorized", "Token expired");
 	if (verified === false) return req.status("Unauthorized", "Invalid token");
 	if (verified.role !== role) return req.status("Unauthorized", `${role} role required`);
 };
 
+export type ResetPasswordPayload = Pick<User, "email" | "password">;
+
+const generateResetPasswordToken = ({ email, password }: ResetPasswordPayload): string =>
+	jwt.sign({ email, password }, JWT_SECRET, { expiresIn: "1h" });
+
+const verifyResetPasswordToken = (token: string): ResetPasswordPayload | boolean => {
+	try {
+		return jwt.verify(token, JWT_SECRET) as ResetPasswordPayload;
+	} catch (error) {
+		return error instanceof jwt.TokenExpiredError;
+	}
+};
+
+const getVerifiedResetPasswordToken = (req: Context | Context<{ params: IdNum }>) =>
+	!!req.headers.xToken && verifyResetPasswordToken(req.headers.xToken);
+
 export const JwtService = {
 	generateLoginToken,
-	getVerifiedToken,
+	getVerifiedLoginToken,
 	checkRole,
+	generateResetPasswordToken,
+	getVerifiedResetPasswordToken,
 };

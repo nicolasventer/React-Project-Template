@@ -60,6 +60,18 @@ export const UpdateUserSchema = t.Object({
 });
 export type UpdateUser = typeof UpdateUserSchema.static;
 
+// password
+
+export const RequestResetPasswordSchema = t.Object({
+	email: t.String({ format: "email" }),
+});
+export type RequestResetPassword = typeof RequestResetPasswordSchema.static;
+
+export const UpdatePasswordSchema = t.Object({
+	password: t.String(),
+});
+export type UpdatePassword = typeof UpdatePasswordSchema.static;
+
 // execute
 
 export const ExecuteSchema = t.Object({
