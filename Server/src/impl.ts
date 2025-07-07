@@ -1,9 +1,9 @@
-import { ApiImpl } from "@/routes/Api/api.impl";
-import { DynDictImpl } from "@/routes/Api/V1/DynDict/dynDict.impl";
-import { UserImpl } from "@/routes/Api/V1/ExampleUser/exampleUser.impl";
+import { ApiImpl } from "@/routes/api/api.impl";
+import { AuthImpl } from "@/routes/api/v-1/auth/auth.impl";
+import { UserImpl } from "@/routes/api/v-1/user/user.impl";
 
 export const impl = {
-	dynDict: new DynDictImpl(),
 	user: new UserImpl(),
 	api: new ApiImpl(),
+	auth: new AuthImpl(),
 };

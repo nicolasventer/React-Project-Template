@@ -1,5 +1,5 @@
+import { apiApp } from "@/routes/api/api.routes";
 import { PORT, SRV_URL } from "@/Shared/SharedConfig";
-import { apiApp } from "@/routes/Api/api.routes";
 import { initWinston } from "@/winston";
 import cors from "@elysiajs/cors";
 import type { treaty } from "@elysiajs/eden";
@@ -13,8 +13,8 @@ export const app = new Elysia()
 	.use(swagger())
 	.onRequest(({ request }) => void console.log(`${request.method} ${new URL(request.url).pathname}`))
 	.onError(({ error, code, path }) => void console.error(`${code} ${path} ${error}`))
+	// health check
 	.get("/", () => "Server is running")
-	// use apiApp
 	.use(apiApp)
 	.listen(PORT);
 

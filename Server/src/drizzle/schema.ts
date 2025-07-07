@@ -1,17 +1,34 @@
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { ROLES } from "@/Shared/SharedModel";
+import { integer, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
 
-export const permission = sqliteTable("permission", {
-	id: integer().primaryKey({ autoIncrement: true }).notNull(),
-	name: text(),
-	role: text().references(() => role.value, { onDelete: "cascade", onUpdate: "cascade" }),
-});
+export const image = sqliteTable(
+	"image",
+	{
+		imageId: integer().primaryKey({ autoIncrement: true }).notNull(),
+		url: text().notNull(),
+	},
+	(table) => [uniqueIndex("image_url_unique").on(table.url)]
+);
 
-export const role = sqliteTable("role", {
-	value: text().primaryKey().notNull(),
-});
+export const user = sqliteTable(
+	"user",
+	{
+		id: integer().primaryKey({ autoIncrement: true }).notNull(),
+		email: text().notNull(),
+		password: text().notNull(),
+		role: text({ enum: ROLES }).notNull(),
+		lastLoginTime: integer().notNull(),
+	},
+	(table) => [uniqueIndex("user_email_unique").on(table.email)]
+);
 
-export const user = sqliteTable("user", {
-	email: text().primaryKey().notNull(),
-	password: text(),
-	role: text().references(() => role.value, { onDelete: "cascade", onUpdate: "cascade" }),
+export const vote = sqliteTable("vote", {
+	voteId: integer().primaryKey({ autoIncrement: true }).notNull(),
+	userId: integer()
+		.notNull()
+		.references(() => user.id, { onDelete: "cascade", onUpdate: "cascade" }),
+	imageId: integer()
+		.notNull()
+		.references(() => image.imageId, { onDelete: "cascade", onUpdate: "cascade" }),
+	isPositive: integer().notNull(),
 });

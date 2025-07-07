@@ -1,21 +1,21 @@
 import { relations } from "drizzle-orm/relations";
-import { permission, role, user } from "./schema";
+import { image, user, vote } from "./schema";
 
-export const permissionRelations = relations(permission, ({ one }) => ({
-	role: one(role, {
-		fields: [permission.role],
-		references: [role.value],
+export const voteRelations = relations(vote, ({ one }) => ({
+	image: one(image, {
+		fields: [vote.imageId],
+		references: [image.imageId],
+	}),
+	user: one(user, {
+		fields: [vote.userId],
+		references: [user.id],
 	}),
 }));
 
-export const roleRelations = relations(role, ({ many }) => ({
-	permissions: many(permission),
-	users: many(user),
+export const imageRelations = relations(image, ({ many }) => ({
+	votes: many(vote),
 }));
 
-export const userRelations = relations(user, ({ one }) => ({
-	role: one(role, {
-		fields: [user.role],
-		references: [role.value],
-	}),
+export const userRelations = relations(user, ({ many }) => ({
+	votes: many(vote),
 }));

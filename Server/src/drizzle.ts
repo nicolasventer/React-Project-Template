@@ -10,3 +10,11 @@ export { relations, schema };
 export const db = drizzle(DATABASE_URL, { schema: { ...schema, ...relations } });
 
 export const json_group_array = <T>(column: Column) => sql<T[]>`json_group_array(${column})`;
+
+export type User = typeof schema.user.$inferSelect;
+
+const seed = async () => {
+	console.log("seeded completed");
+};
+
+if (require.main === module) seed();

@@ -17,6 +17,8 @@ export const folderStructureConfig = createFolderStructure({
 				{ name: "index.ts" },
 				// src/impl.ts
 				{ name: "impl.ts" },
+				// src/dao.ts
+				{ name: "dao.ts" },
 				// src/testIndex.ts
 				{ name: "testIndex.ts" },
 				// src/testConfig.ts
@@ -25,10 +27,12 @@ export const folderStructureConfig = createFolderStructure({
 				{ name: "api.ts" },
 				// src/env.ts
 				{ name: "env.ts" },
+				// src/jwt.ts
+				{ name: "jwt.ts" },
 				// src/winston.ts
 				{ name: "winston.ts" },
-				// src/_overrride.ts
-				{ name: "_overrride.ts" },
+				// src/_override.ts
+				{ name: "_override.ts" },
 				// src/drizzle.ts
 				{ name: "drizzle.ts" },
 				// src/drizzle/
@@ -51,8 +55,8 @@ export const folderStructureConfig = createFolderStructure({
 
 	rules: {
 		"routes-subfolder": {
-			name: "{PascalCase}",
-			children: [{ name: "{folderName}.(impl|routes).ts" }, { ruleId: "routes-subfolder" }],
+			name: "{kebab-case}",
+			children: [{ name: "{folder-name}.(impl|routes|dao).ts" }, { ruleId: "routes-subfolder" }],
 		},
 		"assets-folder": {
 			name: "assets",

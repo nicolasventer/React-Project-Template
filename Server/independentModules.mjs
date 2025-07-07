@@ -4,9 +4,9 @@ export const independentModulesConfig = createIndependentModules({
 	modules: [
 		{
 			name: "Drizzle",
-			pattern: ["src/drizzle.ts", "src/drizzle/**", "src/env.ts"],
-			allowImportsFrom: ["src/drizzle/**"],
-			errorMessage: "🔥 The Drizzle module should access to Drizzle modules only. 🔥",
+			pattern: ["src/drizzle.ts", "src/drizzle/**"],
+			allowImportsFrom: ["src/drizzle/**", "src/env.ts", "src/Shared/SharedModel.ts"],
+			errorMessage: "🔥 The Drizzle module should access to Drizzle modules and SharedModel. 🔥",
 		},
 
 		{
@@ -40,7 +40,16 @@ export const independentModulesConfig = createIndependentModules({
 		{
 			name: "Routes",
 			pattern: "src/routes/**",
-			allowImportsFrom: ["src/Shared/**", "src/utils/**", "src/impl.ts", "src/drizzle.ts", "{misc}", "{dirname}/**"],
+			allowImportsFrom: [
+				"src/Shared/**",
+				"src/utils/**",
+				"src/impl.ts",
+				"src/dao.ts",
+				"src/jwt.ts",
+				"src/drizzle.ts",
+				"{misc}",
+				"{dirname}/**",
+			],
 			errorMessage: "🔥 The Routes module should only access Shared modules, Utils and Route folder and subfolders. 🔥",
 		},
 

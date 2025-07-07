@@ -1,56 +1,69 @@
-import { t, type TSchema } from "elysia";
+import type { TSchema } from "elysia";
+import { t } from "elysia";
 
 export const Nullable = <T extends TSchema>(type: T) => t.Union([type, t.Null()]);
 
-/** Color scheme values */
 export const COLOR_SCHEMES = ["light", "dark"] as const;
-/** Color scheme type */
 export type ColorSchemeType = (typeof COLOR_SCHEMES)[number];
 
-/** Language values */
 export const LANGUAGES = ["en", "fr"] as const;
-/** Language type */
 export type LanguageType = (typeof LANGUAGES)[number];
 
-export const GetDynDictSchema = t.Object({
-	language: t.Union(LANGUAGES.map((l) => t.Literal(l))),
+export const ROLES = ["superAdmin", "admin", "user"] as const;
+export type RoleType = (typeof ROLES)[number];
+export const RoleSchema = t.Union(ROLES.map((role) => t.Literal(role)));
+
+// generic
+
+export const IdNumSchema = t.Object({
+	id: t.Number(),
 });
+export type IdNum = typeof IdNumSchema.static;
 
-export type GetDynDict = typeof GetDynDictSchema.static;
+export const HeadersSchema = t.Object({
+	xToken: t.String(),
+});
+export type Headers = typeof HeadersSchema.static;
 
-/** Translation categories */
-export const TRANSLATION_CATEGORIES = ["test"] as const;
-/** Translation category type */
-export type TranslationCategoryType = (typeof TRANSLATION_CATEGORIES)[number];
+// auth
 
-export type DynDict<T extends string> = Record<LanguageType, Record<TranslationCategoryType, Record<T, string>>>;
+export const LoginSchema = t.Object({
+	email: t.String(),
+	password: t.String(),
+});
+export type Login = typeof LoginSchema.static;
 
-/** Permission values */
-export const PERMISSIONS = ["create", "update", "delete", "read", "admin"] as const;
-/** Permission type */
-export type PermissionType = (typeof PERMISSIONS)[number];
+export const LogoutSchema = t.Object({
+	token: t.String(),
+});
+export type Logout = typeof LogoutSchema.static;
 
-export const ExampleUserSchema = t.Object({
-	name: t.String({ minLength: 1, maxLength: 100 }),
+// user
+
+export type UserOutput = {
+	id: number;
+	email: string;
+	role: RoleType;
+	lastLoginTime: number;
+};
+
+export const CreateUserSchema = t.Object({
 	email: t.String({ format: "email" }),
-	permissions: t.Array(t.Union(PERMISSIONS.map((permission) => t.Literal(permission)))),
+	role: RoleSchema,
 });
+export type CreateUser = typeof CreateUserSchema.static;
 
-export type ExampleUser = typeof ExampleUserSchema.static;
+export const UpdateUserSchema = t.Object({
+	email: t.Optional(t.String({ format: "email" })),
+	role: t.Optional(RoleSchema),
+	password: t.Optional(t.String()),
+});
+export type UpdateUser = typeof UpdateUserSchema.static;
 
-export const FindUserSchema = t.Optional(
-	t.Object({
-		name: t.Optional(t.String({ minLength: 1, maxLength: 100 })),
-		email: t.Optional(t.String({ format: "email" })),
-		permissions: t.Optional(t.Array(t.Union(PERMISSIONS.map((permission) => t.Literal(permission))))),
-	})
-);
-
-export type FindUser = typeof FindUserSchema.static;
+// execute
 
 export const ExecuteSchema = t.Object({
 	url: t.String({ description: "The URL to execute, should start with /", examples: ["/hello", "/user/123"] }),
 	body: t.Any({ description: "The body to send to the URL" }),
 });
-
 export type Execute = typeof ExecuteSchema.static;
