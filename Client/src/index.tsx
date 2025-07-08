@@ -1,5 +1,3 @@
-import { enableApiMock } from "@/api/api.config";
-
 import "@/index.css";
 import "@mantine/core/styles.css";
 
@@ -10,8 +8,6 @@ import { configurePreview } from "@/utils/withPreview";
 import { App } from "@capacitor/app";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-
-enableApiMock();
 
 setRouterBaseRoute(clientEnv.BASE_URL);
 

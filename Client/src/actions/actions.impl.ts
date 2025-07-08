@@ -4,7 +4,6 @@ import { lang } from "@/actions/impl/lang";
 import { localStorageIo } from "@/actions/impl/localStorageIo";
 import { shell } from "@/actions/impl/shell";
 import { url } from "@/actions/impl/url";
-import { users } from "@/actions/impl/users";
 import { wakeLock } from "@/actions/impl/wakeLock";
 
 export const actions = {
@@ -14,6 +13,5 @@ export const actions = {
 	localStorageIo,
 	shell,
 	url,
-	users,
 	wakeLock,
 };

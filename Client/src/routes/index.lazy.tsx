@@ -47,10 +47,9 @@ export const MainLayout = () => {
 	const colorScheme = app.colorScheme.value;
 	const isAsideOpened = app.shell.aside.isOpened;
 	const isNavbarOpened = app.shell.navbar.isOpened;
-	const usersFilter = app.users.filter;
 	localStorageStateStore.useEffect(
-		(setLocalStorageState) => setLocalStorageState({ lang, colorScheme, isAsideOpened, isNavbarOpened, usersFilter }),
-		[lang, colorScheme, isAsideOpened, isNavbarOpened, usersFilter]
+		(setLocalStorageState) => setLocalStorageState({ lang, colorScheme, isAsideOpened, isNavbarOpened }),
+		[lang, colorScheme, isAsideOpened, isNavbarOpened]
 	);
 
 	// save the local storage state to the local storage

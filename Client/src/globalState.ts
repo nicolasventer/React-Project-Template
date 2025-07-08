@@ -1,6 +1,6 @@
 import { clientEnv } from "@/clientEnv";
 import type { Lang } from "@/dict";
-import type { ColorSchemeType, ExampleUser } from "@/Shared/SharedModel";
+import type { ColorSchemeType } from "@/Shared/SharedModel";
 import { en } from "@/tr/en";
 import type { NotArray } from "@/utils/Redux/GlobalApp";
 import { GlobalApp } from "@/utils/Redux/GlobalApp";
@@ -15,7 +15,6 @@ export type LocalStorageState = {
 	colorScheme: ColorSchemeType;
 	isAsideOpened: boolean;
 	isNavbarOpened: boolean;
-	usersFilter: string;
 };
 export const loadLocalStorageState = (): LocalStorageState => {
 	const storedLocalStorageState = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) ?? "{}") as Partial<LocalStorageState>;
@@ -25,7 +24,6 @@ export const loadLocalStorageState = (): LocalStorageState => {
 		colorScheme: storedLocalStorageState.colorScheme ?? "dark",
 		isAsideOpened: storedLocalStorageState.isAsideOpened ?? false,
 		isNavbarOpened: storedLocalStorageState.isNavbarOpened ?? false,
-		usersFilter: storedLocalStorageState.usersFilter ?? "",
 	};
 };
 const localStorageState = loadLocalStorageState();
@@ -58,11 +56,6 @@ export const { appStore, setAppWithUpdate, useInit, useSetAppEnabled } = new Glo
 		main: {
 			isScrollable: false,
 		},
-	},
-	users: {
-		all: [] as { current: ExampleUser; edit: ExampleUser | null }[],
-		isLoading: false,
-		filter: localStorageState.usersFilter,
 	},
 });
 export type AppState = TypeOfStore<typeof appStore>;

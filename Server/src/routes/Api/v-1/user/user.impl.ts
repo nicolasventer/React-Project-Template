@@ -16,7 +16,11 @@ export class UserImpl {
 	public getAll = (req: Context) => JwtService.checkRole(req, "admin") || dao.user.getAll();
 
 	public update = (req: Context<{ params: IdNum }>, idNum: IdNum, updateUser: UpdateUser) =>
-		JwtService.checkRole(req, "admin") || dao.user.update(idNum, updateUser);
+		JwtService.checkRole(req, "admin") ||
+		dao.user.update(idNum, updateUser).then((res) => {
+			JwtService.revokeLoginId(idNum.id);
+			return res;
+		});
 
 	public updateSelf = (req: Context, updateUser: UpdateSelfUser) => {
 		const verified = JwtService.getVerifiedLoginToken(req);
@@ -25,10 +29,19 @@ export class UserImpl {
 		const idNum = { id: verified.id };
 		return dao.user
 			.update(idNum, updateUser)
-			.then((updated) => (updated ? req.status("OK", "User updated") : req.status("Not Found", "User not found")));
+			.then((updated) => (updated ? req.status("OK", "User updated") : req.status("Not Found", "User not found")))
+			.then((res) => {
+				JwtService.revokeLoginId(idNum.id);
+				return res;
+			});
 	};
 
-	public delete = (req: Context<{ params: IdNum }>, idNum: IdNum) => JwtService.checkRole(req, "admin") || dao.user.delete(idNum);
+	public delete = (req: Context<{ params: IdNum }>, idNum: IdNum) =>
+		JwtService.checkRole(req, "admin") ||
+		dao.user.delete(idNum).then((res) => {
+			JwtService.revokeLoginId(idNum.id);
+			return res;
+		});
 
 	public deleteSelf = (req: Context) => {
 		const verified = JwtService.getVerifiedLoginToken(req);
@@ -37,6 +50,10 @@ export class UserImpl {
 		const idNum = { id: verified.id };
 		return dao.user
 			.delete(idNum)
-			.then((deleted) => (deleted ? req.status("OK", "User deleted") : req.status("Not Found", "User not found")));
+			.then((deleted) => (deleted ? req.status("OK", "User deleted") : req.status("Not Found", "User not found")))
+			.then((res) => {
+				JwtService.revokeLoginId(idNum.id);
+				return res;
+			});
 	};
 }

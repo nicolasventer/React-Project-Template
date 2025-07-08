@@ -18,7 +18,7 @@ const expandedType = type.getText(undefined, ts.TypeFormatFlags.InTypeAlias);
 // Write the expanded type to a file
 Bun.write(
 	"src/api/api.gen.ts",
-	`import type { LanguageType, PermissionType } from "@/Shared/SharedModel";
+	`import type { ImageOutput, RoleType, UserOutput } from "@/Shared/SharedModel";
 import type { Treaty } from "@elysiajs/eden";
 
 type GoodTreatyResponse<T extends Record<number, unknown>> = Treaty.TreatyResponse<T>;
@@ -28,9 +28,7 @@ type TreatyResponse<T extends Record<number, unknown>> = { [K in keyof T]: GoodT
  * @ignore
  * Type definition for the API object, retrieved from the server
  */
-export type Api = ${expandedType
-		.replace(/Files/g, "PermissionType[]")
-		.replace(/language: string \| number/g, "language: LanguageType")};`
+export type Api = ${expandedType.replace(/Files/g, "RoleType[]")};`
 );
 
 console.log("api.gen.ts generated successfully.");
