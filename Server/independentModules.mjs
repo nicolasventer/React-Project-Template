@@ -40,16 +40,7 @@ export const independentModulesConfig = createIndependentModules({
 		{
 			name: "Routes",
 			pattern: "src/routes/**",
-			allowImportsFrom: [
-				"src/Shared/**",
-				"src/utils/**",
-				"src/impl.ts",
-				"src/dao.ts",
-				"src/jwt.ts",
-				"src/drizzle.ts",
-				"{misc}",
-				"{dirname}/**",
-			],
+			allowImportsFrom: ["src/Shared/**", "src/utils/**", "{root_files}", "{misc}", "{dirname}/**"],
 			errorMessage: "🔥 The Routes module should only access Shared modules, Utils and Route folder and subfolders. 🔥",
 		},
 
@@ -71,6 +62,7 @@ export const independentModulesConfig = createIndependentModules({
 	reusableImportPatterns: {
 		misc: ["src/assets/**"],
 		root: ["src/*"],
+		root_files: ["src/impl.ts", "src/dao.ts", "src/jwt.ts", "src/drizzle.ts", "src/srv_config.ts"],
 		toOrganize: ["src/toOrganize/**"],
 	},
 });

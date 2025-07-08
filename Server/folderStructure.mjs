@@ -13,28 +13,30 @@ export const folderStructureConfig = createFolderStructure({
 		{
 			name: "src",
 			children: [
-				// src/index.ts
-				{ name: "index.ts" },
-				// src/impl.ts
-				{ name: "impl.ts" },
-				// src/dao.ts
-				{ name: "dao.ts" },
-				// src/testIndex.ts
-				{ name: "testIndex.ts" },
-				// src/testConfig.ts
-				{ name: "testConfig.ts" },
 				// src/api.ts
 				{ name: "api.ts" },
+				// src/dao.ts
+				{ name: "dao.ts" },
+				// src/drizzle.ts
+				{ name: "drizzle.ts" },
 				// src/env.ts
 				{ name: "env.ts" },
+				// src/impl.ts
+				{ name: "impl.ts" },
+				// src/index.ts
+				{ name: "index.ts" },
 				// src/jwt.ts
 				{ name: "jwt.ts" },
+				// src/srv_config.ts
+				{ name: "srv_config.ts" },
+				// src/testConfig.ts
+				{ name: "testConfig.ts" },
+				// src/testIndex.ts
+				{ name: "testIndex.ts" },
 				// src/winston.ts
 				{ name: "winston.ts" },
 				// src/_override.ts
 				{ name: "_override.ts" },
-				// src/drizzle.ts
-				{ name: "drizzle.ts" },
 				// src/drizzle/
 				{ name: "drizzle", children: [{ name: "schema.ts" }, { name: "relations.ts" }] },
 				// src/*.gen.ts
@@ -47,8 +49,6 @@ export const folderStructureConfig = createFolderStructure({
 				{ name: "Shared", children: [] },
 				// src/utils/
 				{ name: "utils", children: [] },
-				// src/toOrganize/
-				{ name: "toOrganize", children: [] }, // TODO: toOrganize folder should be removed, now it can contain folders like database
 			],
 		},
 	],

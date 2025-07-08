@@ -1,3 +1,5 @@
+import "dotenv/config";
+
 import { apiApp } from "@/routes/api/api.routes";
 import { PORT, SRV_URL } from "@/Shared/SharedConfig";
 import { initWinston } from "@/winston";
