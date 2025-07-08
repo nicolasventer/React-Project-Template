@@ -1,15 +1,20 @@
 import type { CreateUser, IdNum, UpdateSelfUser, UpdateUser } from "@/Shared/SharedModel";
 import { dao } from "@/dao";
 import { JwtService } from "@/jwt";
+import { mailService } from "@/mail";
+import { B_ENABLE_MAIL_SERVICE } from "@/srv_config";
 import type { Context } from "elysia";
 
 export class UserImpl {
-	// TODO:  send email to user
-	public create = (_: Context, createUser: CreateUser) => dao.user.create(createUser);
+	public create = (_: Context, createUser: CreateUser) => {
+		const user = dao.user.create(createUser);
+		if (B_ENABLE_MAIL_SERVICE)
+			mailService.sendEmail(createUser.email, "Welcome to our app", "Welcome to our app").catch(() => {});
+		return user;
+	};
 
 	public getAll = (req: Context) => JwtService.checkRole(req, "admin") || dao.user.getAll();
 
-	// TODO: ensure that the user cannot update their own role
 	public update = (req: Context<{ params: IdNum }>, idNum: IdNum, updateUser: UpdateUser) =>
 		JwtService.checkRole(req, "admin") || dao.user.update(idNum, updateUser);
 
@@ -23,7 +28,6 @@ export class UserImpl {
 			.then((updated) => (updated ? req.status("OK", "User updated") : req.status("Not Found", "User not found")));
 	};
 
-	// TODO: ensure that the user cannot delete himself
 	public delete = (req: Context<{ params: IdNum }>, idNum: IdNum) => JwtService.checkRole(req, "admin") || dao.user.delete(idNum);
 
 	public deleteSelf = (req: Context) => {

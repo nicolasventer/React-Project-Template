@@ -1,4 +1,4 @@
-import type { CreateUser, IdNum, MultiUserOutput, UpdateSelfUser, UpdateUser, UserOutput } from "@/Shared/SharedModel";
+import type { CreateUser, IdNum, MultiUserOutput, RoleType, UpdateSelfUser, UpdateUser, UserOutput } from "@/Shared/SharedModel";
 import { db, schema } from "@/drizzle";
 import { eq } from "drizzle-orm";
 
@@ -15,10 +15,20 @@ export class UserDao {
 			.execute()
 			.then((res) => ({ users: res }));
 
-	public create = (user: CreateUser): Promise<UserOutput> =>
-		db
+	public create = async (user: CreateUser): Promise<UserOutput> => {
+		const adminCount = await db
+			.select()
+			.from(schema.user)
+			.where(eq(schema.user.role, "admin"))
+			.limit(1)
+			.execute()
+			.then((res) => res.length);
+		// Set role to "admin" if no admin users exist, otherwise "user"
+		const role: RoleType = adminCount === 0 ? "admin" : "user";
+
+		return db
 			.insert(schema.user)
-			.values({ ...user, lastLoginTime: Date.now(), role: "user" })
+			.values({ ...user, lastLoginTime: Date.now(), role })
 			.returning({
 				id: schema.user.id,
 				email: schema.user.email,
@@ -27,6 +37,7 @@ export class UserDao {
 			})
 			.execute()
 			.then((res) => res[0]);
+	};
 
 	public update = ({ id }: IdNum, updateUser: UpdateUser | UpdateSelfUser) =>
 		db

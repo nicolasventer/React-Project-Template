@@ -14,6 +14,10 @@ export const json_group_array = <T>(column: Column) => sql<T[]>`json_group_array
 export type User = typeof schema.user.$inferSelect;
 
 const seed = async () => {
+	const images: { url: string }[] = await Promise.all(
+		Array.from({ length: 1000 }, async (_, i) => fetch(`https://picsum.photos/128/128?${i}`).then((res) => ({ url: res.url })))
+	);
+	await db.insert(schema.image).values(images);
 	console.log("seeded completed");
 };
 

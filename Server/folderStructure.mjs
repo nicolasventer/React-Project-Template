@@ -27,6 +27,8 @@ export const folderStructureConfig = createFolderStructure({
 				{ name: "index.ts" },
 				// src/jwt.ts
 				{ name: "jwt.ts" },
+				// src/mail.ts
+				{ name: "mail.ts" },
 				// src/srv_config.ts
 				{ name: "srv_config.ts" },
 				// src/testConfig.ts

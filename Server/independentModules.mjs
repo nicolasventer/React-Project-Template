@@ -62,7 +62,7 @@ export const independentModulesConfig = createIndependentModules({
 	reusableImportPatterns: {
 		misc: ["src/assets/**"],
 		root: ["src/*"],
-		root_files: ["src/impl.ts", "src/dao.ts", "src/jwt.ts", "src/drizzle.ts", "src/srv_config.ts"],
+		root_files: ["src/dao.ts", "src/drizzle.ts", "src/impl.ts", "src/jwt.ts", "src/mail.ts", "src/srv_config.ts"],
 		toOrganize: ["src/toOrganize/**"],
 	},
 });
