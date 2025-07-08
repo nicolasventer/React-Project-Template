@@ -8,9 +8,9 @@ export type LoginPayload = Pick<User, "id" | "email" | "role">;
 
 // object built with only the properties we want to include in the token
 const generateLoginToken = ({ id, email, role }: LoginPayload): string =>
-	jwt.sign({ id, email, role }, JWT_SECRET, { expiresIn: "3h" });
+	jwt.sign({ id, email, role }, JWT_SECRET, { expiresIn: "1h" });
 
-// returns LoginPayload if token is valid,
+// returns LoginPayload if token is valid
 // returns true if token is expired
 // returns false if token is invalid
 const verifyLoginToken = (token: string): LoginPayload | boolean => {
@@ -21,7 +21,12 @@ const verifyLoginToken = (token: string): LoginPayload | boolean => {
 	}
 };
 
+// returns LoginPayload if token is valid
+// returns true if token is expired
+// returns false if token is invalid
 const getVerifiedLoginToken = (req: Context | Context<{ params: IdNum }>) =>
+	// TODO: if user role has been updated, simulate token expiration (return true)
+	// need to store user email + role when update api is called, keep the token value for 1h
 	!!req.headers.xToken && verifyLoginToken(req.headers.xToken);
 
 // returns undefined if token is valid

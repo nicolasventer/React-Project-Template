@@ -46,19 +46,25 @@ export type UserOutput = {
 	role: RoleType;
 	lastLoginTime: number;
 };
+export type MultiUserOutput = {
+	users: UserOutput[];
+};
 
 export const CreateUserSchema = t.Object({
 	email: t.String({ format: "email" }),
-	role: RoleSchema,
+	password: t.String(),
 });
 export type CreateUser = typeof CreateUserSchema.static;
 
 export const UpdateUserSchema = t.Object({
-	email: t.Optional(t.String({ format: "email" })),
-	role: t.Optional(RoleSchema),
-	password: t.Optional(t.String()),
+	role: RoleSchema,
 });
 export type UpdateUser = typeof UpdateUserSchema.static;
+
+export const UpdateSelfUserSchema = t.Object({
+	password: t.String(),
+});
+export type UpdateSelfUser = typeof UpdateSelfUserSchema.static;
 
 // password
 
@@ -71,6 +77,37 @@ export const UpdatePasswordSchema = t.Object({
 	password: t.String(),
 });
 export type UpdatePassword = typeof UpdatePasswordSchema.static;
+
+// image
+
+export type ImageOutput = {
+	imageId: number;
+	url: string;
+	positiveVotes: number;
+	negativeVotes: number;
+	totalVotes: number;
+	score: number;
+};
+export type MultiImageOutput = {
+	images: ImageOutput[];
+};
+
+// vote
+
+export type VoteOutput = {
+	voteId: number;
+};
+
+export const CreateVoteSchema = t.Object({
+	imageId: t.Number(),
+	isPositive: t.Boolean(),
+});
+export type CreateVote = typeof CreateVoteSchema.static;
+
+export const UpdateVoteSchema = t.Object({
+	isPositive: t.Boolean(),
+});
+export type UpdateVote = typeof UpdateVoteSchema.static;
 
 // execute
 

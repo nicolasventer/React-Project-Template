@@ -7,7 +7,7 @@ import type { Context } from "elysia";
 export class AuthImpl {
 	login = async (req: Context, { email, password }: Login) => {
 		const hashedPassword = await hashPassword(password);
-		const user = await dao.auth.getUser(email, hashedPassword);
+		const user = await dao.auth.login(email, hashedPassword);
 		if (!user) return req.status("Unauthorized", "Invalid email or password");
 		const token = JwtService.generateLoginToken(user);
 		return { token };

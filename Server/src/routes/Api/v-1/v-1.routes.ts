@@ -1,6 +1,8 @@
 import { authApp } from "@/routes/api/v-1/auth/auth.routes";
+import { imageApp } from "@/routes/api/v-1/image/image.routes";
 import { passwordApp } from "@/routes/api/v-1/password/password.routes";
 import { userApp } from "@/routes/api/v-1/user/user.routes";
+import { voteApp } from "@/routes/api/v-1/vote/vote.routes";
 import Elysia from "elysia";
 
 export const v1App = new Elysia({ prefix: "/v1" })
@@ -8,4 +10,6 @@ export const v1App = new Elysia({ prefix: "/v1" })
 	.get("", () => "v1 is running")
 	.use(userApp)
 	.use(authApp)
-	.use(passwordApp);
+	.use(passwordApp)
+	.use(voteApp)
+	.use(imageApp);

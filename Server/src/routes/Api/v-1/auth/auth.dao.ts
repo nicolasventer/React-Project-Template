@@ -2,12 +2,12 @@ import { db, schema } from "@/drizzle";
 import { and, eq } from "drizzle-orm";
 
 export class AuthDao {
-	getUser = (email: string, hashedPassword: string) =>
+	login = (email: string, hashedPassword: string) =>
 		db
-			.select()
-			.from(schema.user)
+			.update(schema.user)
+			.set({ lastLoginTime: Date.now() })
 			.where(and(eq(schema.user.email, email), eq(schema.user.password, hashedPassword)))
-			.limit(1)
+			.returning({ id: schema.user.id, email: schema.user.email, role: schema.user.role })
 			.execute()
 			.then((res) => res[0]);
 }

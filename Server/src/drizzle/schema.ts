@@ -22,13 +22,17 @@ export const user = sqliteTable(
 	(table) => [uniqueIndex("user_email_unique").on(table.email)]
 );
 
-export const vote = sqliteTable("vote", {
-	voteId: integer().primaryKey({ autoIncrement: true }).notNull(),
-	userId: integer()
-		.notNull()
-		.references(() => user.id, { onDelete: "cascade", onUpdate: "cascade" }),
-	imageId: integer()
-		.notNull()
-		.references(() => image.imageId, { onDelete: "cascade", onUpdate: "cascade" }),
-	isPositive: integer().notNull(),
-});
+export const vote = sqliteTable(
+	"vote",
+	{
+		voteId: integer().primaryKey({ autoIncrement: true }).notNull(),
+		userId: integer()
+			.notNull()
+			.references(() => user.id, { onDelete: "cascade", onUpdate: "cascade" }),
+		imageId: integer()
+			.notNull()
+			.references(() => image.imageId, { onDelete: "cascade", onUpdate: "cascade" }),
+		isPositive: integer().notNull(),
+	},
+	(table) => [uniqueIndex("vote_user_image_unique").on(table.userId, table.imageId)]
+);

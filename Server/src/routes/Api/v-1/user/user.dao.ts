@@ -1,10 +1,9 @@
-import type { CreateUser, IdNum, UpdateUser, UserOutput } from "@/Shared/SharedModel";
+import type { CreateUser, IdNum, MultiUserOutput, UpdateSelfUser, UpdateUser, UserOutput } from "@/Shared/SharedModel";
 import { db, schema } from "@/drizzle";
-import { randomUUIDv7 } from "bun";
 import { eq } from "drizzle-orm";
 
 export class UserDao {
-	public getAll = (): Promise<UserOutput[]> =>
+	public getAll = (): Promise<MultiUserOutput> =>
 		db
 			.select({
 				id: schema.user.id,
@@ -13,12 +12,13 @@ export class UserDao {
 				lastLoginTime: schema.user.lastLoginTime,
 			})
 			.from(schema.user)
-			.execute();
+			.execute()
+			.then((res) => ({ users: res }));
 
 	public create = (user: CreateUser): Promise<UserOutput> =>
 		db
 			.insert(schema.user)
-			.values({ ...user, lastLoginTime: Date.now(), password: randomUUIDv7() })
+			.values({ ...user, lastLoginTime: Date.now(), role: "user" })
 			.returning({
 				id: schema.user.id,
 				email: schema.user.email,
@@ -28,8 +28,20 @@ export class UserDao {
 			.execute()
 			.then((res) => res[0]);
 
-	public update = ({ id }: IdNum, updateUser: UpdateUser) =>
-		db.update(schema.user).set(updateUser).where(eq(schema.user.id, id)).execute();
+	public update = ({ id }: IdNum, updateUser: UpdateUser | UpdateSelfUser) =>
+		db
+			.update(schema.user)
+			.set(updateUser)
+			.where(eq(schema.user.id, id))
+			.returning({ id: schema.user.id })
+			.execute()
+			.then((res) => res[0]);
 
-	public delete = ({ id }: IdNum) => db.delete(schema.user).where(eq(schema.user.id, id)).execute();
+	public delete = ({ id }: IdNum) =>
+		db
+			.delete(schema.user)
+			.where(eq(schema.user.id, id))
+			.returning({ id: schema.user.id })
+			.execute()
+			.then((res) => res[0]);
 }
