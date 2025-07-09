@@ -4,14 +4,11 @@ import "@mantine/core/styles.css";
 import { clientEnv } from "@/clientEnv";
 import { setRouterBaseRoute } from "@/routerInstance.gen";
 import { MainLayout } from "@/routes";
-import { configurePreview } from "@/utils/withPreview";
 import { App } from "@capacitor/app";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
 setRouterBaseRoute(clientEnv.BASE_URL);
-
-configurePreview("static", false);
 
 App.addListener("backButton", ({ canGoBack }) => (canGoBack ? window.history.back() : App.exitApp()));
 

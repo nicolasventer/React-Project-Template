@@ -2,17 +2,14 @@ import { actions } from "@/actions/actions.impl";
 import { clientEnv } from "@/clientEnv";
 import { dict } from "@/dict";
 import { appStore, LOCAL_STORAGE_KEY, localStorageStateStore, trStore, useInit, useSetAppEnabled, useTr } from "@/globalState";
-import { navigateToCustomRouteFn } from "@/routerInstance.gen";
+import { navigateToCustomRouteFn, RouterRender } from "@/routerInstance.gen";
 import { FullViewport, WriteToolboxClasses } from "@/utils/ComponentToolbox";
 import { useDebug } from "@/utils/GlobalDebugOneFile";
-import { configurePreview } from "@/utils/withPreview";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import { MantineProvider } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import type { ReactNode } from "react";
 import { useEffect } from "react";
-
-configurePreview("static", false);
 
 const SafeAreaInset = ({ children }: { children?: ReactNode }) => (
 	<div style={{ height: "100%" }}>
@@ -66,10 +63,10 @@ export const MainLayout = () => {
 		<MantineProvider forceColorScheme={app.colorScheme.value}>
 			<WriteToolboxClasses />
 			<FullViewport>
-				<SafeAreaInset>
-					{/* <Shell app={app} isSetAppEnabled={isSetAppEnabled} tr={tr} /> */}
-					<div>{tr.Home}</div>
-				</SafeAreaInset>
+				{/* <SafeAreaInset> */}
+				{/* <Shell app={app} isSetAppEnabled={isSetAppEnabled} tr={tr} /> */}
+				<RouterRender subPath="/" />
+				{/* </SafeAreaInset> */}
 			</FullViewport>
 			{/* <RenderDebug expand position="bottom-left" /> */}
 		</MantineProvider>

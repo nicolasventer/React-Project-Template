@@ -13,4 +13,13 @@ export const fr: Tr = {
 	"Code features": "Fonctionnalités de code",
 
 	"Table of contents": "Table des matières",
+
+	// Login page
+	Login: "Connexion",
+	Email: "Email",
+	Password: "Mot de passe",
+	"Forgot password?": "Mot de passe oublié ?",
+	"Sign In": "Se connecter",
+	"Do not have an account yet?": "Vous n'avez pas de compte ?",
+	"Create account": "Créer un compte",
 };

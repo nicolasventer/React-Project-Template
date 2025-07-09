@@ -21,8 +21,7 @@ Bun.write(
 	`import type { ImageOutput, RoleType, UserOutput } from "@/Shared/SharedModel";
 import type { Treaty } from "@elysiajs/eden";
 
-type GoodTreatyResponse<T extends Record<number, unknown>> = Treaty.TreatyResponse<T>;
-type TreatyResponse<T extends Record<number, unknown>> = { [K in keyof T]: GoodTreatyResponse<{ [_ in K]: T[K] }> }[keyof T];
+type TreatyResponse<T extends Record<number, unknown>> = Treaty.TreatyResponse<T>;
 
 /**
  * @ignore

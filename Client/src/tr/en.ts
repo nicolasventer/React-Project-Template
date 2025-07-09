@@ -11,6 +11,15 @@ export const en = {
 	"Code features": "Code features",
 
 	"Table of contents": "Table of contents",
+
+	// Login page
+	Login: "Login",
+	Email: "Email",
+	Password: "Password",
+	"Forgot password?": "Forgot password?",
+	"Sign In": "Sign In",
+	"Do not have an account yet?": "Do not have an account yet?",
+	"Create account": "Create account",
 };
 
 export type Tr = typeof en;

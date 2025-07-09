@@ -1,9 +1,10 @@
 import { clientEnv } from "@/clientEnv";
 import type { Lang } from "@/dict";
-import type { ColorSchemeType } from "@/Shared/SharedModel";
+import type { ColorSchemeType, RoleType } from "@/Shared/SharedModel";
 import { en } from "@/tr/en";
 import type { NotArray } from "@/utils/Redux/GlobalApp";
 import { GlobalApp } from "@/utils/Redux/GlobalApp";
+import { HashedString } from "@/utils/Redux/HashedString";
 import type { TypeOfStore } from "@/utils/Store";
 import { store } from "@/utils/Store";
 import { getUrl } from "@/utils/useNavigate";
@@ -13,6 +14,10 @@ export const LOCAL_STORAGE_KEY = "template_globalState" as const;
 export type LocalStorageState = {
 	lang: Lang;
 	colorScheme: ColorSchemeType;
+	userEmail: string;
+	userPassword: string;
+	userRole: RoleType | null;
+	authToken: string;
 };
 export const loadLocalStorageState = (): LocalStorageState => {
 	const storedLocalStorageState = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) ?? "{}") as Partial<LocalStorageState>;
@@ -20,6 +25,10 @@ export const loadLocalStorageState = (): LocalStorageState => {
 	return {
 		lang: storedLocalStorageState.lang ?? "en",
 		colorScheme: storedLocalStorageState.colorScheme ?? "dark",
+		userEmail: storedLocalStorageState.userEmail ?? "",
+		userPassword: storedLocalStorageState.userPassword ?? "",
+		userRole: storedLocalStorageState.userRole ?? null,
+		authToken: storedLocalStorageState.authToken ?? "",
 	};
 };
 const localStorageState = loadLocalStorageState();
@@ -43,6 +52,16 @@ export const { appStore, setAppWithUpdate, useInit, useSetAppEnabled } = new Glo
 	shell: {
 		isAboveXl: false,
 		isAboveMd: false,
+	},
+	auth: {
+		isLoading: false,
+		token: new HashedString(localStorageState.authToken),
+		error: "",
+		user: {
+			email: localStorageState.userEmail,
+			password: new HashedString(localStorageState.userPassword),
+			role: localStorageState.userRole,
+		},
 	},
 });
 export type AppState = TypeOfStore<typeof appStore>;
