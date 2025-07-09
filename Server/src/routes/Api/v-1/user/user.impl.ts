@@ -29,7 +29,7 @@ export class UserImpl {
 		const idNum = { id: verified.id };
 		return dao.user
 			.update(idNum, updateUser)
-			.then((updated) => (updated ? req.status("OK", "User updated") : req.status("Not Found", "User not found")))
+			.then((updated) => (updated ? "User updated" : req.status("Not Found", "User not found")))
 			.then((res) => {
 				JwtService.revokeLoginId(idNum.id);
 				return res;
@@ -50,7 +50,7 @@ export class UserImpl {
 		const idNum = { id: verified.id };
 		return dao.user
 			.delete(idNum)
-			.then((deleted) => (deleted ? req.status("OK", "User deleted") : req.status("Not Found", "User not found")))
+			.then((deleted) => (deleted ? "User deleted" : req.status("Not Found", "User not found")))
 			.then((res) => {
 				JwtService.revokeLoginId(idNum.id);
 				return res;

@@ -84,6 +84,11 @@ export const MainLayout = () => {
 						password={password}
 						authError={app.auth.error}
 						isAuthLoading={app.auth.isLoading}
+						loginView={app.auth.loginView}
+						lang={app.lang.value}
+						isLangLoading={app.lang.isLoading}
+						colorScheme={app.colorScheme.value}
+						isColorSchemeLoading={app.colorScheme.isLoading}
 					/>
 					<RouterRender subPath="/" />
 				</Vertical>

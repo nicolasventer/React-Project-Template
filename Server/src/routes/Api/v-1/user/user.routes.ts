@@ -1,10 +1,10 @@
 import { impl } from "@/impl";
-import { CreateUserSchema, HeadersSchema, IdNumSchema, UpdateUserSchema } from "@/Shared/SharedModel";
+import { CreateUserSchema, HeadersSchema, IdNumSchema, UpdateSelfUserSchema, UpdateUserSchema } from "@/Shared/SharedModel";
 import { Elysia } from "elysia";
 
 export const userApp = new Elysia({ prefix: "/users" })
 	// create a user
-	.post("", (req) => impl.user.create(req, req.body), { headers: HeadersSchema, body: CreateUserSchema })
+	.post("", (req) => impl.user.create(req, req.body), { body: CreateUserSchema })
 	// get all users
 	.get("", (req) => impl.user.getAll(req), { headers: HeadersSchema })
 	// update a user by id
@@ -14,7 +14,7 @@ export const userApp = new Elysia({ prefix: "/users" })
 		params: IdNumSchema,
 	})
 	// update self
-	.patch("/current", (req) => impl.user.updateSelf(req, req.body), { headers: HeadersSchema, body: UpdateUserSchema })
+	.patch("/current", (req) => impl.user.updateSelf(req, req.body), { headers: HeadersSchema, body: UpdateSelfUserSchema })
 	// delete a user by id
 	.delete("/:id", (req) => impl.user.delete(req, req.params), { headers: HeadersSchema, params: IdNumSchema })
 	// delete self

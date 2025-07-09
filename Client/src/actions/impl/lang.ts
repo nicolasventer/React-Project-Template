@@ -11,11 +11,11 @@ const updateLangValue = (lang: Lang) =>
 	});
 const updateLangFn = (lang: Lang, useTransition: boolean) => () => {
 	if (useTransition) {
-		updateLangLoading(lang, useTransition);
-		return wait(200).then(() => updateLangValue(lang));
-	} else {
 		document.startViewTransition(() => updateLangValue(lang));
 		return Promise.resolve();
+	} else {
+		updateLangLoading(lang, useTransition);
+		return wait(200).then(() => updateLangValue(lang));
 	}
 };
 

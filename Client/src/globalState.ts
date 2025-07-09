@@ -2,7 +2,7 @@ import { clientEnv } from "@/clientEnv";
 import type { Lang } from "@/dict";
 import type { ColorSchemeType, RoleType } from "@/Shared/SharedModel";
 import { en } from "@/tr/en";
-import type { ImageViewType } from "@/types";
+import type { ImageViewType, LoginViewType } from "@/types";
 import type { NotArray } from "@/utils/Redux/GlobalApp";
 import { GlobalApp } from "@/utils/Redux/GlobalApp";
 import { HashedString } from "@/utils/Redux/HashedString";
@@ -57,6 +57,7 @@ export const { appStore, setAppWithUpdate, useInit, useSetAppEnabled } = new Glo
 	imageView: "Public" as ImageViewType,
 	auth: {
 		isModalOpened: false,
+		loginView: "Login" as LoginViewType,
 		isLoading: false,
 		token: new HashedString(localStorageState.authToken),
 		error: "",

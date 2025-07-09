@@ -109,7 +109,13 @@ export type Api = {
 		}) & {
 			post: (
 				body: { email: string; password: string },
-				options: { headers: { xToken: string }; query?: Record<string, unknown> | undefined; fetch?: RequestInit | undefined }
+				options?:
+					| {
+							headers?: Record<string, unknown> | undefined;
+							query?: Record<string, unknown> | undefined;
+							fetch?: RequestInit | undefined;
+					  }
+					| undefined
 			) => Promise<
 				TreatyResponse<{
 					200: { id: number; email: string; role: "user" | "superAdmin" | "admin"; lastLoginTime: number };
@@ -145,11 +151,11 @@ export type Api = {
 			>;
 			current: {
 				patch: (
-					body: { role: RoleType[] },
+					body: { password: string },
 					options: { headers: { xToken: string }; query?: Record<string, unknown> | undefined; fetch?: RequestInit | undefined }
 				) => Promise<
 					TreatyResponse<{
-						200: never;
+						200: "User updated";
 						401: "Token expired" | "Invalid token";
 						404: "User not found";
 						422: {
@@ -168,7 +174,7 @@ export type Api = {
 					options: { headers: { xToken: string }; query?: Record<string, unknown> | undefined; fetch?: RequestInit | undefined }
 				) => Promise<
 					TreatyResponse<{
-						200: never;
+						200: "User deleted";
 						401: "Token expired" | "Invalid token";
 						404: "User not found";
 						422: {
@@ -234,7 +240,7 @@ export type Api = {
 						| undefined
 				) => Promise<
 					TreatyResponse<{
-						200: never;
+						200: "Reset password link sent" | { link: string };
 						404: "User not found";
 						500: "Failed to send reset password link";
 						422: {
@@ -261,7 +267,7 @@ export type Api = {
 						| undefined
 				) => Promise<
 					TreatyResponse<{
-						200: never;
+						200: "Password updated";
 						401: "Token expired" | "Invalid token";
 						404: "User not found or token already used";
 						422: {
@@ -283,7 +289,7 @@ export type Api = {
 				options: { headers: { xToken: string }; query?: Record<string, unknown> | undefined; fetch?: RequestInit | undefined }
 			) => Promise<
 				TreatyResponse<{
-					200: never;
+					200: "Vote updated";
 					401: "Token expired" | "Invalid token";
 					404: "Vote not found";
 					422: {
@@ -302,7 +308,7 @@ export type Api = {
 				options: { headers: { xToken: string }; query?: Record<string, unknown> | undefined; fetch?: RequestInit | undefined }
 			) => Promise<
 				TreatyResponse<{
-					200: never;
+					200: "Vote deleted";
 					401: "Token expired" | "Invalid token";
 					404: "Vote not found";
 					422: {

@@ -1,7 +1,7 @@
 import { auth } from "@/actions/impl/auth";
 import { colorScheme } from "@/actions/impl/colorsScheme";
 import { errorMessage } from "@/actions/impl/errorMessage";
-import { imageView } from "@/actions/impl/imageView";
+import { images } from "@/actions/impl/images";
 import { lang } from "@/actions/impl/lang";
 import { localStorageIo } from "@/actions/impl/localStorageIo";
 import { shell } from "@/actions/impl/shell";
@@ -12,7 +12,7 @@ export const actions = {
 	auth,
 	colorScheme,
 	errorMessage,
-	imageView,
+	images,
 	lang,
 	localStorageIo,
 	shell,

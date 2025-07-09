@@ -11,11 +11,11 @@ const updateColorSchemeValue = (colorScheme: ColorSchemeType, useTransition: boo
 	});
 const updateColorSchemeFn = (colorScheme: ColorSchemeType, useTransition: boolean) => () => {
 	if (useTransition) {
-		updateColorSchemeLoading(colorScheme, useTransition);
-		return wait(200).then(() => updateColorSchemeValue(colorScheme, useTransition));
-	} else {
 		document.startViewTransition(() => updateColorSchemeValue(colorScheme, useTransition));
 		return Promise.resolve();
+	} else {
+		updateColorSchemeLoading(colorScheme, useTransition);
+		return wait(200).then(() => updateColorSchemeValue(colorScheme, useTransition));
 	}
 };
 

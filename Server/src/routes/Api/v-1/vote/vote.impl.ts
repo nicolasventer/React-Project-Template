@@ -17,7 +17,7 @@ export class VoteImpl {
 		if (token === false) return req.status("Unauthorized", "Invalid token");
 		return dao.vote
 			.update(token.id, id, updateVote)
-			.then((updated) => (updated ? req.status("OK", "Vote updated") : req.status("Not Found", "Vote not found")));
+			.then((updated) => (updated ? "Vote updated" : req.status("Not Found", "Vote not found")));
 	};
 
 	delete = (req: Context<{ params: IdNum }>, { id }: IdNum) => {
@@ -26,6 +26,6 @@ export class VoteImpl {
 		if (token === false) return req.status("Unauthorized", "Invalid token");
 		return dao.vote
 			.delete(token.id, id)
-			.then((deleted) => (deleted ? req.status("OK", "Vote deleted") : req.status("Not Found", "Vote not found")));
+			.then((deleted) => (deleted ? "Vote deleted" : req.status("Not Found", "Vote not found")));
 	};
 }

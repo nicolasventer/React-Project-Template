@@ -27,4 +27,6 @@ export const fr: Tr = {
 	"Sign in": "Se connecter",
 	"No account yet?": "Pas de compte ?",
 	"Create account": "Créer un compte",
+	"Reset password": "Réinitialiser",
+	"Back to the login page": "Retour à la page de connexion",
 };

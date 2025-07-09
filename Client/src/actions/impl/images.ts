@@ -7,4 +7,6 @@ const updateImageView = (imageView: string) =>
 		prev.imageView = imageView as ImageViewType;
 	});
 
-export const imageView = { update: updateImageView };
+export const images = {
+	view: { update: updateImageView },
+};

@@ -25,6 +25,8 @@ export const en = {
 	"Sign in": "Sign in",
 	"No account yet?": "No account yet?",
 	"Create account": "Create account",
+	"Reset password": "Reset password",
+	"Back to the login page": "Back to the login page",
 };
 
 export type Tr = typeof en;
