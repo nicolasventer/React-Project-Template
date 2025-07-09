@@ -19,9 +19,6 @@ export const {
 	updateCurrentRoute,
 } = new Router(
 	{
-		[checkValidRoute("/code-features")]: lazySingleLoader(() => import("./routes/code-features"), "CodeFeatures"),
-		[checkValidRoute("/features")]: lazySingleLoader(() => import("./routes/features"), "Features"),
-		[checkValidRoute("//")]: lazySingleLoader(() => import("./routes/index.index"), "Home"),
 		[checkValidRoute("/")]: lazySingleLoader(() => import("./routes/index.lazy"), "MainLayout"),
 	},
 	{

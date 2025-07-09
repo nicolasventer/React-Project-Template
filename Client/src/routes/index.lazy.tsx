@@ -1,6 +1,5 @@
 import { actions } from "@/actions/actions.impl";
 import { clientEnv } from "@/clientEnv";
-import { Shell } from "@/components/shell/Shell";
 import { dict } from "@/dict";
 import { appStore, LOCAL_STORAGE_KEY, localStorageStateStore, trStore, useInit, useSetAppEnabled, useTr } from "@/globalState";
 import { navigateToCustomRouteFn } from "@/routerInstance.gen";
@@ -45,12 +44,7 @@ export const MainLayout = () => {
 	// sync the local storage state with the app state
 	const lang = app.lang.value;
 	const colorScheme = app.colorScheme.value;
-	const isAsideOpened = app.shell.aside.isOpened;
-	const isNavbarOpened = app.shell.navbar.isOpened;
-	localStorageStateStore.useEffect(
-		(setLocalStorageState) => setLocalStorageState({ lang, colorScheme, isAsideOpened, isNavbarOpened }),
-		[lang, colorScheme, isAsideOpened, isNavbarOpened]
-	);
+	localStorageStateStore.useEffect((setLocalStorageState) => setLocalStorageState({ lang, colorScheme }), [lang, colorScheme]);
 
 	// save the local storage state to the local storage
 	const localStorageState = localStorageStateStore.use();
@@ -73,7 +67,8 @@ export const MainLayout = () => {
 			<WriteToolboxClasses />
 			<FullViewport>
 				<SafeAreaInset>
-					<Shell app={app} isSetAppEnabled={isSetAppEnabled} tr={tr} />
+					{/* <Shell app={app} isSetAppEnabled={isSetAppEnabled} tr={tr} /> */}
+					<div>{tr.Home}</div>
 				</SafeAreaInset>
 			</FullViewport>
 			{/* <RenderDebug expand position="bottom-left" /> */}

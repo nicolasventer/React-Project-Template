@@ -13,8 +13,6 @@ export const LOCAL_STORAGE_KEY = "template_globalState" as const;
 export type LocalStorageState = {
 	lang: Lang;
 	colorScheme: ColorSchemeType;
-	isAsideOpened: boolean;
-	isNavbarOpened: boolean;
 };
 export const loadLocalStorageState = (): LocalStorageState => {
 	const storedLocalStorageState = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) ?? "{}") as Partial<LocalStorageState>;
@@ -22,8 +20,6 @@ export const loadLocalStorageState = (): LocalStorageState => {
 	return {
 		lang: storedLocalStorageState.lang ?? "en",
 		colorScheme: storedLocalStorageState.colorScheme ?? "dark",
-		isAsideOpened: storedLocalStorageState.isAsideOpened ?? false,
-		isNavbarOpened: storedLocalStorageState.isNavbarOpened ?? false,
 	};
 };
 const localStorageState = loadLocalStorageState();
@@ -47,15 +43,6 @@ export const { appStore, setAppWithUpdate, useInit, useSetAppEnabled } = new Glo
 	shell: {
 		isAboveXl: false,
 		isAboveMd: false,
-		aside: {
-			isOpened: localStorageState.isAsideOpened,
-		},
-		navbar: {
-			isOpened: localStorageState.isNavbarOpened,
-		},
-		main: {
-			isScrollable: false,
-		},
 	},
 });
 export type AppState = TypeOfStore<typeof appStore>;
