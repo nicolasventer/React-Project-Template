@@ -14,12 +14,17 @@ export const fr: Tr = {
 
 	"Table of contents": "Table des matières",
 
+	// Main layout
+	Profile: "Profil",
+	Edit: "Modifier",
+	Logout: "Déconnexion",
+
 	// Login page
 	Login: "Connexion",
 	Email: "Email",
 	Password: "Mot de passe",
 	"Forgot password?": "Mot de passe oublié ?",
-	"Sign In": "Se connecter",
-	"Do not have an account yet?": "Vous n'avez pas de compte ?",
+	"Sign in": "Se connecter",
+	"No account yet?": "Pas de compte ?",
 	"Create account": "Créer un compte",
 };

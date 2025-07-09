@@ -12,13 +12,18 @@ export const en = {
 
 	"Table of contents": "Table of contents",
 
+	// Main layout
+	Profile: "Profile",
+	Edit: "Edit",
+	Logout: "Logout",
+
 	// Login page
 	Login: "Login",
 	Email: "Email",
 	Password: "Password",
 	"Forgot password?": "Forgot password?",
-	"Sign In": "Sign In",
-	"Do not have an account yet?": "Do not have an account yet?",
+	"Sign in": "Sign in",
+	"No account yet?": "No account yet?",
 	"Create account": "Create account",
 };
 

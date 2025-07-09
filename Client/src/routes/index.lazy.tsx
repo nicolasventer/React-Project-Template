@@ -1,9 +1,10 @@
 import { actions } from "@/actions/actions.impl";
 import { clientEnv } from "@/clientEnv";
+import { Header } from "@/components/mainLayout/Header";
 import { dict } from "@/dict";
 import { appStore, LOCAL_STORAGE_KEY, localStorageStateStore, trStore, useInit, useSetAppEnabled, useTr } from "@/globalState";
 import { navigateToCustomRouteFn, RouterRender } from "@/routerInstance.gen";
-import { FullViewport, WriteToolboxClasses } from "@/utils/ComponentToolbox";
+import { FullViewport, Vertical, WriteToolboxClasses } from "@/utils/ComponentToolbox";
 import { useDebug } from "@/utils/GlobalDebugOneFile";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import { MantineProvider } from "@mantine/core";
@@ -41,7 +42,14 @@ export const MainLayout = () => {
 	// sync the local storage state with the app state
 	const lang = app.lang.value;
 	const colorScheme = app.colorScheme.value;
-	localStorageStateStore.useEffect((setLocalStorageState) => setLocalStorageState({ lang, colorScheme }), [lang, colorScheme]);
+	const userEmail = app.auth.user.email;
+	const userPassword = app.auth.user.password.get();
+	const userRole = app.auth.user.role;
+	const authToken = app.auth.token.get();
+	localStorageStateStore.useEffect(
+		(setLocalStorageState) => setLocalStorageState({ lang, colorScheme, userEmail, userPassword, userRole, authToken }),
+		[lang, colorScheme, userEmail, userPassword, userRole, authToken]
+	);
 
 	// save the local storage state to the local storage
 	const localStorageState = localStorageStateStore.use();
@@ -59,13 +67,26 @@ export const MainLayout = () => {
 
 	const tr = useTr();
 
+	const isAuthenticated = !!app.auth.user.role;
+	const password = app.auth.user.password.get();
+
 	return (
 		<MantineProvider forceColorScheme={app.colorScheme.value}>
 			<WriteToolboxClasses />
 			<FullViewport>
 				{/* <SafeAreaInset> */}
-				{/* <Shell app={app} isSetAppEnabled={isSetAppEnabled} tr={tr} /> */}
-				<RouterRender subPath="/" />
+				<Vertical gap={6} padding={12} heightFull>
+					<Header
+						isAuthenticated={isAuthenticated}
+						tr={tr}
+						isModalOpened={app.auth.isModalOpened}
+						email={app.auth.user.email}
+						password={password}
+						authError={app.auth.error}
+						isAuthLoading={app.auth.isLoading}
+					/>
+					<RouterRender subPath="/" />
+				</Vertical>
 				{/* </SafeAreaInset> */}
 			</FullViewport>
 			{/* <RenderDebug expand position="bottom-left" /> */}

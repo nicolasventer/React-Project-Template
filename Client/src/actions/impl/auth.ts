@@ -7,10 +7,17 @@ const updateEmail = (email: string) =>
 		prev.auth.user.email = email;
 		prev.auth.error = "";
 	});
-const updatePassword = (password: HashedString) =>
-	setAppWithUpdate("updatePassword", [password], (prev) => {
-		prev.auth.user.password = password;
+const updatePassword = (password: string) => {
+	const hashedPassword = new HashedString(password);
+	setAppWithUpdate("updatePassword", [hashedPassword], (prev) => {
+		prev.auth.user.password = hashedPassword;
 		prev.auth.error = "";
+	});
+};
+
+const updateIsModalOpenedFn = (isModalOpened: boolean) => () =>
+	setAppWithUpdate("updateIsModalOpened", [isModalOpened], (prev) => {
+		prev.auth.isModalOpened = isModalOpened;
 	});
 
 const _updateLoginIsLoading = () =>
@@ -30,10 +37,10 @@ const _updateLoginError = (error: string) =>
 		prev.auth.error = error.toString();
 	});
 
-const login = (email: string, password: HashedString) => {
+const loginFn = (email: string, password: string) => () => {
 	_updateLoginIsLoading();
 	api.v1.auth.login
-		.post({ email, password: password.get() })
+		.post({ email, password: password })
 		.then(({ data, error }) => {
 			if (data) _updateToken(new HashedString(data.token));
 			else if (error.status === 401) _updateLoginError(error.value);
@@ -44,4 +51,4 @@ const login = (email: string, password: HashedString) => {
 		);
 };
 
-export const auth = { updateEmail, updatePassword, login };
+export const auth = { updateEmail, updatePassword, updateIsModalOpenedFn, loginFn };
