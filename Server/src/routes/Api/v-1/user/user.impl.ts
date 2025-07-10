@@ -12,13 +12,14 @@ import { dao } from "@/dao";
 import { JwtService } from "@/jwt";
 import { mailService } from "@/mail";
 import { B_ENABLE_MAIL_SERVICE } from "@/srv_config";
+import { hashPassword } from "@/utils/hash";
 import type { Context } from "elysia";
 
 export class UserImpl {
-	public create = async (_: Context<{ response: { 200: UserOutput } }>, createUser: CreateUser) => {
-		const user = await dao.user.create(createUser);
-		if (B_ENABLE_MAIL_SERVICE)
-			mailService.sendEmail(createUser.email, "Welcome to our app", "Welcome to our app").catch(() => {});
+	public create = async (_: Context<{ response: { 200: UserOutput } }>, { email, password }: CreateUser) => {
+		const hashedPassword = await hashPassword(password);
+		const user = await dao.user.create(email, hashedPassword);
+		if (B_ENABLE_MAIL_SERVICE) mailService.sendEmail(email, "Welcome to our app", "Welcome to our app").catch(() => {});
 		return user;
 	};
 

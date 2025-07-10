@@ -115,7 +115,9 @@ const ProfileMenu = ({ tr }: { tr: Tr }) => (
 		<Menu.Dropdown>
 			<Menu.Item>{tr["Edit"]}</Menu.Item>
 			<Menu.Divider />
-			<Menu.Item c="red">{tr["Logout"]}</Menu.Item>
+			<Menu.Item c="red" onClick={actions.auth.logout}>
+				{tr["Logout"]}
+			</Menu.Item>
 		</Menu.Dropdown>
 	</Menu>
 );

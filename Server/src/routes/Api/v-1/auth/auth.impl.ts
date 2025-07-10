@@ -10,6 +10,6 @@ export class AuthImpl {
 		const user = await dao.auth.login(email, hashedPassword);
 		if (!user) return req.status("Unauthorized", "Invalid email or password");
 		const token = JwtService.generateLoginToken(user);
-		return { token };
+		return { token, role: user.role };
 	};
 }

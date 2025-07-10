@@ -224,7 +224,7 @@ export type Api = {
 						| undefined
 				) => Promise<
 					TreatyResponse<{
-						200: { token: string };
+						200: { role: "user" | "superAdmin" | "admin"; token: string };
 						401: "Invalid email or password";
 						422: {
 							type: "validation";

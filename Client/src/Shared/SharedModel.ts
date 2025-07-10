@@ -59,6 +59,7 @@ export type Login = typeof LoginSchema.static;
 
 export const LoginOutputSchema = t.Object({
 	token: t.String(),
+	role: RoleSchema,
 });
 export type LoginOutput = typeof LoginOutputSchema.static;
 
@@ -75,7 +76,7 @@ export const MultiUserOutputSchema = t.Object({ users: t.Array(UserOutputSchema)
 export type MultiUserOutput = typeof MultiUserOutputSchema.static;
 
 export const CreateUserSchema = t.Object({
-	email: t.String({ format: "email" }),
+	email: t.String(),
 	password: t.String(),
 });
 export type CreateUser = typeof CreateUserSchema.static;
@@ -98,7 +99,7 @@ export type UpdateSelfUser = typeof UpdateSelfUserSchema.static;
 // password
 
 export const RequestResetPasswordSchema = t.Object({
-	email: t.String({ format: "email" }),
+	email: t.String(),
 });
 export type RequestResetPassword = typeof RequestResetPasswordSchema.static;
 
