@@ -1,6 +1,13 @@
+import { t } from "elysia";
 import * as ts from "typescript";
 
-export function tsToJs(tsCode: string): string | undefined {
+export const TsToJsSchema = t.Union([
+	t.String({ description: "The compiled code that has been executed" }),
+	t.Object({ error: t.String({ description: "The error message if the compilation fails" }) }),
+]);
+export type TsToJsType = typeof TsToJsSchema.static;
+
+export function tsToJs(tsCode: string): TsToJsType {
 	const options: ts.TranspileOptions = {
 		compilerOptions: {
 			// Target ESNext for modern JavaScript features
@@ -17,17 +24,18 @@ export function tsToJs(tsCode: string): string | undefined {
 	const result = ts.transpileModule(tsCode, options);
 
 	if (result.diagnostics && result.diagnostics.length > 0) {
-		console.error("TypeScript compilation errors:");
+		let error = "TypeScript compilation errors:";
 		result.diagnostics.forEach((diagnostic) => {
 			const message = ts.flattenDiagnosticMessageText(diagnostic.messageText, "\n");
 			if (diagnostic.file) {
 				const { line, character } = ts.getLineAndCharacterOfPosition(diagnostic.file, diagnostic.start!);
-				console.error(`  Error ${diagnostic.file.fileName} (${line + 1},${character + 1}): ${message}`);
+				error += `  Error ${diagnostic.file.fileName} (${line + 1},${character + 1}): ${message}\n`;
 			} else {
-				console.error(`  Error: ${message}`);
+				error += `  Error: ${message}\n`;
 			}
 		});
-		return undefined; // Indicate failure
+		console.error(error);
+		return { error }; // Indicate failure
 	}
 
 	return result.outputText;

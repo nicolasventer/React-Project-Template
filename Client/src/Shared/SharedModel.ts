@@ -1,7 +1,18 @@
+import type { TLiteral, TLiteralValue, TUnion } from "@sinclair/typebox";
 import type { TSchema } from "elysia";
 import { t } from "elysia";
 
 export const Nullable = <T extends TSchema>(type: T) => t.Union([type, t.Null()]);
+
+type TLiteralArray<T extends readonly TLiteralValue[]> = T extends readonly [infer A, ...infer B]
+	? A extends TLiteralValue
+		? B extends TLiteralValue[]
+			? [TLiteral<A>, ...TLiteralArray<B>]
+			: never
+		: never
+	: [];
+const tUnionLiteralArray = <T extends readonly TLiteralValue[]>(array: T) =>
+	t.Union(array.map((value) => t.Literal(value))) as TUnion<TLiteralArray<T>>;
 
 export const COLOR_SCHEMES = ["light", "dark"] as const;
 export type ColorSchemeType = (typeof COLOR_SCHEMES)[number];
@@ -11,7 +22,20 @@ export type LanguageType = (typeof LANGUAGES)[number];
 
 export const ROLES = ["superAdmin", "admin", "user"] as const;
 export type RoleType = (typeof ROLES)[number];
-export const RoleSchema = t.Union(ROLES.map((role) => t.Literal(role)));
+export const RoleSchema = tUnionLiteralArray(ROLES);
+
+export const UNAUTHORIZED_VALUES = [
+	"Token expired",
+	"Invalid token",
+	"user role required",
+	"superAdmin role required",
+	"admin role required",
+	"Invalid email or password",
+] as const;
+export type UnauthorizedValueType = (typeof UNAUTHORIZED_VALUES)[number];
+// should be used like this: buildUnauthorizedSchema(["Token expired", "Invalid token"] as const)
+// DO NOT FORGET THE 'as const'
+export const buildUnauthorizedSchema = <T extends readonly UnauthorizedValueType[]>(values: T) => tUnionLiteralArray(values);
 
 // generic
 
@@ -33,22 +57,22 @@ export const LoginSchema = t.Object({
 });
 export type Login = typeof LoginSchema.static;
 
-export const LogoutSchema = t.Object({
+export const LoginOutputSchema = t.Object({
 	token: t.String(),
 });
-export type Logout = typeof LogoutSchema.static;
+export type LoginOutput = typeof LoginOutputSchema.static;
 
 // user
 
-export type UserOutput = {
-	id: number;
-	email: string;
-	role: RoleType;
-	lastLoginTime: number;
-};
-export type MultiUserOutput = {
-	users: UserOutput[];
-};
+export const UserOutputSchema = t.Object({
+	id: t.Number(),
+	email: t.String(),
+	role: RoleSchema,
+	lastLoginTime: t.Number(),
+});
+export type UserOutput = typeof UserOutputSchema.static;
+export const MultiUserOutputSchema = t.Object({ users: t.Array(UserOutputSchema) });
+export type MultiUserOutput = typeof MultiUserOutputSchema.static;
 
 export const CreateUserSchema = t.Object({
 	email: t.String({ format: "email" }),
@@ -60,6 +84,11 @@ export const UpdateUserSchema = t.Object({
 	role: RoleSchema,
 });
 export type UpdateUser = typeof UpdateUserSchema.static;
+
+export const UpdateUserOutputSchema = t.Object({
+	id: t.Number(),
+});
+export type UpdateUserOutput = typeof UpdateUserOutputSchema.static;
 
 export const UpdateSelfUserSchema = t.Object({
 	password: t.String(),
@@ -78,9 +107,10 @@ export const UpdatePasswordSchema = t.Object({
 });
 export type UpdatePassword = typeof UpdatePasswordSchema.static;
 
-// image
+export const RequestResetPasswordOutputSchema = t.Union([t.Literal("Reset password link sent"), t.Object({ link: t.String() })]);
+export type RequestResetPasswordOutput = typeof RequestResetPasswordOutputSchema.static;
 
-/*
+// image
 
 export const ImageOutputSchema = t.Object({
 	imageId: t.Number(),
@@ -96,38 +126,17 @@ export const MultiImageOutputSchema = t.Object({
 });
 export type MultiImageOutput = typeof MultiImageOutputSchema.static;
 
-export const ImageUserOutputSchema = t.Intersect([
-	ImageOutputSchema,
-	t.Object({ userVote: t.Union([t.Literal(1), t.Literal(0), t.Null()]) }),
-]);
+export const ImageUserOutputSchema = t.Intersect([ImageOutputSchema, t.Object({ userVote: Nullable(t.Number()) })]);
 export type ImageUserOutput = typeof ImageUserOutputSchema.static;
 export const MultiImageUserOutputSchema = t.Object({ images: t.Array(ImageUserOutputSchema) });
 export type MultiImageUserOutput = typeof MultiImageUserOutputSchema.static;
 
-*/
-
-export type ImageOutput = {
-	imageId: number;
-	url: string;
-	positiveVotes: number;
-	negativeVotes: number;
-	totalVotes: number;
-	score: number;
-};
-export type MultiImageOutput = {
-	images: ImageOutput[];
-};
-
-export type ImageUserOutput = ImageOutput & { userVote: number | null };
-export type MultiImageUserOutput = {
-	images: ImageUserOutput[];
-};
-
 // vote
 
-export type VoteOutput = {
-	voteId: number;
-};
+export const VoteOutputSchema = t.Object({
+	voteId: t.Number(),
+});
+export type VoteOutput = typeof VoteOutputSchema.static;
 
 export const CreateVoteSchema = t.Object({
 	imageId: t.Number(),

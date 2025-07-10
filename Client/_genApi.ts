@@ -18,8 +18,7 @@ const expandedType = type.getText(undefined, ts.TypeFormatFlags.InTypeAlias);
 // Write the expanded type to a file
 Bun.write(
 	"src/api/api.gen.ts",
-	`import type { ImageOutput, ImageUserOutput, RoleType, UserOutput } from "@/Shared/SharedModel";
-import type { Treaty } from "@elysiajs/eden";
+	`import type { Treaty } from "@elysiajs/eden";
 
 type TreatyResponse<T extends Record<number, unknown>> = Treaty.TreatyResponse<T>;
 

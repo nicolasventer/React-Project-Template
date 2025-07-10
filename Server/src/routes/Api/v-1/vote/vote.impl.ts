@@ -1,17 +1,21 @@
 import { dao } from "@/dao";
 import { JwtService } from "@/jwt";
-import type { CreateVote, IdNum, UpdateVote } from "@/Shared/SharedModel";
+import type { CreateVote, IdNum, UnauthorizedValueType, UpdateVote, VoteOutput } from "@/Shared/SharedModel";
 import type { Context } from "elysia";
 
 export class VoteImpl {
-	create = (req: Context, createVote: CreateVote) => {
+	create = (req: Context<{ response: { 200: VoteOutput; 401: UnauthorizedValueType } }>, createVote: CreateVote) => {
 		const token = JwtService.getVerifiedLoginToken(req);
 		if (token === true) return req.status("Unauthorized", "Token expired");
 		if (token === false) return req.status("Unauthorized", "Invalid token");
 		return dao.vote.create(token.id, createVote);
 	};
 
-	update = (req: Context<{ params: IdNum }>, { id }: IdNum, updateVote: UpdateVote) => {
+	update = (
+		req: Context<{ params: IdNum; response: { 200: "Vote updated"; 401: UnauthorizedValueType; 404: "Vote not found" } }>,
+		{ id }: IdNum,
+		updateVote: UpdateVote
+	) => {
 		const token = JwtService.getVerifiedLoginToken(req);
 		if (token === true) return req.status("Unauthorized", "Token expired");
 		if (token === false) return req.status("Unauthorized", "Invalid token");
@@ -20,7 +24,10 @@ export class VoteImpl {
 			.then((updated) => (updated ? "Vote updated" : req.status("Not Found", "Vote not found")));
 	};
 
-	delete = (req: Context<{ params: IdNum }>, { id }: IdNum) => {
+	delete = (
+		req: Context<{ params: IdNum; response: { 200: "Vote deleted"; 401: UnauthorizedValueType; 404: "Vote not found" } }>,
+		{ id }: IdNum
+	) => {
 		const token = JwtService.getVerifiedLoginToken(req);
 		if (token === true) return req.status("Unauthorized", "Token expired");
 		if (token === false) return req.status("Unauthorized", "Invalid token");

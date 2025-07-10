@@ -1,4 +1,3 @@
-import type { ImageOutput, ImageUserOutput, RoleType, UserOutput } from "@/Shared/SharedModel";
 import type { Treaty } from "@elysiajs/eden";
 
 type TreatyResponse<T extends Record<number, unknown>> = Treaty.TreatyResponse<T>;
@@ -29,8 +28,17 @@ export type Api = {
 				| undefined
 		) => Promise<
 			TreatyResponse<{
-				200: string | undefined;
-				401: "Token expired" | "Invalid token" | "user role required" | "superAdmin role required" | "admin role required";
+				200: string | { error: string };
+				401: "Token expired" | "Invalid token" | "superAdmin role required";
+				422: {
+					type: "validation";
+					on: string;
+					summary?: string | undefined;
+					message?: string | undefined;
+					found?: unknown;
+					property?: string | undefined;
+					expected?: string | undefined;
+				};
 			}>
 		>;
 	};
@@ -68,15 +76,28 @@ export type Api = {
 						fetch?: RequestInit | undefined;
 				  }
 				| undefined
-		) => Promise<TreatyResponse<{ 200: string }>>;
+		) => Promise<
+			TreatyResponse<{
+				200: "v1 is running";
+				422: {
+					type: "validation";
+					on: string;
+					summary?: string | undefined;
+					message?: string | undefined;
+					found?: unknown;
+					property?: string | undefined;
+					expected?: string | undefined;
+				};
+			}>
+		>;
 		users: ((params: { id: string | number }) => {
 			patch: (
-				body: { role: RoleType[] },
+				body: { role: "user" | "superAdmin" | "admin" },
 				options: { headers: { xToken: string }; query?: Record<string, unknown> | undefined; fetch?: RequestInit | undefined }
 			) => Promise<
 				TreatyResponse<{
 					200: { id: number };
-					401: "Token expired" | "Invalid token" | "user role required" | "superAdmin role required" | "admin role required";
+					401: "Token expired" | "Invalid token" | "admin role required";
 					422: {
 						type: "validation";
 						on: string;
@@ -94,7 +115,7 @@ export type Api = {
 			) => Promise<
 				TreatyResponse<{
 					200: { id: number };
-					401: "Token expired" | "Invalid token" | "user role required" | "superAdmin role required" | "admin role required";
+					401: "Token expired" | "Invalid token" | "admin role required";
 					422: {
 						type: "validation";
 						on: string;
@@ -136,8 +157,8 @@ export type Api = {
 				fetch?: RequestInit | undefined;
 			}) => Promise<
 				TreatyResponse<{
-					200: { users: UserOutput[] };
-					401: "Token expired" | "Invalid token" | "user role required" | "superAdmin role required" | "admin role required";
+					200: { users: { id: number; email: string; role: "user" | "superAdmin" | "admin"; lastLoginTime: number }[] };
+					401: "Token expired" | "Invalid token" | "admin role required";
 					422: {
 						type: "validation";
 						on: string;
@@ -340,7 +361,16 @@ export type Api = {
 				fetch?: RequestInit | undefined;
 			}) => Promise<
 				TreatyResponse<{
-					200: { images: ImageOutput[] };
+					200: {
+						images: {
+							url: string;
+							imageId: number;
+							positiveVotes: number;
+							negativeVotes: number;
+							totalVotes: number;
+							score: number;
+						}[];
+					};
 					422: {
 						type: "validation";
 						on: string;
@@ -359,7 +389,16 @@ export type Api = {
 					fetch?: RequestInit | undefined;
 				}) => Promise<
 					TreatyResponse<{
-						200: { images: ImageUserOutput[] };
+						200: {
+							images: ({
+								url: string;
+								imageId: number;
+								positiveVotes: number;
+								negativeVotes: number;
+								totalVotes: number;
+								score: number;
+							} & { userVote: number | null })[];
+						};
 						401: "Token expired" | "Invalid token";
 						422: {
 							type: "validation";

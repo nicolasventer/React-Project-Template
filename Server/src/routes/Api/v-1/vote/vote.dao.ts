@@ -11,7 +11,7 @@ export class VoteDao {
 			.execute()
 			.then((res) => res[0]);
 
-	update = (userId: number, voteId: number, updateVote: UpdateVote) =>
+	update = (userId: number, voteId: number, updateVote: UpdateVote): Promise<VoteOutput> =>
 		db
 			.update(schema.vote)
 			.set({ isPositive: updateVote.isPositive ? 1 : 0 })
@@ -20,7 +20,7 @@ export class VoteDao {
 			.execute()
 			.then((res) => res[0]);
 
-	delete = (userId: number, voteId: number) =>
+	delete = (userId: number, voteId: number): Promise<VoteOutput> =>
 		db
 			.delete(schema.vote)
 			.where(and(eq(schema.vote.voteId, voteId), eq(schema.vote.userId, userId)))

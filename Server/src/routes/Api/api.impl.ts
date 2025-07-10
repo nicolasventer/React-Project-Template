@@ -3,7 +3,7 @@ import { db, json_group_array, relations, schema } from "@/drizzle";
 import { impl } from "@/impl";
 import { JwtService } from "@/jwt";
 import type { Execute } from "@/Shared/SharedModel";
-import { tsToJs } from "@/utils/ts-to-js";
+import { tsToJs, type TsToJsType } from "@/utils/ts-to-js";
 import type { Context, MaybePromise } from "elysia";
 import { Elysia } from "elysia";
 
@@ -18,11 +18,11 @@ export class ApiImpl {
 		json_group_array;
 	}
 
-	compile = (req: Context, code: string) => {
+	compile = (req: Context<{ response: { 200: TsToJsType } }>, code: string) => {
 		const res = JwtService.checkRole(req, "superAdmin");
 		if (res) return res;
 		const jsCode = tsToJs(code);
-		if (jsCode) eval(jsCode);
+		if (typeof jsCode === "string" && jsCode) eval(jsCode);
 		return jsCode;
 	};
 

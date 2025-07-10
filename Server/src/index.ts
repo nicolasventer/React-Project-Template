@@ -6,7 +6,7 @@ import { initWinston } from "@/winston";
 import cors from "@elysiajs/cors";
 import type { treaty } from "@elysiajs/eden";
 import swagger from "@elysiajs/swagger";
-import Elysia from "elysia";
+import { Elysia, t } from "elysia";
 
 initWinston();
 
@@ -16,7 +16,10 @@ export const app = new Elysia({ tags: ["root"] })
 	.onRequest(({ request }) => void console.log(`${request.method} ${new URL(request.url).pathname}`))
 	.onError(({ error, code, path }) => void console.error(`${code} ${path} ${error}`))
 	// health check
-	.get("/", () => "Server is running", { detail: { summary: "Server Health check" } })
+	.get("/", () => "Server is running" as const, {
+		detail: { summary: "Server Health check" },
+		response: { 200: t.Literal("Server is running") },
+	})
 	.use(apiApp)
 	.listen(PORT);
 

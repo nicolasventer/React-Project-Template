@@ -1,4 +1,13 @@
-import type { CreateUser, IdNum, UpdateSelfUser, UpdateUser } from "@/Shared/SharedModel";
+import type {
+	CreateUser,
+	IdNum,
+	MultiUserOutput,
+	UnauthorizedValueType,
+	UpdateSelfUser,
+	UpdateUser,
+	UpdateUserOutput,
+	UserOutput,
+} from "@/Shared/SharedModel";
 import { dao } from "@/dao";
 import { JwtService } from "@/jwt";
 import { mailService } from "@/mail";
@@ -6,23 +15,27 @@ import { B_ENABLE_MAIL_SERVICE } from "@/srv_config";
 import type { Context } from "elysia";
 
 export class UserImpl {
-	public create = (_: Context, createUser: CreateUser) => {
-		const user = dao.user.create(createUser);
+	public create = async (_: Context<{ response: { 200: UserOutput } }>, createUser: CreateUser) => {
+		const user = await dao.user.create(createUser);
 		if (B_ENABLE_MAIL_SERVICE)
 			mailService.sendEmail(createUser.email, "Welcome to our app", "Welcome to our app").catch(() => {});
 		return user;
 	};
 
-	public getAll = (req: Context) => JwtService.checkRole(req, "admin") || dao.user.getAll();
+	public getAll = (req: Context<{ response: { 200: MultiUserOutput } }>) =>
+		JwtService.checkRole(req, "admin") || dao.user.getAll();
 
-	public update = (req: Context<{ params: IdNum }>, idNum: IdNum, updateUser: UpdateUser) =>
+	public update = (req: Context<{ params: IdNum; response: { 200: UpdateUserOutput } }>, idNum: IdNum, updateUser: UpdateUser) =>
 		JwtService.checkRole(req, "admin") ||
 		dao.user.update(idNum, updateUser).then((res) => {
 			JwtService.revokeLoginId(idNum.id);
 			return res;
 		});
 
-	public updateSelf = (req: Context, updateUser: UpdateSelfUser) => {
+	public updateSelf = (
+		req: Context<{ response: { 200: "User updated"; 401: UnauthorizedValueType; 404: "User not found" } }>,
+		updateUser: UpdateSelfUser
+	) => {
 		const verified = JwtService.getVerifiedLoginToken(req);
 		if (verified === true) return req.status("Unauthorized", "Token expired");
 		if (verified === false) return req.status("Unauthorized", "Invalid token");
@@ -36,14 +49,16 @@ export class UserImpl {
 			});
 	};
 
-	public delete = (req: Context<{ params: IdNum }>, idNum: IdNum) =>
+	public delete = (req: Context<{ params: IdNum; response: { 200: UpdateUserOutput } }>, idNum: IdNum) =>
 		JwtService.checkRole(req, "admin") ||
 		dao.user.delete(idNum).then((res) => {
 			JwtService.revokeLoginId(idNum.id);
 			return res;
 		});
 
-	public deleteSelf = (req: Context) => {
+	public deleteSelf = (
+		req: Context<{ response: { 200: "User deleted"; 401: UnauthorizedValueType; 404: "User not found" } }>
+	) => {
 		const verified = JwtService.getVerifiedLoginToken(req);
 		if (verified === true) return req.status("Unauthorized", "Token expired");
 		if (verified === false) return req.status("Unauthorized", "Invalid token");
