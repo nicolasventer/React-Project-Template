@@ -10,13 +10,13 @@ import Elysia from "elysia";
 
 initWinston();
 
-export const app = new Elysia()
+export const app = new Elysia({ tags: ["root"] })
 	.use(cors())
 	.use(swagger())
 	.onRequest(({ request }) => void console.log(`${request.method} ${new URL(request.url).pathname}`))
 	.onError(({ error, code, path }) => void console.error(`${code} ${path} ${error}`))
 	// health check
-	.get("/", () => "Server is running")
+	.get("/", () => "Server is running", { detail: { summary: "Server Health check" } })
 	.use(apiApp)
 	.listen(PORT);
 

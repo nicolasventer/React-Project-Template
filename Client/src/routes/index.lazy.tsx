@@ -11,6 +11,8 @@ import { MantineProvider } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import type { ReactNode } from "react";
 import { useEffect } from "react";
+import { Toaster } from "react-hot-toast";
+import { Tooltip } from "react-tooltip";
 
 const SafeAreaInset = ({ children }: { children?: ReactNode }) => (
 	<div style={{ height: "100%" }}>
@@ -94,6 +96,8 @@ export const MainLayout = () => {
 				</Vertical>
 				{/* </SafeAreaInset> */}
 			</FullViewport>
+			<Toaster position="bottom-center" toastOptions={{ duration: 3000 }} />
+			<Tooltip id="main-tooltip" />
 			{/* <RenderDebug expand position="bottom-left" /> */}
 		</MantineProvider>
 	);

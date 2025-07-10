@@ -12,7 +12,7 @@ export const DarkModeButton = ({
 	isLoading: boolean;
 	useTransition: boolean;
 }) => (
-	<ActionIcon loading={isLoading}>
+	<ActionIcon loading={isLoading} variant="light">
 		{isDark ? (
 			<Sun
 				width={responsiveSize(3.5, 6)}

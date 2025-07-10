@@ -80,6 +80,32 @@ export type UpdatePassword = typeof UpdatePasswordSchema.static;
 
 // image
 
+/*
+
+export const ImageOutputSchema = t.Object({
+	imageId: t.Number(),
+	url: t.String(),
+	positiveVotes: t.Number(),
+	negativeVotes: t.Number(),
+	totalVotes: t.Number(),
+	score: t.Number(),
+});
+export type ImageOutput = typeof ImageOutputSchema.static;
+export const MultiImageOutputSchema = t.Object({
+	images: t.Array(ImageOutputSchema),
+});
+export type MultiImageOutput = typeof MultiImageOutputSchema.static;
+
+export const ImageUserOutputSchema = t.Intersect([
+	ImageOutputSchema,
+	t.Object({ userVote: t.Union([t.Literal(1), t.Literal(0), t.Null()]) }),
+]);
+export type ImageUserOutput = typeof ImageUserOutputSchema.static;
+export const MultiImageUserOutputSchema = t.Object({ images: t.Array(ImageUserOutputSchema) });
+export type MultiImageUserOutput = typeof MultiImageUserOutputSchema.static;
+
+*/
+
 export type ImageOutput = {
 	imageId: number;
 	url: string;
@@ -90,6 +116,11 @@ export type ImageOutput = {
 };
 export type MultiImageOutput = {
 	images: ImageOutput[];
+};
+
+export type ImageUserOutput = ImageOutput & { userVote: number | null };
+export type MultiImageUserOutput = {
+	images: ImageUserOutput[];
 };
 
 // vote

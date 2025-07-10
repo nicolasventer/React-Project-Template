@@ -7,7 +7,7 @@ import Elysia from "elysia";
 
 export const v1App = new Elysia({ prefix: "/v1" })
 	// health check
-	.get("", () => "v1 is running")
+	.get("", () => "v1 is running", { detail: { summary: "V1 Health check" } })
 	.use(userApp)
 	.use(authApp)
 	.use(passwordApp)

@@ -1,4 +1,4 @@
-import type { ImageOutput, RoleType, UserOutput } from "@/Shared/SharedModel";
+import type { ImageOutput, ImageUserOutput, RoleType, UserOutput } from "@/Shared/SharedModel";
 import type { Treaty } from "@elysiajs/eden";
 
 type TreatyResponse<T extends Record<number, unknown>> = Treaty.TreatyResponse<T>;
@@ -191,15 +191,6 @@ export type Api = {
 			};
 		};
 		auth: {
-			get: (
-				options?:
-					| {
-							headers?: Record<string, unknown> | undefined;
-							query?: Record<string, unknown> | undefined;
-							fetch?: RequestInit | undefined;
-					  }
-					| undefined
-			) => Promise<TreatyResponse<{ 200: string }>>;
 			login: {
 				post: (
 					body: { email: string; password: string },
@@ -368,7 +359,7 @@ export type Api = {
 					fetch?: RequestInit | undefined;
 				}) => Promise<
 					TreatyResponse<{
-						200: { images: ImageOutput[] };
+						200: { images: ImageUserOutput[] };
 						401: "Token expired" | "Invalid token";
 						422: {
 							type: "validation";

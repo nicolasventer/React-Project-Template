@@ -142,12 +142,25 @@ export const Header = ({
 }) => (
 	<Horizontal justifyContent="space-between">
 		<SegmentedControl
-			data={["Public", { value: "You", label: "You", disabled: !isAuthenticated }]}
+			data={[
+				"Public",
+				{
+					value: "You",
+					label: (
+						<div data-tooltip-id="main-tooltip" data-tooltip-content={isAuthenticated ? "" : "Login to see your images"}>
+							You
+						</div>
+					),
+					disabled: !isAuthenticated,
+				},
+			]}
 			value={appStore.use().imageView}
 			onChange={actions.images.view.update}
 		/>
 		<Title>Pikilikee</Title>
 		<Horizontal gap={12}>
+			<LanguageButton lang={lang} isLoading={isLangLoading} useTransition={false} />
+			<DarkModeButton isDark={colorScheme === "dark"} isLoading={isColorSchemeLoading} useTransition={false} />
 			{isAuthenticated ? (
 				<ProfileMenu tr={tr} />
 			) : (
@@ -161,8 +174,6 @@ export const Header = ({
 					loginView={loginView}
 				/>
 			)}
-			<LanguageButton lang={lang} isLoading={isLangLoading} useTransition={false} />
-			<DarkModeButton isDark={colorScheme === "dark"} isLoading={isColorSchemeLoading} useTransition={false} />
 		</Horizontal>
 	</Horizontal>
 );
