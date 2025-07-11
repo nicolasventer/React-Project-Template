@@ -1,6 +1,8 @@
 import "@/index.css";
 import "@mantine/core/styles.css";
 
+import "@mantine/carousel/styles.css";
+
 import { clientEnv } from "@/clientEnv";
 import { setRouterBaseRoute } from "@/routerInstance.gen";
 import { MainLayout } from "@/routes";

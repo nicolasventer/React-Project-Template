@@ -6,6 +6,7 @@ import { initWinston } from "@/winston";
 import cors from "@elysiajs/cors";
 import type { treaty } from "@elysiajs/eden";
 import swagger from "@elysiajs/swagger";
+import { SQLiteError } from "bun:sqlite";
 import { Elysia, t } from "elysia";
 
 initWinston();
@@ -14,12 +15,16 @@ export const app = new Elysia({ tags: ["root"] })
 	.use(cors())
 	.use(swagger())
 	.onRequest(({ request }) => void console.log(`${request.method} ${new URL(request.url).pathname}`))
-	.onError(({ error, code, path }) => void console.error(`${code} ${path} ${error}`))
+	.onError(({ error, code, path, status }) => {
+		void console.error(`${code} ${path} ${error}`);
+		if (error instanceof SQLiteError) return status(500, "Internal Server Error");
+	})
 	// health check
 	.get("/", () => "Server is running" as const, {
 		detail: { summary: "Server Health check" },
 		response: { 200: t.Literal("Server is running") },
 	})
+	.all("/swagger/json/*", ({ path, redirect }) => redirect(path.replace("/swagger/json", "")))
 	.use(apiApp)
 	.listen(PORT);
 

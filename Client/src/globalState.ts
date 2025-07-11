@@ -1,14 +1,19 @@
 import { clientEnv } from "@/clientEnv";
 import type { Lang } from "@/dict";
-import type { ColorSchemeType, MultiImageOutput, MultiImageUserOutput, RoleType } from "@/Shared/SharedModel";
+import type { ColorSchemeType, MultiImageOutput, RoleType } from "@/Shared/SharedModel";
 import { en } from "@/tr/en";
-import type { ImageViewType, LoginViewType } from "@/types";
 import type { NotArray } from "@/utils/Redux/GlobalApp";
 import { GlobalApp } from "@/utils/Redux/GlobalApp";
 import { HashedString } from "@/utils/Redux/HashedString";
 import type { TypeOfStore } from "@/utils/Store";
 import { store } from "@/utils/Store";
 import { getUrl } from "@/utils/useNavigate";
+
+export const IMAGE_VIEW_VALUES = ["Public", "You"] as const;
+export type ImageViewType = (typeof IMAGE_VIEW_VALUES)[number];
+
+export const LOGIN_VIEW_VALUES = ["Login", "Create account", "Forgot password?"] as const;
+export type LoginViewType = (typeof LOGIN_VIEW_VALUES)[number];
 
 export const LOCAL_STORAGE_KEY = "template_globalState" as const;
 
@@ -58,8 +63,7 @@ export const { appStore, setAppWithUpdate, useInit, useSetAppEnabled } = new Glo
 	images: {
 		error: "",
 		isLoading: false,
-		public: [] as MultiImageOutput["images"],
-		user: [] as MultiImageUserOutput["images"],
+		values: [] as MultiImageOutput["images"],
 	},
 	auth: {
 		isModalOpened: false,

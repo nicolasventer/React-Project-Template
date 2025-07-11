@@ -1,7 +1,7 @@
 import { api } from "@/api/api";
+import type { LoginViewType } from "@/globalState";
 import { setAppWithUpdate } from "@/globalState";
 import type { RoleType } from "@/Shared/SharedModel";
-import type { LoginViewType } from "@/types";
 import { HashedString } from "@/utils/Redux/HashedString";
 import toast from "react-hot-toast";
 

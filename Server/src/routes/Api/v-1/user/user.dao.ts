@@ -1,5 +1,6 @@
 import type { IdNum, MultiUserOutput, RoleType, UpdateSelfUser, UpdateUser, UserOutput } from "@/Shared/SharedModel";
 import { db, schema } from "@/drizzle";
+import { SQLiteError } from "bun:sqlite";
 import { eq } from "drizzle-orm";
 
 export class UserDao {
@@ -36,7 +37,12 @@ export class UserDao {
 				lastLoginTime: schema.user.lastLoginTime,
 			})
 			.execute()
-			.then((res) => res[0]);
+			.then((res) => res[0])
+			.catch((err) => {
+				if (err instanceof SQLiteError && err.code === "SQLITE_CONSTRAINT_UNIQUE")
+					throw new Error("A user with this email already exists");
+				throw err;
+			});
 	};
 
 	public update = ({ id }: IdNum, updateUser: UpdateUser | UpdateSelfUser) =>

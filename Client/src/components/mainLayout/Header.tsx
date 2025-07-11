@@ -2,10 +2,10 @@ import { actions } from "@/actions/actions.impl";
 import { DarkModeButton } from "@/components/_app/DarkModeButton";
 import { LanguageButton } from "@/components/_app/LanguageButton";
 import type { Lang } from "@/dict";
+import type { LoginViewType } from "@/globalState";
 import { appStore } from "@/globalState";
 import type { ColorSchemeType } from "@/Shared/SharedModel";
 import type { Tr } from "@/tr/en";
-import type { LoginViewType } from "@/types";
 import { evStringFn } from "@/utils/clientUtils";
 import { Horizontal, Vertical } from "@/utils/ComponentToolbox";
 import {

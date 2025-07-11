@@ -1,7 +1,8 @@
 import { api } from "@/api/api";
+import type { ImageViewType } from "@/globalState";
 import { setAppWithUpdate } from "@/globalState";
-import type { MultiImageOutput, MultiImageUserOutput } from "@/Shared/SharedModel";
-import type { ImageViewType } from "@/types";
+import type { MultiImageOutput } from "@/Shared/SharedModel";
+
 import toast from "react-hot-toast";
 
 // TODO: see for transition or loading
@@ -15,16 +16,10 @@ const _updateImagesLoading = () =>
 		prev.images.isLoading = true;
 	});
 
-const _updatePublicImages = ({ images }: MultiImageOutput) =>
-	setAppWithUpdate("updatePublicImages", (prev) => {
+const _updateImages = ({ images }: MultiImageOutput) =>
+	setAppWithUpdate("updateImages", (prev) => {
 		prev.images.isLoading = false;
-		prev.images.public = images;
-	});
-
-const _updateUserImages = ({ images }: MultiImageUserOutput) =>
-	setAppWithUpdate("updateUserImages", (prev) => {
-		prev.images.isLoading = false;
-		prev.images.user = images;
+		prev.images.values = images;
 	});
 
 const _updateImagesError = (error: string) =>
@@ -33,31 +28,14 @@ const _updateImagesError = (error: string) =>
 		prev.images.isLoading = false;
 	});
 
-const getPublicImages = () => {
+const getImages = (token?: string) => {
 	_updateImagesLoading();
 	api.v1.images
-		.get()
-		.then(({ data, error }) => {
-			if (data) _updatePublicImages(data);
-			else {
-				toast.error("Failed to get public images");
-				if (error.status === 422) _updateImagesError(error.value.summary ?? "Validation error");
-				else throw error;
-			}
-		})
-		.catch((error) => {
-			_updateImagesError(typeof error === "object" && error && "message" in error ? (error.message as string) : "Unknown error");
-		});
-};
-
-const getUserImages = (token: string) => {
-	_updateImagesLoading();
-	api.v1.images.current
 		.get({ headers: { "x-token": token } })
 		.then(({ data, error }) => {
-			if (data) _updateUserImages(data);
+			if (data) _updateImages(data);
 			else {
-				toast.error("Failed to get user images");
+				toast.error("Failed to get images");
 				if (error.status === 422) _updateImagesError(error.value.summary ?? "Validation error");
 				else throw error;
 			}
@@ -69,6 +47,5 @@ const getUserImages = (token: string) => {
 
 export const images = {
 	view: { update: updateImageView },
-	public: { get: getPublicImages },
-	user: { get: getUserImages },
+	get: getImages,
 };

@@ -120,17 +120,13 @@ export const ImageOutputSchema = t.Object({
 	negativeVotes: t.Number(),
 	totalVotes: t.Number(),
 	score: t.Number(),
+	userVote: Nullable(t.Number()),
 });
 export type ImageOutput = typeof ImageOutputSchema.static;
 export const MultiImageOutputSchema = t.Object({
 	images: t.Array(ImageOutputSchema),
 });
 export type MultiImageOutput = typeof MultiImageOutputSchema.static;
-
-export const ImageUserOutputSchema = t.Intersect([ImageOutputSchema, t.Object({ userVote: Nullable(t.Number()) })]);
-export type ImageUserOutput = typeof ImageUserOutputSchema.static;
-export const MultiImageUserOutputSchema = t.Object({ images: t.Array(ImageUserOutputSchema) });
-export type MultiImageUserOutput = typeof MultiImageUserOutputSchema.static;
 
 // vote
 
