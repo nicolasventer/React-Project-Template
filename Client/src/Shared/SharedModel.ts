@@ -121,6 +121,7 @@ export const ImageOutputSchema = t.Object({
 	totalVotes: t.Number(),
 	score: t.Number(),
 	userVote: Nullable(t.Number()),
+	userVoteId: Nullable(t.Number()),
 });
 export type ImageOutput = typeof ImageOutputSchema.static;
 export const MultiImageOutputSchema = t.Object({

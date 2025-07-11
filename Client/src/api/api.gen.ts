@@ -378,6 +378,7 @@ export type Api = {
 							totalVotes: number;
 							score: number;
 							userVote: number | null;
+							userVoteId: number | null;
 						}[];
 					};
 					422: {

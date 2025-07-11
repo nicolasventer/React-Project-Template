@@ -17,6 +17,7 @@ export class ImageDao {
 				positiveVotes: sql<number>`COUNT(CASE WHEN vote.isPositive = 1 THEN 1 END)`,
 				negativeVotes: sql<number>`COUNT(CASE WHEN vote.isPositive = 0 THEN 1 END)`,
 				userVote: sql<number>`CASE WHEN vote.userId = ${userId ?? -1} THEN vote.isPositive END`,
+				userVoteId: sql<number>`CASE WHEN vote.userId = ${userId ?? -1} THEN vote.voteId END`,
 			})
 			.from(schema.image)
 			.leftJoin(schema.vote, eq(schema.image.imageId, schema.vote.imageId))

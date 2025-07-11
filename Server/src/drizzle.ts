@@ -1,6 +1,7 @@
 import * as relations from "@/drizzle/relations";
 import * as schema from "@/drizzle/schema";
 import { DATABASE_URL } from "@/env";
+// eslint-disable-next-line project-structure/independent-modules
 import { hashPassword } from "@/utils/hash";
 import type { Column } from "drizzle-orm";
 import { sql } from "drizzle-orm";
@@ -47,9 +48,9 @@ const seed = async () => {
 
 	console.log(`seeding ${USERS_COUNT} users...`);
 	const users = await Promise.all(
-		Array.from({ length: USERS_COUNT }, async (_, i) => ({
-			email: `user${i}`,
-			password: await hashPassword(`user${i}`),
+		Array.from({ length: USERS_COUNT }, async (_, userIndex) => ({
+			email: `user${userIndex + 1}`,
+			password: await hashPassword(`user${userIndex + 1}`),
 			role: "user" as const,
 			lastLoginTime: Date.now(),
 		}))
@@ -57,11 +58,11 @@ const seed = async () => {
 	await db.insert(schema.user).values(users).execute();
 
 	console.log(`seeding ${USERS_COUNT * VOTES_COUNT_PER_USER} votes...`);
-	const votes = Array.from({ length: USERS_COUNT }, (_, userId) =>
+	const votes = Array.from({ length: USERS_COUNT }, (_, userIndex) =>
 		Array.from(new Set(Array.from({ length: VOTES_COUNT_PER_USER }, () => Math.floor(Math.random() * images.length)))).map(
-			(imageId) => ({
-				userId,
-				imageId,
+			(imageIndex) => ({
+				userId: userIndex + 1,
+				imageId: imageIndex + 1,
 				isPositive: Math.random() > 0.5 ? 1 : 0,
 			})
 		)

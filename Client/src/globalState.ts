@@ -24,6 +24,7 @@ export type LocalStorageState = {
 	userPassword: string;
 	userRole: RoleType | null;
 	authToken: string;
+	imageView: ImageViewType;
 };
 export const loadLocalStorageState = (): LocalStorageState => {
 	const storedLocalStorageState = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) ?? "{}") as Partial<LocalStorageState>;
@@ -35,6 +36,7 @@ export const loadLocalStorageState = (): LocalStorageState => {
 		userPassword: storedLocalStorageState.userPassword ?? "",
 		userRole: storedLocalStorageState.userRole ?? null,
 		authToken: storedLocalStorageState.authToken ?? "",
+		imageView: storedLocalStorageState.imageView ?? "Public",
 	};
 };
 const localStorageState = loadLocalStorageState();
@@ -59,11 +61,15 @@ export const { appStore, setAppWithUpdate, useInit, useSetAppEnabled } = new Glo
 		isAboveXl: false,
 		isAboveMd: false,
 	},
-	imageView: "Public" as ImageViewType,
+	imageView: localStorageState.imageView,
 	images: {
 		error: "",
 		isLoading: false,
 		values: [] as MultiImageOutput["images"],
+	},
+	vote: {
+		error: "",
+		loadingImageId: null as number | null,
 	},
 	auth: {
 		isModalOpened: false,

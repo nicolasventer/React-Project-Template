@@ -4,6 +4,9 @@ import { ImageGallery } from "@/components/home/ImageGallery";
 import { useApp } from "@/globalState";
 import type { MultiImageOutput } from "@/Shared/SharedModel";
 import { shuffle } from "@/Shared/SharedUtils";
+import { Vertical } from "@/utils/ComponentToolbox";
+import { Alert } from "@mantine/core";
+import { InfoIcon } from "lucide-react";
 import { useEffect, useMemo } from "react";
 
 const DISPLAYED_IMAGES_COUNT = 20;
@@ -40,7 +43,7 @@ const getUserImagesByCategory = (
 
 export const Home = () => {
 	const app = useApp();
-	const { images, imageView, auth } = app;
+	const { images, imageView, auth, vote } = app;
 
 	const token = auth.token.get();
 
@@ -52,5 +55,19 @@ export const Home = () => {
 		[images.values, imageView]
 	);
 
-	return <ImageGallery isImagesLoading={images.isLoading} token={token} imagesByCategory={imagesByCategory} />;
+	return (
+		<Vertical heightFull>
+			{(images.error || vote.error) && (
+				<Alert color="red" icon={<InfoIcon />}>
+					{images.error || vote.error}
+				</Alert>
+			)}
+			<ImageGallery
+				isImagesLoading={images.isLoading}
+				loadingImageId={vote.loadingImageId}
+				token={token}
+				imagesByCategory={imagesByCategory}
+			/>
+		</Vertical>
+	);
 };

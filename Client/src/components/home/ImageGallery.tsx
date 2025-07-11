@@ -1,3 +1,4 @@
+import { actions } from "@/actions/actions.impl";
 import type { ImagePublicCategoryType, ImageUserCategoryType } from "@/components/home/imageCategories";
 import type { AppState } from "@/globalState";
 import type { MultiImageOutput } from "@/Shared/SharedModel";
@@ -10,23 +11,26 @@ import { Fragment } from "react/jsx-runtime";
 
 type ImageGalleryProps = {
 	isImagesLoading: AppState["images"]["isLoading"]; // props used to force re-render when images change
+	loadingImageId: number | null;
 	token?: string;
 	imagesByCategory:
 		| Record<ImagePublicCategoryType, MultiImageOutput["images"]>
 		| Record<ImageUserCategoryType, MultiImageOutput["images"]>;
 };
 
-const handleVoteFn = (imageId: number, newVote: 0 | 1, userVote: number | null, token?: string) => () => {
+const handleVoteFn = (imageId: number, newVote: 0 | 1, userVote: number | null, voteId: number | null, token?: string) => () => {
 	if (!token) {
 		toast.error("You must be logged in to vote");
+		actions.auth.updateIsModalOpenedFn(true)();
+		actions.auth.updateLoginViewFn("Login")();
 		return;
 	}
-	if (userVote === null) toast("Creating vote...");
-	else if (userVote === newVote) toast("Removing vote...");
-	else toast("Changing vote...");
+
+	// Use the vote action to handle the vote logic
+	actions.vote.handle(token, imageId, newVote, userVote, voteId).then(() => actions.images.get(token));
 };
 
-export const ImageGallery = ({ isImagesLoading, imagesByCategory, token }: ImageGalleryProps) => (
+export const ImageGallery = ({ isImagesLoading, imagesByCategory, token, loadingImageId }: ImageGalleryProps) => (
 	<Box heightFull positionRelative overflowAuto>
 		<Vertical gap={12}>
 			{Object.entries(imagesByCategory).map(([category, images]) => (
@@ -48,8 +52,10 @@ export const ImageGallery = ({ isImagesLoading, imagesByCategory, token }: Image
 											<Button
 												variant="default"
 												p="4px"
-												onClick={handleVoteFn(image.imageId, 1, image.userVote, token)}
+												onClick={handleVoteFn(image.imageId, 1, image.userVote, image.userVoteId, token)}
 												style={{ borderTopRightRadius: 0 }}
+												loading={loadingImageId === image.imageId}
+												disabled={loadingImageId !== null}
 											>
 												<ChevronUp color="var(--mantine-color-teal-text)" strokeWidth={image.userVote === 1 ? 4 : undefined} />
 											</Button>
@@ -70,8 +76,10 @@ export const ImageGallery = ({ isImagesLoading, imagesByCategory, token }: Image
 											<Button
 												variant="default"
 												p="4px"
-												onClick={handleVoteFn(image.imageId, 0, image.userVote, token)}
+												onClick={handleVoteFn(image.imageId, 0, image.userVote, image.userVoteId, token)}
 												style={{ borderTopLeftRadius: 0 }}
+												loading={loadingImageId === image.imageId}
+												disabled={loadingImageId !== null}
 											>
 												<ChevronDown color="var(--mantine-color-red-text)" strokeWidth={image.userVote === 0 ? 4 : undefined} />
 											</Button>
