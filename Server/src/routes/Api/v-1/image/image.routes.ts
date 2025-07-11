@@ -5,7 +5,6 @@ import { Elysia } from "elysia";
 export const imageApp = new Elysia({ prefix: "/images", tags: ["images"] })
 	// get all images
 	.get("", (req) => impl.image.getAll(req), {
-		headers: HeadersSchema,
 		detail: { summary: "Get all images" },
 		response: { 200: MultiImageOutputSchema },
 	})

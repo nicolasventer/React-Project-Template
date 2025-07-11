@@ -1,6 +1,6 @@
 import { clientEnv } from "@/clientEnv";
 import type { Lang } from "@/dict";
-import type { ColorSchemeType, RoleType } from "@/Shared/SharedModel";
+import type { ColorSchemeType, MultiImageOutput, MultiImageUserOutput, RoleType } from "@/Shared/SharedModel";
 import { en } from "@/tr/en";
 import type { ImageViewType, LoginViewType } from "@/types";
 import type { NotArray } from "@/utils/Redux/GlobalApp";
@@ -55,6 +55,12 @@ export const { appStore, setAppWithUpdate, useInit, useSetAppEnabled } = new Glo
 		isAboveMd: false,
 	},
 	imageView: "Public" as ImageViewType,
+	images: {
+		error: "",
+		isLoading: false,
+		public: [] as MultiImageOutput["images"],
+		user: [] as MultiImageUserOutput["images"],
+	},
 	auth: {
 		isModalOpened: false,
 		loginView: "Login" as LoginViewType,
@@ -76,6 +82,7 @@ export const useTr = () => trStore.use();
 
 export const mainContentStore = store<HTMLDivElement | null>(null);
 
+/** @deprecated do not use this function, just manage the state manually */
 export const handlePromise = <T>(
 	promise: Promise<T>,
 	{

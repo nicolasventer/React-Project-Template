@@ -1,1 +1,3 @@
-export const Home = () => <div>Home</div>;
+import { ImageGallery } from "@/components/ImageGallery";
+
+export const Home = () => <ImageGallery />;

@@ -34,7 +34,7 @@ const getVerifiedLoginToken = (
 		| Context<{ response: { 401: UnauthorizedValueType } }>
 		| Context<{ params: IdNum; response: { 401: UnauthorizedValueType } }>
 ) => {
-	const loginPayload = !!req.headers.xToken && verifyLoginToken(req.headers.xToken);
+	const loginPayload = !!req.headers["x-token"] && verifyLoginToken(req.headers["x-token"]);
 	if (typeof loginPayload === "boolean") return loginPayload;
 	return revokedLoginIdCache.get<boolean>(loginPayload.id.toString()) ? true : loginPayload;
 };
@@ -70,7 +70,7 @@ const getVerifiedResetPasswordToken = (
 	req:
 		| Context<{ response: { 401: UnauthorizedValueType } }>
 		| Context<{ params: IdNum; response: { 401: UnauthorizedValueType } }>
-) => !!req.headers.xToken && verifyResetPasswordToken(req.headers.xToken);
+) => !!req.headers["x-token"] && verifyResetPasswordToken(req.headers["x-token"]);
 
 export const JwtService = {
 	generateLoginToken,

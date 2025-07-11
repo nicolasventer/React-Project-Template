@@ -45,7 +45,7 @@ export const IdNumSchema = t.Object({
 export type IdNum = typeof IdNumSchema.static;
 
 export const HeadersSchema = t.Object({
-	xToken: t.String(),
+	"x-token": t.String(),
 });
 export type Headers = typeof HeadersSchema.static;
 
