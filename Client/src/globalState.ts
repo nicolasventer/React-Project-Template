@@ -84,10 +84,13 @@ export const { appStore, setAppWithUpdate, useInit, useSetAppEnabled } = new Glo
 		},
 	},
 	profile: {
-		newPassword: new HashedString(""),
-		confirmNewPassword: new HashedString(""),
 		isLoading: false,
 		error: "",
+		newPassword: new HashedString(""),
+		confirmNewPassword: new HashedString(""),
+		deleteAccount: {
+			buttonPressedAt: null as number | null,
+		},
 	},
 });
 export type AppState = TypeOfStore<typeof appStore>;

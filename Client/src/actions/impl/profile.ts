@@ -66,8 +66,63 @@ const confirmPasswordFn = (newPassword: string, confirmNewPassword: string, toke
 		);
 };
 
+const pressDeleteAccountButton = () => {
+	setAppWithUpdate("pressDeleteAccountButton", [], (prev) => {
+		prev.profile.deleteAccount.buttonPressedAt = Date.now();
+	});
+};
+
+const cancelPressDeleteAccountButton = () => {
+	setAppWithUpdate("cancelPressDeleteAccountButton", [], (prev) => {
+		prev.profile.deleteAccount.buttonPressedAt = null;
+	});
+};
+
+const _updateDeleteAccountSuccess = () => {
+	setAppWithUpdate("updateDeleteAccount", [], (prev) => {
+		prev.profile.deleteAccount.buttonPressedAt = null;
+		prev.profile.isLoading = false;
+		prev.profile.error = "";
+		prev.auth.token = new HashedString("");
+	});
+};
+
+const _updateDeleteAccountError = (error: string) =>
+	setAppWithUpdate("updateDeleteAccountError", [error], (prev) => {
+		prev.profile.error = error;
+		prev.profile.isLoading = false;
+	});
+
+const deleteAccountFn = (token: string) => () => {
+	_updateProfileIsLoading();
+	return api.v1.users.current
+		.delete({}, { headers: { "x-token": token } })
+		.then(({ data, error }) => {
+			if (data) {
+				toast.success("Account deleted successfully");
+				_updateDeleteAccountSuccess();
+			} else {
+				toast.error("Failed to delete account");
+				if (error.status === 401) _updateDeleteAccountError(error.value);
+				else if (error.status === 404) _updateDeleteAccountError("User not found");
+				else if (error.status === 422) _updateDeleteAccountError(error.value.summary ?? "Validation error");
+				else throw error;
+			}
+		})
+		.catch((error) =>
+			_updateDeleteAccountError(
+				typeof error === "object" && error && "message" in error ? (error.message as string) : "Unknown error"
+			)
+		);
+};
+
 export const profile = {
 	newPassword: { update: updateNewPassword },
 	confirmNewPassword: { update: updateConfirmNewPassword },
 	confirmPasswordFn,
+	deleteAccount: {
+		pressButton: pressDeleteAccountButton,
+		cancelButton: cancelPressDeleteAccountButton,
+		executeFn: deleteAccountFn,
+	},
 };

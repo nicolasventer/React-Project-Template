@@ -21,6 +21,7 @@ export const Profile = () => {
 			confirmNewPassword={confirmNewPassword}
 			token={token}
 			profileError={profile.error}
+			profileDeleteAccountButtonPressedAt={profile.deleteAccount.buttonPressedAt}
 		/>
 	);
 };

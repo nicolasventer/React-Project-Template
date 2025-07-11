@@ -2,8 +2,10 @@ import { actions } from "@/actions/actions.impl";
 import type { RoleType } from "@/Shared/SharedModel";
 import type { Tr } from "@/tr/en";
 import { Vertical } from "@/utils/ComponentToolbox";
-import { Alert, Button, Divider, PasswordInput, Text, Title } from "@mantine/core";
+import { useInterval } from "@/utils/useInterval";
+import { Alert, Button, Divider, Modal, PasswordInput, Text, Title } from "@mantine/core";
 import { InfoIcon } from "lucide-react";
+import { useState } from "react";
 
 export const EditProfile = ({
 	tr,
@@ -13,6 +15,7 @@ export const EditProfile = ({
 	confirmNewPassword,
 	token,
 	profileError,
+	profileDeleteAccountButtonPressedAt,
 }: {
 	tr: Tr;
 	userEmail: string;
@@ -21,34 +24,63 @@ export const EditProfile = ({
 	confirmNewPassword: string;
 	token: string;
 	profileError: string;
-}) => (
-	<Vertical marginTop={12} gap={6}>
-		{profileError && (
-			<Alert color="red" icon={<InfoIcon />}>
-				{profileError}
-			</Alert>
-		)}
-		<Title order={2}>{tr["Profile"]}</Title>
-		<Text>
-			<b>{tr["Email"]}:</b> {userEmail}
-		</Text>
-		<Text>
-			<b>{tr["Role"]}:</b> {userRole}
-		</Text>
-		<PasswordInput
-			label={tr["New password"]}
-			value={newPassword}
-			onChange={(e) => actions.profile.newPassword.update(e.target.value)}
-		/>
-		<PasswordInput
-			label={tr["Confirm new password"]}
-			value={confirmNewPassword}
-			onChange={(e) => actions.profile.confirmNewPassword.update(e.target.value)}
-		/>
-		<Button onClick={actions.profile.confirmPasswordFn(newPassword, confirmNewPassword, token)}>{tr["Confirm password"]}</Button>
-		<Vertical gap={12} marginTop={24}>
-			<Divider />
-			<Button color="red">Delete Account</Button>
+	profileDeleteAccountButtonPressedAt: number | null;
+}) => {
+	const [remainingTime, setRemainingTime] = useState(0);
+	useInterval(
+		() => {
+			if (profileDeleteAccountButtonPressedAt)
+				setRemainingTime(Math.max(0, 5000 - (Date.now() - profileDeleteAccountButtonPressedAt)));
+		},
+		1000,
+		profileDeleteAccountButtonPressedAt !== null
+	);
+
+	return (
+		<Vertical marginTop={12} gap={6}>
+			{profileError && (
+				<Alert color="red" icon={<InfoIcon />}>
+					{profileError}
+				</Alert>
+			)}
+			<Title order={2}>{tr["Profile"]}</Title>
+			<Text>
+				<b>{tr["Email"]}:</b> {userEmail}
+			</Text>
+			<Text>
+				<b>{tr["Role"]}:</b> {userRole}
+			</Text>
+			<PasswordInput
+				label={tr["New password"]}
+				value={newPassword}
+				onChange={(e) => actions.profile.newPassword.update(e.target.value)}
+			/>
+			<PasswordInput
+				label={tr["Confirm new password"]}
+				value={confirmNewPassword}
+				onChange={(e) => actions.profile.confirmNewPassword.update(e.target.value)}
+			/>
+			<Button onClick={actions.profile.confirmPasswordFn(newPassword, confirmNewPassword, token)}>
+				{tr["Confirm password"]}
+			</Button>
+			<Vertical gap={12} marginTop={24}>
+				<Divider />
+				<Button color="red" onClick={actions.profile.deleteAccount.pressButton}>
+					Delete Account
+				</Button>
+			</Vertical>
+			<Modal
+				opened={profileDeleteAccountButtonPressedAt !== null}
+				onClose={actions.profile.deleteAccount.cancelButton}
+				title="Delete Account"
+			>
+				<Vertical gap={12}>
+					<Text>Are you sure you want to delete your account?</Text>
+					<Button color="red" onClick={actions.profile.deleteAccount.executeFn(token)} disabled={remainingTime > 0}>
+						Delete Account {remainingTime > 0 && `(${Math.ceil(remainingTime / 1000)}s)`}
+					</Button>
+				</Vertical>
+			</Modal>
 		</Vertical>
-	</Vertical>
-);
+	);
+};
