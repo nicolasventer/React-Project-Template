@@ -5,13 +5,13 @@ import { SimpleMapCache } from "@/utils/SimpleMapCache";
 import type { Context } from "elysia";
 import jwt from "jsonwebtoken";
 
-export type LoginPayload = Pick<User, "id" | "email" | "role">;
+export type LoginPayload = Pick<User, "userId" | "email" | "role">;
 
 const revokedLoginIdCache = new SimpleMapCache(1000 * 60 * 60); // 1h
 
 // object built with only the properties we want to include in the token
-const generateLoginToken = ({ id, email, role }: LoginPayload): string =>
-	jwt.sign({ id, email, role }, JWT_SECRET, { expiresIn: "1h" });
+const generateLoginToken = ({ userId, email, role }: LoginPayload): string =>
+	jwt.sign({ userId, email, role }, JWT_SECRET, { expiresIn: "1h" });
 
 // returns LoginPayload if token is valid
 // returns true if token is expired
@@ -36,7 +36,7 @@ const getVerifiedLoginToken = (
 ) => {
 	const loginPayload = !!req.headers["x-token"] && verifyLoginToken(req.headers["x-token"]);
 	if (typeof loginPayload === "boolean") return loginPayload;
-	return revokedLoginIdCache.get<boolean>(loginPayload.id.toString()) ? true : loginPayload;
+	return revokedLoginIdCache.get<boolean>(loginPayload.userId.toString()) ? true : loginPayload;
 };
 
 // returns undefined if token is valid

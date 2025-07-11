@@ -9,20 +9,19 @@ import { useDebug } from "@/utils/GlobalDebugOneFile";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import { MantineProvider } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import type { ReactNode } from "react";
 import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import { Tooltip } from "react-tooltip";
 
-const SafeAreaInset = ({ children }: { children?: ReactNode }) => (
-	<div style={{ height: "100%" }}>
-		<div className="safe-area-inset-top" />
-		<div className="safe-area-inset-bottom" />
-		<div className="safe-area-inset-left" />
-		<div className="safe-area-inset-right" />
-		<div className="safe-area-inset">{children}</div>
-	</div>
-);
+// const SafeAreaInset = ({ children }: { children?: ReactNode }) => (
+// 	<div style={{ height: "100%" }}>
+// 		<div className="safe-area-inset-top" />
+// 		<div className="safe-area-inset-bottom" />
+// 		<div className="safe-area-inset-left" />
+// 		<div className="safe-area-inset-right" />
+// 		<div className="safe-area-inset">{children}</div>
+// 	</div>
+// );
 
 // @routeExport
 export const MainLayout = () => {

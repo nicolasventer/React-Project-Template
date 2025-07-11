@@ -7,7 +7,7 @@ export class AuthDao {
 			.update(schema.user)
 			.set({ lastLoginTime: Date.now() })
 			.where(and(eq(schema.user.email, email), eq(schema.user.password, hashedPassword)))
-			.returning({ id: schema.user.id, email: schema.user.email, role: schema.user.role })
+			.returning({ userId: schema.user.userId, email: schema.user.email, role: schema.user.role })
 			.execute()
 			.then((res) => res[0]);
 }

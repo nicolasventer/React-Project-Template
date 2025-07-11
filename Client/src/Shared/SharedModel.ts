@@ -66,7 +66,7 @@ export type LoginOutput = typeof LoginOutputSchema.static;
 // user
 
 export const UserOutputSchema = t.Object({
-	id: t.Number(),
+	userId: t.Number(),
 	email: t.String(),
 	role: RoleSchema,
 	lastLoginTime: t.Number(),
@@ -87,7 +87,7 @@ export const UpdateUserSchema = t.Object({
 export type UpdateUser = typeof UpdateUserSchema.static;
 
 export const UpdateUserOutputSchema = t.Object({
-	id: t.Number(),
+	userId: t.Number(),
 });
 export type UpdateUserOutput = typeof UpdateUserOutputSchema.static;
 

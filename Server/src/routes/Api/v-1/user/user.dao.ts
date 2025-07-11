@@ -7,7 +7,7 @@ export class UserDao {
 	public getAll = (): Promise<MultiUserOutput> =>
 		db
 			.select({
-				id: schema.user.id,
+				userId: schema.user.userId,
 				email: schema.user.email,
 				role: schema.user.role,
 				lastLoginTime: schema.user.lastLoginTime,
@@ -31,7 +31,7 @@ export class UserDao {
 			.insert(schema.user)
 			.values({ email, password, lastLoginTime: Date.now(), role })
 			.returning({
-				id: schema.user.id,
+				userId: schema.user.userId,
 				email: schema.user.email,
 				role: schema.user.role,
 				lastLoginTime: schema.user.lastLoginTime,
@@ -49,16 +49,16 @@ export class UserDao {
 		db
 			.update(schema.user)
 			.set(updateUser)
-			.where(eq(schema.user.id, id))
-			.returning({ id: schema.user.id })
+			.where(eq(schema.user.userId, id))
+			.returning({ userId: schema.user.userId })
 			.execute()
 			.then((res) => res[0]);
 
 	public delete = ({ id }: IdNum) =>
 		db
 			.delete(schema.user)
-			.where(eq(schema.user.id, id))
-			.returning({ id: schema.user.id })
+			.where(eq(schema.user.userId, id))
+			.returning({ userId: schema.user.userId })
 			.execute()
 			.then((res) => res[0]);
 }

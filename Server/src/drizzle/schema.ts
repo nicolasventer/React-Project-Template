@@ -13,7 +13,7 @@ export const image = sqliteTable(
 export const user = sqliteTable(
 	"user",
 	{
-		id: integer().primaryKey({ autoIncrement: true }).notNull(),
+		userId: integer().primaryKey({ autoIncrement: true }).notNull(),
 		email: text().notNull(),
 		password: text().notNull(),
 		role: text({ enum: ROLES }).notNull(),
@@ -28,7 +28,7 @@ export const vote = sqliteTable(
 		voteId: integer().primaryKey({ autoIncrement: true }).notNull(),
 		userId: integer()
 			.notNull()
-			.references(() => user.id, { onDelete: "cascade", onUpdate: "cascade" }),
+			.references(() => user.userId, { onDelete: "cascade", onUpdate: "cascade" }),
 		imageId: integer()
 			.notNull()
 			.references(() => image.imageId, { onDelete: "cascade", onUpdate: "cascade" }),

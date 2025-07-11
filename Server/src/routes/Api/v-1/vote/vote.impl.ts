@@ -8,7 +8,7 @@ export class VoteImpl {
 		const token = JwtService.getVerifiedLoginToken(req);
 		if (token === true) return req.status("Unauthorized", "Token expired");
 		if (token === false) return req.status("Unauthorized", "Invalid token");
-		return dao.vote.create(token.id, createVote);
+		return dao.vote.create(token.userId, createVote);
 	};
 
 	update = (
@@ -20,7 +20,7 @@ export class VoteImpl {
 		if (token === true) return req.status("Unauthorized", "Token expired");
 		if (token === false) return req.status("Unauthorized", "Invalid token");
 		return dao.vote
-			.update(token.id, id, updateVote)
+			.update(token.userId, id, updateVote)
 			.then((updated) => (updated ? "Vote updated" : req.status("Not Found", "Vote not found")));
 	};
 
@@ -32,7 +32,7 @@ export class VoteImpl {
 		if (token === true) return req.status("Unauthorized", "Token expired");
 		if (token === false) return req.status("Unauthorized", "Invalid token");
 		return dao.vote
-			.delete(token.id, id)
+			.delete(token.userId, id)
 			.then((deleted) => (deleted ? "Vote deleted" : req.status("Not Found", "Vote not found")));
 	};
 }

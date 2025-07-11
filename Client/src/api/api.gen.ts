@@ -96,7 +96,7 @@ export type Api = {
 				options: { headers: { "x-token": string }; query?: Record<string, unknown> | undefined; fetch?: RequestInit | undefined }
 			) => Promise<
 				TreatyResponse<{
-					200: { id: number };
+					200: { userId: number };
 					401: "Token expired" | "Invalid token" | "admin role required";
 					422: {
 						type: "validation";
@@ -114,7 +114,7 @@ export type Api = {
 				options: { headers: { "x-token": string }; query?: Record<string, unknown> | undefined; fetch?: RequestInit | undefined }
 			) => Promise<
 				TreatyResponse<{
-					200: { id: number };
+					200: { userId: number };
 					401: "Token expired" | "Invalid token" | "admin role required";
 					422: {
 						type: "validation";
@@ -139,7 +139,7 @@ export type Api = {
 					| undefined
 			) => Promise<
 				TreatyResponse<{
-					200: { id: number; email: string; role: "user" | "superAdmin" | "admin"; lastLoginTime: number };
+					200: { userId: number; email: string; role: "user" | "superAdmin" | "admin"; lastLoginTime: number };
 					422: {
 						type: "validation";
 						on: string;
@@ -157,7 +157,7 @@ export type Api = {
 				fetch?: RequestInit | undefined;
 			}) => Promise<
 				TreatyResponse<{
-					200: { users: { id: number; email: string; role: "user" | "superAdmin" | "admin"; lastLoginTime: number }[] };
+					200: { users: { userId: number; email: string; role: "user" | "superAdmin" | "admin"; lastLoginTime: number }[] };
 					401: "Token expired" | "Invalid token" | "admin role required";
 					422: {
 						type: "validation";

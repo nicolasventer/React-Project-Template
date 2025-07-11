@@ -40,7 +40,7 @@ export class UserImpl {
 		const verified = JwtService.getVerifiedLoginToken(req);
 		if (verified === true) return req.status("Unauthorized", "Token expired");
 		if (verified === false) return req.status("Unauthorized", "Invalid token");
-		const idNum = { id: verified.id };
+		const idNum = { id: verified.userId };
 		return dao.user
 			.update(idNum, updateUser)
 			.then((updated) => (updated ? "User updated" : req.status("Not Found", "User not found")))
@@ -63,7 +63,7 @@ export class UserImpl {
 		const verified = JwtService.getVerifiedLoginToken(req);
 		if (verified === true) return req.status("Unauthorized", "Token expired");
 		if (verified === false) return req.status("Unauthorized", "Invalid token");
-		const idNum = { id: verified.id };
+		const idNum = { id: verified.userId };
 		return dao.user
 			.delete(idNum)
 			.then((deleted) => (deleted ? "User deleted" : req.status("Not Found", "User not found")))

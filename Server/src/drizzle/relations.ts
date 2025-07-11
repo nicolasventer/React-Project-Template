@@ -8,7 +8,7 @@ export const voteRelations = relations(vote, ({ one }) => ({
 	}),
 	user: one(user, {
 		fields: [vote.userId],
-		references: [user.id],
+		references: [user.userId],
 	}),
 }));
 
