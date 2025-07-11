@@ -20,6 +20,7 @@ export const en = {
 	// Login page
 	Login: "Login",
 	Email: "Email",
+	Role: "Role",
 	Password: "Password",
 	"Forgot password?": "Forgot password?",
 	"Sign in": "Sign in",
@@ -27,6 +28,11 @@ export const en = {
 	"Create account": "Create account",
 	"Reset password": "Reset password",
 	"Back to the login page": "Back to the login page",
+
+	// Profile page
+	"New password": "New password",
+	"Confirm new password": "Confirm new password",
+	"Confirm password": "Confirm password",
 };
 
 export type Tr = typeof en;

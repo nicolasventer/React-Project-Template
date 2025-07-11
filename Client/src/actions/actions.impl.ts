@@ -4,6 +4,7 @@ import { errorMessage } from "@/actions/impl/errorMessage";
 import { images } from "@/actions/impl/images";
 import { lang } from "@/actions/impl/lang";
 import { localStorageIo } from "@/actions/impl/localStorageIo";
+import { profile } from "@/actions/impl/profile";
 import { shell } from "@/actions/impl/shell";
 import { url } from "@/actions/impl/url";
 import { vote } from "@/actions/impl/vote";
@@ -16,6 +17,7 @@ export const actions = {
 	images,
 	lang,
 	localStorageIo,
+	profile,
 	shell,
 	url,
 	vote,

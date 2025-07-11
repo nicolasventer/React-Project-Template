@@ -1,4 +1,4 @@
-// fa05770fe3dbd466c08ffac490b71b2c965eab16dbd816816b6f3160901c91d7
+// 27b8c6b6315b96e4dec3bbfb15a7bd8e92ee970cf1fb2f530668c23c8535abf4
 import { checkValidRoute, lazySingleLoader, type RouteParams, Router } from "easy-react-router";
 
 export const {
@@ -21,6 +21,7 @@ export const {
 	{
 		[checkValidRoute("//")]: lazySingleLoader(() => import("./routes/index.index"), "Home"),
 		[checkValidRoute("/")]: lazySingleLoader(() => import("./routes/index.lazy"), "MainLayout"),
+		[checkValidRoute("/profile")]: lazySingleLoader(() => import("./routes/profile"), "Profile"),
 	},
 	{
 		[checkValidRoute("/")]: lazySingleLoader(() => import("./routes/404"), "NotFoundPage"),

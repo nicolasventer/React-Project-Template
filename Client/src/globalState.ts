@@ -83,6 +83,12 @@ export const { appStore, setAppWithUpdate, useInit, useSetAppEnabled } = new Glo
 			role: localStorageState.userRole,
 		},
 	},
+	profile: {
+		newPassword: new HashedString(""),
+		confirmNewPassword: new HashedString(""),
+		isLoading: false,
+		error: "",
+	},
 });
 export type AppState = TypeOfStore<typeof appStore>;
 export const useApp = () => appStore.use();

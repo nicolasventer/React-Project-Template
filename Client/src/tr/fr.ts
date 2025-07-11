@@ -22,6 +22,7 @@ export const fr: Tr = {
 	// Login page
 	Login: "Connexion",
 	Email: "Email",
+	Role: "Rôle",
 	Password: "Mot de passe",
 	"Forgot password?": "Mot de passe oublié ?",
 	"Sign in": "Se connecter",
@@ -29,4 +30,9 @@ export const fr: Tr = {
 	"Create account": "Créer un compte",
 	"Reset password": "Réinitialiser",
 	"Back to the login page": "Retour à la page de connexion",
+
+	// Profile page
+	"New password": "Nouveau mot de passe",
+	"Confirm new password": "Confirmer le nouveau mot de passe",
+	"Confirm password": "Confirmer le mot de passe",
 };

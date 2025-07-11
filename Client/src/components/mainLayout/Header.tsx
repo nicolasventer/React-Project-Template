@@ -4,6 +4,7 @@ import { LanguageButton } from "@/components/_app/LanguageButton";
 import type { Lang } from "@/dict";
 import type { LoginViewType } from "@/globalState";
 import { appStore } from "@/globalState";
+import { navigateToRouteFn } from "@/routerInstance.gen";
 import type { ColorSchemeType } from "@/Shared/SharedModel";
 import type { Tr } from "@/tr/en";
 import { evStringFn } from "@/utils/clientUtils";
@@ -113,7 +114,7 @@ const ProfileMenu = ({ tr }: { tr: Tr }) => (
 			<Button>{tr["Profile"]}</Button>
 		</Menu.Target>
 		<Menu.Dropdown>
-			<Menu.Item>{tr["Edit"]}</Menu.Item>
+			<Menu.Item onClick={navigateToRouteFn("/profile")}>{tr["Edit"]}</Menu.Item>
 			<Menu.Divider />
 			<Menu.Item c="red" onClick={actions.auth.logout}>
 				{tr["Logout"]}
