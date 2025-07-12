@@ -158,7 +158,7 @@ export const Header = ({
 				},
 			]}
 			value={appStore.use().imageView}
-			onChange={actions.images.view.update}
+			onChange={actions.images.updateImageView}
 		/>
 		<Title>Pikilikee</Title>
 		<Horizontal gap={12}>

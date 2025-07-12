@@ -5,6 +5,7 @@ import { images } from "@/actions/impl/images";
 import { lang } from "@/actions/impl/lang";
 import { localStorageIo } from "@/actions/impl/localStorageIo";
 import { profile } from "@/actions/impl/profile";
+import { resetPassword } from "@/actions/impl/resetPassword";
 import { shell } from "@/actions/impl/shell";
 import { url } from "@/actions/impl/url";
 import { vote } from "@/actions/impl/vote";
@@ -18,6 +19,7 @@ export const actions = {
 	lang,
 	localStorageIo,
 	profile,
+	resetPassword,
 	shell,
 	url,
 	vote,

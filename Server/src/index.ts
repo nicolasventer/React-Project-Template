@@ -13,7 +13,7 @@ initWinston();
 
 export const app = new Elysia({ tags: ["root"] })
 	.use(cors())
-	.use(swagger())
+	.use(swagger({ documentation: { servers: [{ url: SRV_URL, description: "Server" }] } }))
 	.onRequest(({ request }) => void console.log(`${request.method} ${new URL(request.url).pathname}`))
 	.onError(({ error, code, path, status }) => {
 		void console.error(`${code} ${path} ${error}`);

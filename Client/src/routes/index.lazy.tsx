@@ -34,8 +34,8 @@ export const MainLayout = () => {
 	// sync the app state with the media query
 	const isAboveXl = !!useMediaQuery("(min-width: 88em)");
 	const isAboveMd = !!useMediaQuery("(min-width: 62em)");
-	appStore.useEffect(() => actions.shell.isAboveXl.update(isAboveXl), [isAboveXl]);
-	appStore.useEffect(() => actions.shell.isAboveMd.update(isAboveMd), [isAboveMd]);
+	appStore.useEffect(() => actions.shell.updateIsAboveXl(isAboveXl), [isAboveXl]);
+	appStore.useEffect(() => actions.shell.updateIsAboveMd(isAboveMd), [isAboveMd]);
 
 	// navigate to the app state url
 	useEffect(() => navigateToCustomRouteFn(clientEnv.BASE_URL + app.url)(), [app.url]);

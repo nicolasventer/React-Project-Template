@@ -6,6 +6,6 @@ const updateIsAboveMd = (isAboveMd: boolean) =>
 	setAppWithUpdate("updateIsAboveMd", [isAboveMd], (prev) => (prev.shell.isAboveMd = isAboveMd));
 
 export const shell = {
-	isAboveXl: { update: updateIsAboveXl },
-	isAboveMd: { update: updateIsAboveMd },
+	updateIsAboveXl,
+	updateIsAboveMd,
 };

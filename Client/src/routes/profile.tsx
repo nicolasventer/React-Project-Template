@@ -11,6 +11,9 @@ export const Profile = () => {
 	const token = auth.token.get();
 	const newPassword = profile.newPassword.get();
 	const confirmNewPassword = profile.confirmNewPassword.get();
+	const profileError = profile.error;
+	const profileDeleteAccountButtonPressedAt = profile.deleteAccount.buttonPressedAt;
+	const isProfileLoading = profile.isLoading;
 
 	return (
 		<EditProfile
@@ -20,8 +23,9 @@ export const Profile = () => {
 			newPassword={newPassword}
 			confirmNewPassword={confirmNewPassword}
 			token={token}
-			profileError={profile.error}
-			profileDeleteAccountButtonPressedAt={profile.deleteAccount.buttonPressedAt}
+			profileError={profileError}
+			profileDeleteAccountButtonPressedAt={profileDeleteAccountButtonPressedAt}
+			isProfileLoading={isProfileLoading}
 		/>
 	);
 };

@@ -46,6 +46,6 @@ const getImages = (token?: string) => {
 };
 
 export const images = {
-	view: { update: updateImageView },
+	updateImageView,
 	get: getImages,
 };

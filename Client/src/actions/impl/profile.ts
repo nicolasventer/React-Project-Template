@@ -117,8 +117,8 @@ const deleteAccountFn = (token: string) => () => {
 };
 
 export const profile = {
-	newPassword: { update: updateNewPassword },
-	confirmNewPassword: { update: updateConfirmNewPassword },
+	updateNewPassword,
+	updateConfirmNewPassword,
 	confirmPasswordFn,
 	deleteAccount: {
 		pressButton: pressDeleteAccountButton,

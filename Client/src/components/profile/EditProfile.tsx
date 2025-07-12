@@ -1,6 +1,7 @@
 import { actions } from "@/actions/actions.impl";
 import type { RoleType } from "@/Shared/SharedModel";
 import type { Tr } from "@/tr/en";
+import { evStringFn } from "@/utils/clientUtils";
 import { Vertical } from "@/utils/ComponentToolbox";
 import { useInterval } from "@/utils/useInterval";
 import { Alert, Button, Divider, Modal, PasswordInput, Text, Title } from "@mantine/core";
@@ -16,6 +17,7 @@ export const EditProfile = ({
 	token,
 	profileError,
 	profileDeleteAccountButtonPressedAt,
+	isProfileLoading,
 }: {
 	tr: Tr;
 	userEmail: string;
@@ -25,6 +27,7 @@ export const EditProfile = ({
 	token: string;
 	profileError: string;
 	profileDeleteAccountButtonPressedAt: number | null;
+	isProfileLoading: boolean;
 }) => {
 	const [remainingTime, setRemainingTime] = useState(0);
 	useInterval(
@@ -53,19 +56,21 @@ export const EditProfile = ({
 			<PasswordInput
 				label={tr["New password"]}
 				value={newPassword}
-				onChange={(e) => actions.profile.newPassword.update(e.target.value)}
+				onChange={evStringFn(actions.profile.updateNewPassword)}
+				disabled={isProfileLoading}
 			/>
 			<PasswordInput
 				label={tr["Confirm new password"]}
 				value={confirmNewPassword}
-				onChange={(e) => actions.profile.confirmNewPassword.update(e.target.value)}
+				onChange={evStringFn(actions.profile.updateConfirmNewPassword)}
+				disabled={isProfileLoading}
 			/>
-			<Button onClick={actions.profile.confirmPasswordFn(newPassword, confirmNewPassword, token)}>
+			<Button onClick={actions.profile.confirmPasswordFn(newPassword, confirmNewPassword, token)} loading={isProfileLoading}>
 				{tr["Confirm password"]}
 			</Button>
 			<Vertical gap={12} marginTop={24}>
 				<Divider />
-				<Button color="red" onClick={actions.profile.deleteAccount.pressButton}>
+				<Button color="red" onClick={actions.profile.deleteAccount.pressButton} disabled={isProfileLoading}>
 					Delete Account
 				</Button>
 			</Vertical>
@@ -76,7 +81,12 @@ export const EditProfile = ({
 			>
 				<Vertical gap={12}>
 					<Text>Are you sure you want to delete your account?</Text>
-					<Button color="red" onClick={actions.profile.deleteAccount.executeFn(token)} disabled={remainingTime > 0}>
+					<Button
+						color="red"
+						onClick={actions.profile.deleteAccount.executeFn(token)}
+						disabled={remainingTime > 0}
+						loading={isProfileLoading}
+					>
 						Delete Account {remainingTime > 0 && `(${Math.ceil(remainingTime / 1000)}s)`}
 					</Button>
 				</Vertical>

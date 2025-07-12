@@ -92,6 +92,12 @@ export const { appStore, setAppWithUpdate, useInit, useSetAppEnabled } = new Glo
 			buttonPressedAt: null as number | null,
 		},
 	},
+	resetPassword: {
+		isLoading: false,
+		error: "",
+		newPassword: new HashedString(""),
+		inputToken: "",
+	},
 });
 export type AppState = TypeOfStore<typeof appStore>;
 export const useApp = () => appStore.use();
