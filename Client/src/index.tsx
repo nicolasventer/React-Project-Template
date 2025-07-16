@@ -7,8 +7,12 @@ import { clientEnv } from "@/clientEnv";
 import { setRouterBaseRoute } from "@/routerInstance.gen";
 import { MainLayout } from "@/routes";
 import { App } from "@capacitor/app";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+
+dayjs.extend(relativeTime);
 
 setRouterBaseRoute(clientEnv.BASE_URL);
 

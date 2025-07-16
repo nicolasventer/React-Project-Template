@@ -1,6 +1,7 @@
 import { clientEnv } from "@/clientEnv";
+import { userColumnManager, userFilterManager, userSortManager } from "@/components/users/UsersManagers";
 import type { Lang } from "@/dict";
-import type { ColorSchemeType, MultiImageOutput, RoleType } from "@/Shared/SharedModel";
+import type { ColorSchemeType, MultiImageOutput, MultiUserOutput, RoleType } from "@/Shared/SharedModel";
 import { en } from "@/tr/en";
 import type { NotArray } from "@/utils/Redux/GlobalApp";
 import { GlobalApp } from "@/utils/Redux/GlobalApp";
@@ -66,6 +67,15 @@ export const { appStore, setAppWithUpdate, useInit, useSetAppEnabled } = new Glo
 		error: "",
 		isLoading: false,
 		values: [] as MultiImageOutput["images"],
+	},
+	users: {
+		error: "",
+		isLoading: false,
+		values: [] as MultiUserOutput["users"],
+		sort: userSortManager.createSortState(),
+		filter: userFilterManager.createFilterState(),
+		column: userColumnManager.createColumnState(userColumnManager.getAllKeys()),
+		isSortAdditive: false,
 	},
 	vote: {
 		error: "",

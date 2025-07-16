@@ -18,6 +18,7 @@ export const fr: Tr = {
 	Profile: "Profil",
 	Edit: "Modifier",
 	Logout: "Déconnexion",
+	Users: "Utilisateurs",
 
 	// Login page
 	Login: "Connexion",

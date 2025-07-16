@@ -16,6 +16,7 @@ export const en = {
 	Profile: "Profile",
 	Edit: "Edit",
 	Logout: "Logout",
+	Users: "Users",
 
 	// Login page
 	Login: "Login",

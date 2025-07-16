@@ -3,7 +3,7 @@ import { clientEnv } from "@/clientEnv";
 import { Header } from "@/components/mainLayout/Header";
 import { dict } from "@/dict";
 import { appStore, LOCAL_STORAGE_KEY, localStorageStateStore, trStore, useInit, useSetAppEnabled, useTr } from "@/globalState";
-import { navigateToCustomRouteFn, RouterRender } from "@/routerInstance.gen";
+import { navigateToCustomRouteFn, RouterRender, useCurrentRoute } from "@/routerInstance.gen";
 import { FullViewport, Vertical, WriteToolboxClasses } from "@/utils/ComponentToolbox";
 import { useDebug } from "@/utils/GlobalDebugOneFile";
 import { StatusBar, Style } from "@capacitor/status-bar";
@@ -69,6 +69,7 @@ export const MainLayout = () => {
 	useDebug("boolean", "isSetAppEnabled", [isSetAppEnabled, setIsSetAppEnabled]);
 
 	const tr = useTr();
+	const { currentRoute } = useCurrentRoute();
 
 	const isAuthenticated = !!app.auth.user.role;
 	const password = app.auth.user.password.get();
@@ -92,6 +93,8 @@ export const MainLayout = () => {
 						isLangLoading={app.lang.isLoading}
 						colorScheme={app.colorScheme.value}
 						isColorSchemeLoading={app.colorScheme.isLoading}
+						role={app.auth.user.role}
+						currentRoute={currentRoute}
 					/>
 					<RouterRender subPath="/" />
 				</Vertical>

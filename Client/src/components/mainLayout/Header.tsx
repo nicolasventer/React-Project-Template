@@ -4,8 +4,9 @@ import { LanguageButton } from "@/components/_app/LanguageButton";
 import type { Lang } from "@/dict";
 import type { LoginViewType } from "@/globalState";
 import { appStore } from "@/globalState";
+import type { RouterPathType } from "@/routerInstance.gen";
 import { navigateToRouteFn } from "@/routerInstance.gen";
-import type { ColorSchemeType } from "@/Shared/SharedModel";
+import type { ColorSchemeType, RoleType } from "@/Shared/SharedModel";
 import type { Tr } from "@/tr/en";
 import { evStringFn } from "@/utils/clientUtils";
 import { Horizontal, Vertical } from "@/utils/ComponentToolbox";
@@ -108,13 +109,14 @@ const LoginModal = ({ email, password, authError, tr, isModalOpened, isAuthLoadi
 	</>
 );
 
-const ProfileMenu = ({ tr }: { tr: Tr }) => (
+const ProfileMenu = ({ tr, role }: { tr: Tr; role: RoleType | null }) => (
 	<Menu>
 		<Menu.Target>
 			<Button>{tr["Profile"]}</Button>
 		</Menu.Target>
 		<Menu.Dropdown>
 			<Menu.Item onClick={navigateToRouteFn("/profile")}>{tr["Edit"]}</Menu.Item>
+			{role === "admin" && <Menu.Item onClick={navigateToRouteFn("/users")}>{tr["Users"]}</Menu.Item>}
 			<Menu.Divider />
 			<Menu.Item c="red" onClick={actions.auth.logout}>
 				{tr["Logout"]}
@@ -136,36 +138,44 @@ export const Header = ({
 	isLangLoading,
 	colorScheme,
 	isColorSchemeLoading,
+	role,
+	currentRoute,
 }: LoginModalProps & {
 	isAuthenticated: boolean;
 	lang: Lang;
 	isLangLoading: boolean;
 	colorScheme: ColorSchemeType;
 	isColorSchemeLoading: boolean;
+	role: RoleType | null;
+	currentRoute: RouterPathType | undefined;
 }) => (
 	<Horizontal justifyContent="space-between">
-		<SegmentedControl
-			data={[
-				"Public",
-				{
-					value: "You",
-					label: (
-						<div data-tooltip-id="main-tooltip" data-tooltip-content={isAuthenticated ? "" : "Login to see your images"}>
-							You
-						</div>
-					),
-					disabled: !isAuthenticated,
-				},
-			]}
-			value={appStore.use().imageView}
-			onChange={actions.images.updateImageView}
-		/>
+		{currentRoute === "/" ? (
+			<SegmentedControl
+				data={[
+					"Public",
+					{
+						value: "You",
+						label: (
+							<div data-tooltip-id="main-tooltip" data-tooltip-content={isAuthenticated ? "" : "Login to see your images"}>
+								You
+							</div>
+						),
+						disabled: !isAuthenticated,
+					},
+				]}
+				value={appStore.use().imageView}
+				onChange={actions.images.updateImageView}
+			/>
+		) : (
+			<Button onClick={navigateToRouteFn("/")}>Images</Button>
+		)}
 		<Title>Pikilikee</Title>
 		<Horizontal gap={12}>
 			<LanguageButton lang={lang} isLoading={isLangLoading} useTransition={false} />
 			<DarkModeButton isDark={colorScheme === "dark"} isLoading={isColorSchemeLoading} useTransition={false} />
 			{isAuthenticated ? (
-				<ProfileMenu tr={tr} />
+				<ProfileMenu tr={tr} role={role} />
 			) : (
 				<LoginModal
 					tr={tr}
