@@ -61,7 +61,7 @@ const updateInputToken = (inputToken: string) => {
 };
 
 export const resetPassword = {
-	updateNewPassword,
-	resetPasswordFn,
-	updateInputToken,
+	newPassword: { update: updateNewPassword },
+	password: { resetFn: resetPasswordFn },
+	inputToken: { update: updateInputToken },
 };

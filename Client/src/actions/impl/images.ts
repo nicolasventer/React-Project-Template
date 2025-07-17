@@ -48,6 +48,6 @@ const getImages = (token?: string): Promise<void> => {
 };
 
 export const images = {
-	updateImageView,
+	imageView: { update: updateImageView },
 	get: getImages,
 };

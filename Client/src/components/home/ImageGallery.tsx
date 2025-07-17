@@ -21,8 +21,8 @@ type ImageGalleryProps = {
 const handleVoteFn = (imageId: number, newVote: 0 | 1, userVote: number | null, voteId: number | null, token?: string) => () => {
 	if (!token) {
 		toast.error("You must be logged in to vote");
-		actions.auth.updateIsModalOpenedFn(true)();
-		actions.auth.updateLoginViewFn("Login")();
+		actions.auth.isModalOpened.updateFn(true)();
+		actions.auth.loginView.updateFn("Login")();
 		return;
 	}
 

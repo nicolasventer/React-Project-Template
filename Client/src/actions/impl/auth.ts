@@ -120,12 +120,11 @@ const logout = () =>
 	});
 
 export const auth = {
-	updateEmail,
-	updatePassword,
-	updateIsModalOpenedFn,
-	updateLoginViewFn,
+	email: { update: updateEmail },
+	password: { update: updatePassword, resetFn: resetPasswordFn },
+	isModalOpened: { updateFn: updateIsModalOpenedFn },
+	loginView: { updateFn: updateLoginViewFn },
 	loginFn,
-	createAccountFn,
-	resetPasswordFn,
+	account: { createFn: createAccountFn },
 	logout,
 };

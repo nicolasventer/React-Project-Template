@@ -22,7 +22,7 @@ export const ResetPassword = ({
 			<TextInput
 				label="Token"
 				value={inputToken}
-				onChange={evStringFn(actions.resetPassword.updateInputToken)}
+				onChange={evStringFn(actions.resetPassword.inputToken.update)}
 				disabled={isResetPasswordLoading}
 				error={!!resetPasswordError}
 			/>
@@ -30,11 +30,11 @@ export const ResetPassword = ({
 		<PasswordInput
 			label="New Password"
 			value={newPassword}
-			onChange={evStringFn(actions.resetPassword.updateNewPassword)}
+			onChange={evStringFn(actions.resetPassword.newPassword.update)}
 			disabled={isResetPasswordLoading}
 			error={resetPasswordError}
 		/>
-		<Button onClick={actions.resetPassword.resetPasswordFn(token ?? inputToken, newPassword)} disabled={isResetPasswordLoading}>
+		<Button onClick={actions.resetPassword.password.resetFn(token ?? inputToken, newPassword)} disabled={isResetPasswordLoading}>
 			Reset Password
 		</Button>
 	</Vertical>

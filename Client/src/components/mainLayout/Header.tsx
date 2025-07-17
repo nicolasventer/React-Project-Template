@@ -39,16 +39,16 @@ type LoginModalProps = {
 
 const LoginModal = ({ email, password, authError, tr, isModalOpened, isAuthLoading, loginView }: LoginModalProps) => (
 	<>
-		<Button onClick={actions.auth.updateIsModalOpenedFn(true)} size="compact-md">
+		<Button onClick={actions.auth.isModalOpened.updateFn(true)} size="compact-md">
 			Login
 		</Button>
-		<Modal title={tr[loginView]} opened={isModalOpened} onClose={actions.auth.updateIsModalOpenedFn(false)}>
+		<Modal title={tr[loginView]} opened={isModalOpened} onClose={actions.auth.isModalOpened.updateFn(false)}>
 			<Vertical gap={12}>
 				<TextInput
 					label={tr["Email"]}
 					required
 					value={email}
-					onChange={evStringFn(actions.auth.updateEmail)}
+					onChange={evStringFn(actions.auth.email.update)}
 					error={!!authError}
 					disabled={isAuthLoading}
 				/>
@@ -60,14 +60,14 @@ const LoginModal = ({ email, password, authError, tr, isModalOpened, isAuthLoadi
 								<Text c="var(--mantine-color-error)">*</Text>
 							</Horizontal>
 							{loginView === "Login" && (
-								<Anchor size="sm" mt={-2} onClick={actions.auth.updateLoginViewFn("Forgot password?")}>
+								<Anchor size="sm" mt={-2} onClick={actions.auth.loginView.updateFn("Forgot password?")}>
 									{tr["Forgot password?"]}
 								</Anchor>
 							)}
 						</Horizontal>
 						<PasswordInput
 							value={password}
-							onChange={evStringFn(actions.auth.updatePassword)}
+							onChange={evStringFn(actions.auth.password.update)}
 							error={authError}
 							disabled={isAuthLoading}
 						/>
@@ -83,7 +83,7 @@ const LoginModal = ({ email, password, authError, tr, isModalOpened, isAuthLoadi
 							<Text c="dimmed" size="sm">
 								{tr["No account yet?"]}
 							</Text>
-							<Anchor onClick={actions.auth.updateLoginViewFn("Create account")}>{tr["Create account"]}</Anchor>
+							<Anchor onClick={actions.auth.loginView.updateFn("Create account")}>{tr["Create account"]}</Anchor>
 						</Horizontal>
 					</>
 				) : (
@@ -91,16 +91,16 @@ const LoginModal = ({ email, password, authError, tr, isModalOpened, isAuthLoadi
 						<Anchor c="dimmed" size="sm">
 							<Center inline>
 								<ArrowLeft size={12} />
-								<Box ml={5} onClick={actions.auth.updateLoginViewFn("Login")}>
+								<Box ml={5} onClick={actions.auth.loginView.updateFn("Login")}>
 									{tr["Back to the login page"]}
 								</Box>
 							</Center>
 						</Anchor>
 						{loginView === "Forgot password?" && (
-							<Button onClick={actions.auth.resetPasswordFn(email)}>{tr["Reset password"]}</Button>
+							<Button onClick={actions.auth.password.resetFn(email)}>{tr["Reset password"]}</Button>
 						)}
 						{loginView === "Create account" && (
-							<Button onClick={actions.auth.createAccountFn(email, password)}>{tr["Create account"]}</Button>
+							<Button onClick={actions.auth.account.createFn(email, password)}>{tr["Create account"]}</Button>
 						)}
 					</Horizontal>
 				)}
@@ -165,7 +165,7 @@ export const Header = ({
 					},
 				]}
 				value={appStore.use().imageView}
-				onChange={actions.images.updateImageView}
+				onChange={actions.images.imageView.update}
 			/>
 		) : (
 			<Button onClick={navigateToRouteFn("/")}>Images</Button>

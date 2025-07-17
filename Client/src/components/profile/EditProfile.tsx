@@ -56,16 +56,16 @@ export const EditProfile = ({
 			<PasswordInput
 				label={tr["New password"]}
 				value={newPassword}
-				onChange={evStringFn(actions.profile.updateNewPassword)}
+				onChange={evStringFn(actions.profile.newPassword.update)}
 				disabled={isProfileLoading}
 			/>
 			<PasswordInput
 				label={tr["Confirm new password"]}
 				value={confirmNewPassword}
-				onChange={evStringFn(actions.profile.updateConfirmNewPassword)}
+				onChange={evStringFn(actions.profile.confirmNewPassword.update)}
 				disabled={isProfileLoading}
 			/>
-			<Button onClick={actions.profile.confirmPasswordFn(newPassword, confirmNewPassword, token)} loading={isProfileLoading}>
+			<Button onClick={actions.profile.password.confirmFn(newPassword, confirmNewPassword, token)} loading={isProfileLoading}>
 				{tr["Confirm password"]}
 			</Button>
 			<Vertical gap={12} marginTop={24}>

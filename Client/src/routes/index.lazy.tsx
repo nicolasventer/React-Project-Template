@@ -7,7 +7,7 @@ import { navigateToCustomRouteFn, RouterRender, useCurrentRoute } from "@/router
 import { FullViewport, Vertical, WriteToolboxClasses } from "@/utils/ComponentToolbox";
 import { useDebug } from "@/utils/GlobalDebugOneFile";
 import { StatusBar, Style } from "@capacitor/status-bar";
-import { MantineProvider } from "@mantine/core";
+import { createTheme, MantineProvider, Modal } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
@@ -23,6 +23,12 @@ import { Tooltip } from "react-tooltip";
 // 	</div>
 // );
 
+const theme = createTheme({
+	components: {
+		Modal: Modal.extend({ defaultProps: { zIndex: 500 } }),
+	},
+});
+
 // @routeExport
 export const MainLayout = () => {
 	// initialize the app state and the redux store
@@ -34,8 +40,8 @@ export const MainLayout = () => {
 	// sync the app state with the media query
 	const isAboveXl = !!useMediaQuery("(min-width: 88em)");
 	const isAboveMd = !!useMediaQuery("(min-width: 62em)");
-	appStore.useEffect(() => actions.shell.updateIsAboveXl(isAboveXl), [isAboveXl]);
-	appStore.useEffect(() => actions.shell.updateIsAboveMd(isAboveMd), [isAboveMd]);
+	appStore.useEffect(() => actions.shell.isAboveXl.update(isAboveXl), [isAboveXl]);
+	appStore.useEffect(() => actions.shell.isAboveMd.update(isAboveMd), [isAboveMd]);
 
 	// navigate to the app state url
 	useEffect(() => navigateToCustomRouteFn(clientEnv.BASE_URL + app.url)(), [app.url]);
@@ -72,7 +78,7 @@ export const MainLayout = () => {
 	const password = app.auth.user.password.get();
 
 	return (
-		<MantineProvider forceColorScheme={app.colorScheme.value}>
+		<MantineProvider forceColorScheme={app.colorScheme.value} theme={theme}>
 			<WriteToolboxClasses />
 			<FullViewport>
 				{/* <SafeAreaInset> */}
