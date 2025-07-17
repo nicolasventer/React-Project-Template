@@ -1,6 +1,6 @@
 import { api } from "@/api/api";
 import type { ImageViewType } from "@/globalState";
-import { setAppWithUpdate } from "@/globalState";
+import { refreshToken, setAppWithUpdate } from "@/globalState";
 import type { MultiImageOutput } from "@/Shared/SharedModel";
 
 import toast from "react-hot-toast";
@@ -28,15 +28,17 @@ const _updateImagesError = (error: string) =>
 		prev.images.isLoading = false;
 	});
 
-const getImages = (token?: string) => {
+const getImages = (token?: string): Promise<void> => {
 	_updateImagesLoading();
-	api.v1.images
+	return api.v1.images
 		.get({ headers: { "x-token": token } })
 		.then(({ data, error }) => {
+			if (error?.status === 401 && error.value === "Token expired") return refreshToken(getImages, token ?? "");
 			if (data) _updateImages(data);
 			else {
 				toast.error("Failed to get images");
 				if (error.status === 422) _updateImagesError(error.value.summary ?? "Validation error");
+				if (error.status === 401) _updateImagesError(error.value);
 				else throw error;
 			}
 		})

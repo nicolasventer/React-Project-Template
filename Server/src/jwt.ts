@@ -39,6 +39,8 @@ const getVerifiedLoginToken = (
 	return revokedLoginIdCache.get<boolean>(loginPayload.userId.toString()) ? true : loginPayload;
 };
 
+const decodeLoginToken = (token: string) => jwt.decode(token) as LoginPayload;
+
 // returns undefined if token is valid
 // usage: checkRole(req, "admin") || dao.user.create(createUser);
 const checkRole = <T extends RoleType>(
@@ -75,6 +77,7 @@ const getVerifiedResetPasswordToken = (
 export const JwtService = {
 	generateLoginToken,
 	getVerifiedLoginToken,
+	decodeLoginToken,
 	revokeLoginId,
 	checkRole,
 	generateResetPasswordToken,

@@ -43,15 +43,12 @@ export const MainLayout = () => {
 	// sync the local storage state with the app state
 	const lang = app.lang.value;
 	const colorScheme = app.colorScheme.value;
-	const userEmail = app.auth.user.email;
-	const userPassword = app.auth.user.password.get();
 	const userRole = app.auth.user.role;
 	const authToken = app.auth.token.get();
 	const imageView = app.imageView;
 	localStorageStateStore.useEffect(
-		(setLocalStorageState) =>
-			setLocalStorageState({ lang, colorScheme, userEmail, userPassword, userRole, authToken, imageView }),
-		[lang, colorScheme, userEmail, userPassword, userRole, authToken, imageView]
+		(setLocalStorageState) => setLocalStorageState({ lang, colorScheme, userRole, authToken, imageView }),
+		[lang, colorScheme, userRole, authToken, imageView]
 	);
 
 	// save the local storage state to the local storage

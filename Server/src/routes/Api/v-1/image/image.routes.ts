@@ -1,5 +1,5 @@
 import { impl } from "@/impl";
-import { MultiImageOutputSchema } from "@/Shared/SharedModel";
+import { buildUnauthorizedSchema, MultiImageOutputSchema } from "@/Shared/SharedModel";
 import { Elysia, t } from "elysia";
 
 export const imageApp = new Elysia({ prefix: "/images", tags: ["images"] })
@@ -9,5 +9,5 @@ export const imageApp = new Elysia({ prefix: "/images", tags: ["images"] })
 		headers: t.Optional(
 			t.Object({ "x-token": t.String() }, { description: "optional login token that can be specified to get the user's votes" })
 		),
-		response: { 200: MultiImageOutputSchema },
+		response: { 200: MultiImageOutputSchema, 401: buildUnauthorizedSchema(["Token expired", "Invalid token"] as const) },
 	});

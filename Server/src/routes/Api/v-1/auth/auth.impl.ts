@@ -1,6 +1,6 @@
 import { dao } from "@/dao";
 import { JwtService } from "@/jwt";
-import type { Login, LoginOutput, UnauthorizedValueType } from "@/Shared/SharedModel";
+import type { Headers, Login, LoginOutput, UnauthorizedValueType } from "@/Shared/SharedModel";
 import { hashPassword } from "@/utils/hash";
 import type { Context } from "elysia";
 
@@ -11,5 +11,13 @@ export class AuthImpl {
 		if (!user) return req.status("Unauthorized", "Invalid email or password");
 		const token = JwtService.generateLoginToken(user);
 		return { token, role: user.role };
+	};
+
+	refreshToken = (req: Context<{ headers: Headers; response: { 200: LoginOutput; 401: UnauthorizedValueType } }>) => {
+		const verified = JwtService.getVerifiedLoginToken(req);
+		if (verified === false) return req.status("Unauthorized", "Invalid token");
+		const payload = verified === true ? JwtService.decodeLoginToken(req.headers?.["x-token"]) : verified;
+		const token = JwtService.generateLoginToken(payload);
+		return { token, role: payload.role };
 	};
 }

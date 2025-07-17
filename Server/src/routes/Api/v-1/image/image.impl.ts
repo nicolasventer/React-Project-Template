@@ -5,8 +5,13 @@ import type { Context } from "elysia";
 
 export class ImageImpl {
 	public getAll = (req: Context<{ headers?: Headers; response: { 200: MultiImageOutput; 401: UnauthorizedValueType } }>) => {
-		const token = JwtService.getVerifiedLoginToken(req);
-		const userId = typeof token === "boolean" ? undefined : token.userId;
-		return dao.image.getAll(userId);
+		if (req.headers?.["x-token"]) {
+			const verified = JwtService.getVerifiedLoginToken(req);
+			if (verified === true) return req.status("Unauthorized", "Token expired");
+			if (verified === false) return req.status("Unauthorized", "Invalid token");
+			const userId = verified.userId;
+			return dao.image.getAll(userId);
+		}
+		return dao.image.getAll();
 	};
 }

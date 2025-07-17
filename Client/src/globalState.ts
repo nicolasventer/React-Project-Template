@@ -1,3 +1,4 @@
+import { api } from "@/api/api";
 import { clientEnv } from "@/clientEnv";
 import { userColumnManager, userFilterManager, userSortManager } from "@/components/users/UsersManagers";
 import type { Lang } from "@/dict";
@@ -21,8 +22,6 @@ export const LOCAL_STORAGE_KEY = "template_globalState" as const;
 export type LocalStorageState = {
 	lang: Lang;
 	colorScheme: ColorSchemeType;
-	userEmail: string;
-	userPassword: string;
 	userRole: RoleType | null;
 	authToken: string;
 	imageView: ImageViewType;
@@ -33,8 +32,6 @@ export const loadLocalStorageState = (): LocalStorageState => {
 	return {
 		lang: storedLocalStorageState.lang ?? "en",
 		colorScheme: storedLocalStorageState.colorScheme ?? "dark",
-		userEmail: storedLocalStorageState.userEmail ?? "",
-		userPassword: storedLocalStorageState.userPassword ?? "",
 		userRole: storedLocalStorageState.userRole ?? null,
 		authToken: storedLocalStorageState.authToken ?? "",
 		imageView: storedLocalStorageState.imageView ?? "Public",
@@ -88,8 +85,8 @@ export const { appStore, setAppWithUpdate, useInit, useSetAppEnabled } = new Glo
 		token: new HashedString(localStorageState.authToken),
 		error: "",
 		user: {
-			email: localStorageState.userEmail,
-			password: new HashedString(localStorageState.userPassword),
+			email: "",
+			password: new HashedString(""),
 			role: localStorageState.userRole,
 		},
 	},
@@ -116,6 +113,14 @@ export const trStore = store(en);
 export const useTr = () => trStore.use();
 
 export const mainContentStore = store<HTMLDivElement | null>(null);
+
+// usage: put this at the top of the then chain of the promise of an api call
+// if (error?.status === 401 && error.value === "Token expired") return refreshToken(yourCallback, token ?? "");
+export const refreshToken = <T>(callback: (token: string) => Promise<T>, token: string) =>
+	api.v1.auth.token.refresh.get({ headers: { "x-token": token ?? "" } }).then(({ data, error }) => {
+		if (data) return callback(data.token);
+		else throw error;
+	});
 
 /** @deprecated do not use this function, just manage the state manually */
 export const handlePromise = <T>(

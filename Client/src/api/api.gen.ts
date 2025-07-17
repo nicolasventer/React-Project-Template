@@ -246,6 +246,29 @@ export type Api = {
 					}>
 				>;
 			};
+			token: {
+				refresh: {
+					get: (options: {
+						headers: { "x-token": string };
+						query?: Record<string, unknown> | undefined;
+						fetch?: RequestInit | undefined;
+					}) => Promise<
+						TreatyResponse<{
+							200: { role: "user" | "superAdmin" | "admin"; token: string };
+							401: "Invalid token";
+							422: {
+								type: "validation";
+								on: string;
+								summary?: string | undefined;
+								message?: string | undefined;
+								found?: unknown;
+								property?: string | undefined;
+								expected?: string | undefined;
+							};
+						}>
+					>;
+				};
+			};
 		};
 		password: {
 			"request-reset": {
@@ -381,6 +404,7 @@ export type Api = {
 							userVoteId: number | null;
 						}[];
 					};
+					401: "Token expired" | "Invalid token";
 					422: {
 						type: "validation";
 						on: string;
