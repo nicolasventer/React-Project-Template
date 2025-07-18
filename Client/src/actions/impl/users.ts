@@ -1,6 +1,6 @@
 import { api } from "@/api/api";
 import type { UserFilterState, UserSortState } from "@/components/users/UsersManagers";
-import { refreshToken, setAppWithUpdate } from "@/globalState";
+import { checkAndRefreshToken, setAppWithUpdate } from "@/globalState";
 import type { MultiUserOutput } from "@/Shared/SharedModel";
 import { toast } from "react-hot-toast";
 
@@ -21,16 +21,17 @@ const _updateUsersError = (error: string) =>
 		prev.users.isLoading = false;
 	});
 
-const getUsers = (token: string): Promise<void> => {
+const getUsers = async (token: string) => {
+	const validToken = await checkAndRefreshToken(token);
 	_updateUsersLoading();
 	return api.v1.users
-		.get({ headers: { "x-token": token } })
-		.then(({ data, error }) => {
-			if (error?.status === 401 && error.value === "Token expired") return refreshToken(getUsers, token);
+		.get({ headers: { "x-token": validToken } })
+		.then(async ({ data, error }) => {
 			if (data) _updateUsers(data);
 			else {
 				toast.error("Failed to get users");
-				if (error.status === 422) _updateUsersError(error.value.summary ?? "Validation error");
+				if (error.status === 401) _updateUsersError(error.value);
+				else if (error.status === 422) _updateUsersError(error.value.summary ?? "Validation error");
 				else throw error;
 			}
 		})

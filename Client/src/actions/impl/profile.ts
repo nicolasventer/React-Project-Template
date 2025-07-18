@@ -1,5 +1,5 @@
 import { api } from "@/api/api";
-import { refreshToken, setAppWithUpdate } from "@/globalState";
+import { checkAndRefreshToken, setAppWithUpdate } from "@/globalState";
 import { HashedString } from "@/utils/Redux/HashedString";
 import toast from "react-hot-toast";
 
@@ -39,36 +39,30 @@ const _updateProfileSuccess = () =>
 		prev.profile.error = "";
 	});
 
-const confirmPasswordFn = (newPassword: string, confirmNewPassword: string, token: string) => () => {
+const confirmPasswordFn = (newPassword: string, confirmNewPassword: string, token: string) => async () => {
 	if (newPassword !== confirmNewPassword) {
 		_updateProfileError("Passwords do not match");
 		return;
 	}
-
+	const validToken = await checkAndRefreshToken(token);
 	_updateProfileIsLoading();
-
-	const confirmPasswordAux = (token: string): Promise<void> =>
-		api.v1.users.current
-			.patch({ password: newPassword }, { headers: { "x-token": token } })
-			.then(({ data, error }) => {
-				if (error?.status === 401 && error.value === "Token expired") return refreshToken(confirmPasswordAux, token);
-				if (data) {
-					toast.success("Password updated successfully");
-					_updateProfileSuccess();
-				} else {
-					toast.error("Failed to update password");
-					if (error.status === 401) _updateProfileError(error.value);
-					else if (error.status === 404) _updateProfileError("User not found");
-					else if (error.status === 422) _updateProfileError(error.value.summary ?? "Validation error");
-					else throw error;
-				}
-			})
-			.catch((error) =>
-				_updateProfileError(
-					typeof error === "object" && error && "message" in error ? (error.message as string) : "Unknown error"
-				)
-			);
-	return confirmPasswordAux(token);
+	return api.v1.users.current
+		.patch({ password: newPassword }, { headers: { "x-token": validToken } })
+		.then(async ({ data, error }) => {
+			if (data) {
+				toast.success("Password updated successfully");
+				_updateProfileSuccess();
+			} else {
+				toast.error("Failed to update password");
+				if (error.status === 401) _updateProfileError(error.value);
+				else if (error.status === 404) _updateProfileError("User not found");
+				else if (error.status === 422) _updateProfileError(error.value.summary ?? "Validation error");
+				else throw error;
+			}
+		})
+		.catch((error) =>
+			_updateProfileError(typeof error === "object" && error && "message" in error ? (error.message as string) : "Unknown error")
+		);
 };
 
 const pressDeleteAccountButton = () => {
@@ -98,13 +92,12 @@ const _updateDeleteAccountError = (error: string) =>
 		prev.profile.isLoading = false;
 	});
 
-const deleteAccountFn = (token: string) => (): Promise<void> => {
+const deleteAccountFn = async (token: string) => {
+	const validToken = await checkAndRefreshToken(token);
 	_updateProfileIsLoading();
 	return api.v1.users.current
-		.delete({}, { headers: { "x-token": token } })
-		.then(({ data, error }) => {
-			if (error?.status === 401 && error.value === "Token expired")
-				return refreshToken((token) => deleteAccountFn(token)(), token);
+		.delete({}, { headers: { "x-token": validToken } })
+		.then(async ({ data, error }) => {
 			if (data) {
 				toast.success("Account deleted successfully");
 				_updateDeleteAccountSuccess();

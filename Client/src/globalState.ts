@@ -10,6 +10,7 @@ import { HashedString } from "@/utils/Redux/HashedString";
 import type { TypeOfStore } from "@/utils/Store";
 import { store } from "@/utils/Store";
 import { getUrl } from "@/utils/useNavigate";
+import jwt from "jsonwebtoken";
 
 export const IMAGE_VIEW_VALUES = ["Public", "You"] as const;
 export type ImageViewType = (typeof IMAGE_VIEW_VALUES)[number];
@@ -114,13 +115,32 @@ export const useTr = () => trStore.use();
 
 export const mainContentStore = store<HTMLDivElement | null>(null);
 
-// usage: put this at the top of the then chain of the promise of an api call
-// if (error?.status === 401 && error.value === "Token expired") return refreshToken(yourCallback, token ?? "");
-export const refreshToken = <T>(callback: (token: string) => Promise<T>, token: string) =>
-	api.v1.auth.token.refresh.get({ headers: { "x-token": token ?? "" } }).then(({ data, error }) => {
-		if (data) return callback(data.token);
-		else throw error;
+const updateToken = (token: string) =>
+	setAppWithUpdate("updateToken", [token], (prev) => {
+		prev.auth.token = new HashedString(token);
 	});
+
+const refreshToken = (token: string) =>
+	api.v1.auth.token.refresh.get({ headers: { "x-token": token } }).then(({ data, error }) => {
+		if (data) {
+			updateToken(data.token);
+			return data.token;
+		} else throw error;
+	});
+
+export const checkAndRefreshToken = async (token: string) => {
+	if (!token) return token;
+	try {
+		const decoded = jwt.decode(token) as { exp?: number } | null;
+		if (decoded && decoded.exp) {
+			const now = Math.floor(Date.now() / 1000);
+			if (decoded.exp < now) return refreshToken(token);
+		}
+		return token;
+	} catch {
+		return refreshToken(token);
+	}
+};
 
 /** @deprecated do not use this function, just manage the state manually */
 export const handlePromise = <T>(

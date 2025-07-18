@@ -1,5 +1,5 @@
 import { api } from "@/api/api";
-import { refreshToken, setAppWithUpdate } from "@/globalState";
+import { checkAndRefreshToken, setAppWithUpdate } from "@/globalState";
 import type { CreateVote, UpdateVote } from "@/Shared/SharedModel";
 import toast from "react-hot-toast";
 
@@ -20,80 +20,74 @@ const _updateVoteSuccess = () =>
 		prev.vote.loadingImageId = null;
 	});
 
-const createVote = (token: string, createVoteData: CreateVote) => {
+const createVote = async (token: string, createVoteData: CreateVote) => {
+	const validToken = await checkAndRefreshToken(token);
 	_updateVoteLoading(createVoteData.imageId);
-	const createVoteAux = (token: string): Promise<{ voteId: number } | undefined | void> =>
-		api.v1.votes
-			.post(createVoteData, { headers: { "x-token": token } })
-			.then(({ data, error }) => {
-				if (error?.status === 401 && error.value === "Token expired") return refreshToken(createVoteAux, token);
-				if (data) {
-					toast.success("Vote created successfully");
-					_updateVoteSuccess();
-					return data;
-				} else {
-					toast.error("Failed to create vote");
-					if (error.status === 401) _updateVoteError(error.value);
-					else if (error.status === 422) _updateVoteError(error.value.summary ?? "Validation error");
-					else throw error;
-				}
-			})
-			.catch((error) => {
-				_updateVoteError(typeof error === "object" && error && "message" in error ? (error.message as string) : "Unknown error");
-			});
-	return createVoteAux(token);
+	return api.v1.votes
+		.post(createVoteData, { headers: { "x-token": validToken } })
+		.then(async ({ data, error }) => {
+			if (data) {
+				toast.success("Vote created successfully");
+				_updateVoteSuccess();
+				return data;
+			} else {
+				toast.error("Failed to create vote");
+				if (error.status === 401) _updateVoteError(error.value);
+				else if (error.status === 422) _updateVoteError(error.value.summary ?? "Validation error");
+				else throw error;
+			}
+		})
+		.catch((error) => {
+			_updateVoteError(typeof error === "object" && error && "message" in error ? (error.message as string) : "Unknown error");
+		});
 };
 
-const updateVote = (token: string, imageId: number, voteId: number, updateVoteData: UpdateVote) => {
+const updateVote = async (token: string, imageId: number, voteId: number, updateVoteData: UpdateVote) => {
+	const validToken = await checkAndRefreshToken(token);
 	_updateVoteLoading(imageId);
-	const updateVoteAux = (token: string): Promise<"Vote updated" | undefined | void> =>
-		api.v1
-			.votes({ id: voteId })
-			.patch(updateVoteData, { headers: { "x-token": token } })
-			.then(({ data, error }) => {
-				if (error?.status === 401 && error.value === "Token expired") return refreshToken(updateVoteAux, token);
-				if (data) {
-					toast.success("Vote updated successfully");
-					_updateVoteSuccess();
-					return data;
-				} else {
-					toast.error("Failed to update vote");
-					if (error.status === 401) _updateVoteError(error.value);
-					else if (error.status === 404) _updateVoteError("Vote not found");
-					else if (error.status === 422) _updateVoteError(error.value.summary ?? "Validation error");
-					else throw error;
-				}
-			})
-			.catch((error) => {
-				_updateVoteError(typeof error === "object" && error && "message" in error ? (error.message as string) : "Unknown error");
-			});
-	return updateVoteAux(token);
+	return api.v1
+		.votes({ id: voteId })
+		.patch(updateVoteData, { headers: { "x-token": validToken } })
+		.then(async ({ data, error }) => {
+			if (data) {
+				toast.success("Vote updated successfully");
+				_updateVoteSuccess();
+				return data;
+			} else {
+				toast.error("Failed to update vote");
+				if (error.status === 401) _updateVoteError(error.value);
+				else if (error.status === 404) _updateVoteError("Vote not found");
+				else if (error.status === 422) _updateVoteError(error.value.summary ?? "Validation error");
+				else throw error;
+			}
+		})
+		.catch((error) => {
+			_updateVoteError(typeof error === "object" && error && "message" in error ? (error.message as string) : "Unknown error");
+		});
 };
 
-const deleteVote = (token: string, imageId: number, voteId: number) => {
+const deleteVote = async (token: string, imageId: number, voteId: number) => {
+	const validToken = await checkAndRefreshToken(token);
 	_updateVoteLoading(imageId);
-	const deleteVoteAux = (token: string): Promise<"Vote deleted" | undefined | void> =>
-		api.v1
-			.votes({ id: voteId })
-			.delete({}, { headers: { "x-token": token } })
-			.then(({ data, error }) => {
-				if (error?.status === 401 && error.value === "Token expired") return refreshToken(deleteVoteAux, token);
-				if (data) {
-					toast.success("Vote deleted successfully");
-					_updateVoteSuccess();
-					return data;
-				} else {
-					toast.error("Failed to delete vote");
-					if (error.status === 401) _updateVoteError(error.value);
-					else if (error.status === 404) _updateVoteError("Vote not found");
-					else if (error.status === 422) _updateVoteError(error.value.summary ?? "Validation error");
-					else throw error;
-				}
-			})
-			.catch((error) => {
-				_updateVoteError(typeof error === "object" && error && "message" in error ? (error.message as string) : "Unknown error");
-			});
-	return deleteVoteAux(token);
+	return api.v1
+		.votes({ id: voteId })
+		.delete({}, { headers: { "x-token": validToken } })
+		.then(async ({ data, error }) => {
+			if (data) {
+				toast.success("Vote deleted successfully");
+				_updateVoteSuccess();
+				return data;
+			} else {
+				toast.error("Failed to delete vote");
+				if (error.status === 401) _updateVoteError(error.value);
+				else if (error.status === 404) _updateVoteError("Vote not found");
+				else if (error.status === 422) _updateVoteError(error.value.summary ?? "Validation error");
+				else throw error;
+			}
+		})
+		.catch((error) => {
+			_updateVoteError(typeof error === "object" && error && "message" in error ? (error.message as string) : "Unknown error");
+		});
 };
 
 const handleVote = async (
