@@ -40,13 +40,13 @@ const getUsers = async (token: string) => {
 		});
 };
 
-const setSortState = (sortState: UserSortState) =>
-	setAppWithUpdate("setSortState", (prev) => {
+const updateSortState = (sortState: UserSortState) =>
+	setAppWithUpdate("updateSortState", (prev) => {
 		prev.users.sort = sortState;
 	});
 
-const setFilterState = (filterState: UserFilterState) =>
-	setAppWithUpdate("setFilterState", (prev) => {
+const updateFilterState = (filterState: UserFilterState) =>
+	setAppWithUpdate("updateFilterState", (prev) => {
 		prev.users.filter = filterState;
 	});
 
@@ -57,7 +57,7 @@ const toggleSortAdditive = () =>
 
 export const users = {
 	get: getUsers,
-	setSortState,
-	setFilterState,
-	toggleSortAdditive,
+	sortState: { update: updateSortState },
+	filterState: { update: updateFilterState },
+	sortAdditive: { toggle: toggleSortAdditive },
 };

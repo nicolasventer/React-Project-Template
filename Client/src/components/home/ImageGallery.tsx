@@ -26,8 +26,9 @@ const handleVoteFn = (imageId: number, newVote: 0 | 1, userVote: number | null, 
 		return;
 	}
 
+	const currentUserVote = userVote && voteId ? { current: userVote, voteId } : null;
 	// Use the vote action to handle the vote logic
-	actions.vote.handle(token, imageId, newVote, userVote, voteId).then(() => actions.images.get(token));
+	actions.vote.handle(token, imageId, newVote, currentUserVote).then(() => actions.images.get(token));
 };
 
 export const ImageGallery = ({ isImagesLoading, imagesByCategory, token, loadingImageId }: ImageGalleryProps) => (

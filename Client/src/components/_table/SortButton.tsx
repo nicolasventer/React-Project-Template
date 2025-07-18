@@ -51,7 +51,7 @@ export const SortButton = ({
 				</Button>
 			)}
 			{displayType !== "sort" && sortValue && (
-				<ActionIcon variant="subtle" size={isAboveMd ? "compact-sm" : "compact-xs"} onClick={actions.users.toggleSortAdditive}>
+				<ActionIcon variant="subtle" size={isAboveMd ? "compact-sm" : "compact-xs"} onClick={actions.users.sortAdditive.toggle}>
 					{isSortAdditive ? <Lock size={16} /> : <LockOpen size={16} />}
 				</ActionIcon>
 			)}

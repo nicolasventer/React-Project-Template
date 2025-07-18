@@ -94,14 +94,11 @@ const handleVote = async (
 	token: string,
 	imageId: number,
 	newVote: 0 | 1,
-	currentUserVote: number | null,
-	voteId: number | null
+	userVote: { current: number; voteId: number } | null
 ) => {
-	if (currentUserVote === null) return createVote(token, { imageId, isPositive: newVote === 1 });
-	// voteId should never be null, but just in case
-	if (voteId === null) return _updateVoteError("Retrieved data invalid, please refresh and try again");
-	if (currentUserVote === newVote) return deleteVote(token, imageId, voteId);
-	return updateVote(token, imageId, voteId, { isPositive: newVote === 1 });
+	if (userVote === null) return createVote(token, { imageId, isPositive: newVote === 1 });
+	if (userVote.current === newVote) return deleteVote(token, imageId, userVote.voteId);
+	return updateVote(token, imageId, userVote.voteId, { isPositive: newVote === 1 });
 };
 
 export const vote = {

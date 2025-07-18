@@ -24,7 +24,7 @@ const updateIsModalOpenedFn = (isModalOpened: boolean) => () =>
 	});
 
 const updateLoginViewFn = (loginView: LoginViewType) => () =>
-	document.startViewTransition(() =>
+	void document.startViewTransition(() =>
 		setAppWithUpdate("updateLoginView", [loginView], (prev) => {
 			prev.auth.loginView = loginView;
 		})

@@ -58,7 +58,7 @@ const getSortValue = (sortKey: UserSortKey, sortState: UserSortState): SortButto
 const toggleSortFn =
 	(sortKey: UserSortKey, sortState: UserSortState, isSortAdditive: boolean): MouseEventHandler<HTMLButtonElement> =>
 	(ev) =>
-		actions.users.setSortState(userSortManager.toggleSortState(sortState, sortKey, ev.ctrlKey || isSortAdditive));
+		actions.users.sortState.update(userSortManager.toggleSortState(sortState, sortKey, ev.ctrlKey || isSortAdditive));
 
 const getFilterHeaderProps = (
 	{ sortState, filterState, isAboveMd, isSortAdditive, children }: HeaderRenderProps,
@@ -81,7 +81,7 @@ type FilterRenderProps = {
 const getEnhancedMultiSelectProps = ({ options, filterState }: FilterRenderProps, key: UserFilterKey) => ({
 	data: options,
 	value: filterState[key] ?? [],
-	onChange: (value: string[]) => actions.users.setFilterState({ ...filterState, [key]: value }),
+	onChange: (value: string[]) => actions.users.filterState.update({ ...filterState, [key]: value }),
 });
 
 export const userColumnManager = new ColumnManager<
@@ -134,7 +134,7 @@ export const userColumnManager = new ColumnManager<
 					marks={options.map((option) => ({ value: Number(option), label: formatTime(Number(option)) }))}
 					label={formatTime}
 					onChange={(value) =>
-						actions.users.setFilterState({ ...filterState, lastLoginTime: [value[0].toString(), value[1].toString()] })
+						actions.users.filterState.update({ ...filterState, lastLoginTime: [value[0].toString(), value[1].toString()] })
 					}
 				/>
 			</Box>
