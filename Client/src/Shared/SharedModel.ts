@@ -1,6 +1,5 @@
-import type { TLiteral, TLiteralValue, TUnion } from "@sinclair/typebox";
-import type { TSchema } from "elysia";
-import { t } from "elysia";
+import type { TLiteral, TLiteralValue, TSchema, TUnion } from "@sinclair/typebox";
+import { Type as t } from "@sinclair/typebox";
 
 export const Nullable = <T extends TSchema>(type: T) => t.Union([type, t.Null()]);
 

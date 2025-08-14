@@ -32,10 +32,7 @@ const importFn = (bRefreshPage: boolean) => (file: File | null) => {
 };
 
 const export_ = () =>
-	saveAs(
-		new Blob([JSON.stringify(localStorageStateStore.private.value)], { type: "application/json" }),
-		`${LOCAL_STORAGE_KEY}.json`
-	);
+	saveAs(new Blob([JSON.stringify(localStorageStateStore.value)], { type: "application/json" }), `${LOCAL_STORAGE_KEY}.json`);
 
 export const localStorageIo = {
 	importFn,

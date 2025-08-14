@@ -92,7 +92,7 @@ const _updateDeleteAccountError = (error: string) =>
 		prev.profile.isLoading = false;
 	});
 
-const deleteAccountFn = async (token: string) => {
+const deleteAccountFn = (token: string) => async () => {
 	const validToken = await checkAndRefreshToken(token);
 	_updateProfileIsLoading();
 	return api.v1.users.current

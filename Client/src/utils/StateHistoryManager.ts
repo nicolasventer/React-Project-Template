@@ -7,8 +7,8 @@ import { store } from "@/utils/Store";
 export class StateHistoryManager<T> {
 	private stateList: T[] = [];
 	private historyIndex = -1;
-	private canUndo_ = store(false).private;
-	private canRedo_ = store(false).private;
+	private canUndo_ = store(false);
+	private canRedo_ = store(false);
 
 	/**
 	 * Create a new instance of the StateHistoryManager.

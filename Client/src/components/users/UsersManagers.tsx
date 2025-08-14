@@ -91,7 +91,7 @@ export const userColumnManager = new ColumnManager<
 		key: UserFilterKey | "actions";
 		headerRender: (props: HeaderRenderProps) => React.ReactNode;
 		filterRender: (props: FilterRenderProps) => React.ReactNode;
-		render: (props: { user: UserOutput; editedUser?: UserOutput; token: string }) => React.ReactNode;
+		render: (props: { user: UserOutput; editedUser: UserOutput | null; token: string }) => React.ReactNode;
 	}
 >({
 	email: {

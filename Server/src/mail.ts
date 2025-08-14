@@ -57,7 +57,7 @@ class MailService {
 			})
 			.catch((err) => {
 				console.error(`Error while verifying transporter ${err}`);
-				process.exit(1);
+				// process.exit(1);
 			});
 	}
 

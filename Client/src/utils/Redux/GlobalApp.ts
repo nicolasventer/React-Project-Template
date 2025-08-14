@@ -34,7 +34,7 @@ export class GlobalApp<T extends NotFunction<unknown>> {
 	public appStore: Store<T>;
 	private updateName = "";
 	private onUpdate?: OnUpdateGlobalApp;
-	private isSetAppEnabledStore = store(true).private;
+	private isSetAppEnabledStore = store(true);
 
 	/**
 	 * @param app - The initial state of the global app.
@@ -113,7 +113,7 @@ export class GlobalApp<T extends NotFunction<unknown>> {
 	) => {
 		const { devtoolsConfig = { trace: true, traceLimit: 6 }, onUpdate, autoEnableSetApp = true } = globalOptions;
 
-		const [app, setApp_] = this.appStore.private.useState();
+		const [app, setApp_] = this.appStore.useState();
 		const [isAppEnabled, setIsAppEnabled] = this.isSetAppEnabledStore.useState();
 		const lastActionId = useRef(0);
 
@@ -128,7 +128,7 @@ export class GlobalApp<T extends NotFunction<unknown>> {
 				if (!isAppEnabled) return;
 				// use of value instead of app since the value is passed by reference
 				// @ts-expect-error cannot handle the case where T is a function
-				if (typeof value === "function") return setApp(value(this.appStore.private.value));
+				if (typeof value === "function") return setApp(value(this.appStore.value));
 				devTools?.send({ type: this.updateName }, { value });
 				lastActionId.current++;
 				const result = setApp_(value);

@@ -37,6 +37,7 @@ export const UsersPage = () => {
 						[Infinity, -Infinity]
 					)
 					.map((time) => time.toString()),
+				actions: [],
 			}),
 		[users.values]
 	);
