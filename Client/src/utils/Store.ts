@@ -144,3 +144,16 @@ export function store<T extends NotFunction<unknown>>(val?: T, debugLabel?: stri
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type TypeOfStore<T extends Store<any>> = T extends Store<infer U> ? U : never;
+
+/**
+ * The type of the state of the deeply nested stores.
+ * @template T - The type to browse
+ * @returns The type of the state of the deeply nested stores.
+ */
+export type DeepTypeOfStore<T> = T extends Store<infer U>
+	? U
+	: T extends Record<string, unknown>
+	? {
+			[K in keyof T]: DeepTypeOfStore<T[K]>;
+	  }
+	: T;

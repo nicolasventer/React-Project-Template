@@ -1,33 +1,28 @@
-import { setAppWithUpdate } from "@/globalState";
+import { app } from "@/globalState";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 let isToastEnabled = true;
 let wakeLockObj: WakeLockSentinel | null = null;
 
-const updateWakeLockLoading = (isLoading: boolean) =>
-	setAppWithUpdate("updateWakeLockLoading", [isLoading], (prev) => (prev.wakeLock.isLoading = isLoading));
-
 const toggleWakeLock = () => {
 	if ("wakeLock" in navigator) {
 		if (wakeLockObj) {
 			wakeLockObj.release();
 			wakeLockObj = null;
-			setAppWithUpdate("toggleWakeLock", [false], (prev) => (prev.wakeLock.isEnabled = false));
+			app.wakeLock.isEnabled.setValue(false);
 		} else {
-			updateWakeLockLoading(true);
+			app.wakeLock.isLoading.setValue(true);
 			navigator.wakeLock
 				.request("screen")
 				.then((wakeLock) => {
 					wakeLockObj = wakeLock;
-					setAppWithUpdate("toggleWakeLock", [true], (prev) => {
-						prev.wakeLock.isLoading = false;
-						prev.wakeLock.isEnabled = true;
-					});
+					app.wakeLock.isEnabled.setValue(true);
+					app.wakeLock.isLoading.setValue(false);
 
 					wakeLockObj.addEventListener("release", () => {
 						if (isToastEnabled) toast("Automatic screen lock enabled", { icon: "🔓" });
-						setAppWithUpdate("toggleWakeLock", [false], (prev) => (prev.wakeLock.isEnabled = false));
+						app.wakeLock.isEnabled.setValue(false);
 						wakeLockObj = null;
 					});
 
@@ -35,14 +30,14 @@ const toggleWakeLock = () => {
 				})
 				.catch((err) => {
 					if (isToastEnabled) console.error(err);
-					updateWakeLockLoading(false);
+					app.wakeLock.isLoading.setValue(false);
 					if (isToastEnabled) toast("Error while trying to keep screen locked on", { icon: "❌" });
 				});
 		}
 	} else if ("keepAwake" in screen) {
 		screen.keepAwake = !screen.keepAwake;
 		const keepAwake = !!screen.keepAwake;
-		setAppWithUpdate("toggleWakeLock", [keepAwake], (prev) => (prev.wakeLock.isEnabled = keepAwake));
+		app.wakeLock.isEnabled.setValue(keepAwake);
 		if (isToastEnabled) {
 			if (keepAwake) toast("Automatic screen lock disabled", { icon: "🔒" });
 			else toast("Automatic screen lock enabled", { icon: "🔓" });

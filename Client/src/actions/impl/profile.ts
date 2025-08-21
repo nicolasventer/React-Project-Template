@@ -1,43 +1,33 @@
 import { api } from "@/api/api";
-import { checkAndRefreshToken, setAppWithUpdate } from "@/globalState";
-import { HashedString } from "@/utils/Redux/HashedString";
+import { app, checkAndRefreshToken } from "@/globalState";
 import toast from "react-hot-toast";
 
 const updateNewPassword = (password: string) => {
-	const hashedPassword = new HashedString(password);
-	setAppWithUpdate("updateNewPassword", [hashedPassword], (prev) => {
-		prev.profile.newPassword = hashedPassword;
-		prev.profile.error = "";
-	});
+	app.profile.newPassword.setValue(password);
+	app.profile.error.setValue("");
 };
 
 const updateConfirmNewPassword = (password: string) => {
-	const hashedPassword = new HashedString(password);
-	setAppWithUpdate("updateConfirmNewPassword", [hashedPassword], (prev) => {
-		prev.profile.confirmNewPassword = hashedPassword;
-		prev.profile.error = "";
-	});
+	app.profile.confirmNewPassword.setValue(password);
+	app.profile.error.setValue("");
 };
 
-const _updateProfileIsLoading = () =>
-	setAppWithUpdate("updateProfileIsLoading", [], (prev) => {
-		prev.profile.isLoading = true;
-		prev.profile.error = "";
-	});
+const _updateProfileIsLoading = () => {
+	app.profile.isLoading.setValue(true);
+	app.profile.error.setValue("");
+};
 
-const _updateProfileError = (error: string) =>
-	setAppWithUpdate("updateProfileError", [error], (prev) => {
-		prev.profile.error = error;
-		prev.profile.isLoading = false;
-	});
+const _updateProfileError = (error: string) => {
+	app.profile.error.setValue(error);
+	app.profile.isLoading.setValue(false);
+};
 
-const _updateProfileSuccess = () =>
-	setAppWithUpdate("updateProfileSuccess", [], (prev) => {
-		prev.profile.newPassword = new HashedString("");
-		prev.profile.confirmNewPassword = new HashedString("");
-		prev.profile.isLoading = false;
-		prev.profile.error = "";
-	});
+const _updateProfileSuccess = () => {
+	app.profile.newPassword.setValue("");
+	app.profile.confirmNewPassword.setValue("");
+	app.profile.isLoading.setValue(false);
+	app.profile.error.setValue("");
+};
 
 const confirmPasswordFn = (newPassword: string, confirmNewPassword: string, token: string) => async () => {
 	if (newPassword !== confirmNewPassword) {
@@ -65,32 +55,21 @@ const confirmPasswordFn = (newPassword: string, confirmNewPassword: string, toke
 		);
 };
 
-const pressDeleteAccountButton = () => {
-	setAppWithUpdate("pressDeleteAccountButton", [], (prev) => {
-		prev.profile.deleteAccount.buttonPressedAt = Date.now();
-	});
-};
+const pressDeleteAccountButton = () => app.profile.deleteAccount.buttonPressedAt.setValue(Date.now());
 
-const cancelPressDeleteAccountButton = () => {
-	setAppWithUpdate("cancelPressDeleteAccountButton", [], (prev) => {
-		prev.profile.deleteAccount.buttonPressedAt = null;
-	});
-};
+const cancelPressDeleteAccountButton = () => app.profile.deleteAccount.buttonPressedAt.setValue(null);
 
 const _updateDeleteAccountSuccess = () => {
-	setAppWithUpdate("updateDeleteAccount", [], (prev) => {
-		prev.profile.deleteAccount.buttonPressedAt = null;
-		prev.profile.isLoading = false;
-		prev.profile.error = "";
-		prev.auth.token = new HashedString("");
-	});
+	app.profile.deleteAccount.buttonPressedAt.setValue(null);
+	app.profile.isLoading.setValue(false);
+	app.profile.error.setValue("");
+	app.auth.token.setValue("");
 };
 
-const _updateDeleteAccountError = (error: string) =>
-	setAppWithUpdate("updateDeleteAccountError", [error], (prev) => {
-		prev.profile.error = error;
-		prev.profile.isLoading = false;
-	});
+const _updateDeleteAccountError = (error: string) => {
+	app.profile.error.setValue(error);
+	app.profile.isLoading.setValue(false);
+};
 
 const deleteAccountFn = (token: string) => async () => {
 	const validToken = await checkAndRefreshToken(token);

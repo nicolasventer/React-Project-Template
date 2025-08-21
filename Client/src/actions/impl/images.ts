@@ -1,32 +1,24 @@
 import { api } from "@/api/api";
 import type { ImageViewType } from "@/globalState";
-import { checkAndRefreshToken, setAppWithUpdate } from "@/globalState";
+import { app, checkAndRefreshToken } from "@/globalState";
 import type { MultiImageOutput } from "@/Shared/SharedModel";
 
 import toast from "react-hot-toast";
 
 // TODO: see for transition or loading
-const updateImageView = (imageView: ImageViewType) =>
-	setAppWithUpdate("updateImageViewValue", [imageView], (prev) => {
-		prev.imageView = imageView;
-	});
+const updateImageView = (imageView: ImageViewType) => app.imageView.setValue(imageView);
 
-const _updateImagesLoading = () =>
-	setAppWithUpdate("updateImagesLoading", (prev) => {
-		prev.images.isLoading = true;
-	});
+const _updateImagesLoading = () => app.images.isLoading.setValue(true);
 
-const _updateImages = ({ images }: MultiImageOutput) =>
-	setAppWithUpdate("updateImages", (prev) => {
-		prev.images.isLoading = false;
-		prev.images.values = images;
-	});
+const _updateImages = ({ images }: MultiImageOutput) => {
+	app.images.isLoading.setValue(false);
+	app.images.values.setValue(images);
+};
 
-const _updateImagesError = (error: string) =>
-	setAppWithUpdate("updateImagesError", [error], (prev) => {
-		prev.images.error = error;
-		prev.images.isLoading = false;
-	});
+const _updateImagesError = (error: string) => {
+	app.images.isLoading.setValue(false);
+	app.images.error.setValue(error);
+};
 
 const getImages = async (token?: string) => {
 	const validToken = token ? await checkAndRefreshToken(token) : undefined;

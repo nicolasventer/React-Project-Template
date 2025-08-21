@@ -1,6 +1,6 @@
-import { setAppWithUpdate } from "@/globalState";
+import { app } from "@/globalState";
 
-const updateUrl = (url: string) => setAppWithUpdate("updateUrl", [url], (prev) => (prev.url = url));
+const updateUrl = (url: string) => app.url.setValue(url);
 
 export const url = {
 	update: updateUrl,

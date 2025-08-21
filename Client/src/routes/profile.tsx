@@ -1,19 +1,17 @@
 import { EditProfile } from "@/components/profile/EditProfile";
-import { useApp, useTr } from "@/globalState";
+import { app, useTr } from "@/globalState";
 
 export const Profile = () => {
-	const app = useApp();
 	const tr = useTr();
-	const { auth, profile } = app;
 
-	const userRole = auth.user.role;
-	const userEmail = auth.user.email;
-	const token = auth.token.get();
-	const newPassword = profile.newPassword.get();
-	const confirmNewPassword = profile.confirmNewPassword.get();
-	const profileError = profile.error;
-	const profileDeleteAccountButtonPressedAt = profile.deleteAccount.buttonPressedAt;
-	const isProfileLoading = profile.isLoading;
+	const userRole = app.auth.user.role.use();
+	const userEmail = app.auth.user.email.use();
+	const token = app.auth.token.use();
+	const newPassword = app.profile.newPassword.use();
+	const confirmNewPassword = app.profile.confirmNewPassword.use();
+	const profileError = app.profile.error.use();
+	const profileDeleteAccountButtonPressedAt = app.profile.deleteAccount.buttonPressedAt.use();
+	const isProfileLoading = app.profile.isLoading.use();
 
 	return (
 		<EditProfile

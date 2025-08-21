@@ -2,10 +2,9 @@ import { actions } from "@/actions/actions.impl";
 import { clientEnv } from "@/clientEnv";
 import { Header } from "@/components/mainLayout/Header";
 import { dict } from "@/dict";
-import { appStore, LOCAL_STORAGE_KEY, localStorageStateStore, trStore, useInit, useSetAppEnabled, useTr } from "@/globalState";
-import { navigateToCustomRouteFn, RouterRender, useCurrentRoute } from "@/routerInstance.gen";
+import { app, LOCAL_STORAGE_KEY, localStorageStateStore, trStore } from "@/globalState";
+import { navigateToCustomRouteFn, RouterRender } from "@/routerInstance.gen";
 import { FullViewport, Vertical, WriteToolboxClasses } from "@/utils/ComponentToolbox";
-import { useDebug } from "@/utils/GlobalDebugOneFile";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import { createTheme, MantineProvider, Modal } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
@@ -31,31 +30,29 @@ const theme = createTheme({
 
 // @routeExport
 export const MainLayout = () => {
-	// initialize the app state and the redux store
-	const app = useInit();
+	const lang = app.lang.data.use();
 
 	// load the translations when the language changes
-	trStore.useEffect((setTr) => void dict[app.lang.value]().then(setTr), [app.lang.value]);
+	trStore.useEffect((setTr) => void dict[lang]().then(setTr), [lang]);
 
 	// sync the app state with the media query
 	const isAboveXl = !!useMediaQuery("(min-width: 88em)");
 	const isAboveMd = !!useMediaQuery("(min-width: 62em)");
-	appStore.useEffect(() => actions.shell.isAboveXl.update(isAboveXl), [isAboveXl]);
-	appStore.useEffect(() => actions.shell.isAboveMd.update(isAboveMd), [isAboveMd]);
+	useEffect(() => actions.shell.isAboveXl.update(isAboveXl), [isAboveXl]);
+	useEffect(() => actions.shell.isAboveMd.update(isAboveMd), [isAboveMd]);
 
 	// navigate to the app state url
 	useEffect(() => navigateToCustomRouteFn(clientEnv.BASE_URL + app.url)(), [app.url]);
 
 	// sync the local storage state with the app state
-	const lang = app.lang.value;
-	const colorScheme = app.colorScheme.value;
-	const userRole = app.auth.user.role;
-	const authToken = app.auth.token.get();
-	const imageView = app.imageView;
-	const userSortState = app.users.sort;
-	const userFilterState = app.users.filter;
-	const userColumnState = app.users.column;
-	const userIsSortAdditive = app.users.isSortAdditive;
+	const colorScheme = app.colorScheme.data.use();
+	const userRole = app.auth.user.role.use();
+	const authToken = app.auth.token.use();
+	const imageView = app.imageView.use();
+	const userSortState = app.users.sort.use();
+	const userFilterState = app.users.filter.use();
+	const userColumnState = app.users.column.use();
+	const userIsSortAdditive = app.users.isSortAdditive.use();
 	localStorageStateStore.useEffect(
 		(setLocalStorageState) =>
 			setLocalStorageState({
@@ -78,42 +75,17 @@ export const MainLayout = () => {
 
 	// update the body class when the color scheme changes
 	useEffect(() => {
-		document.body.classList.toggle("dark", app.colorScheme.value === "dark");
-		StatusBar.setStyle({ style: app.colorScheme.value === "dark" ? Style.Dark : Style.Light }).catch(() => {});
-	}, [app.colorScheme.value]);
-
-	// control the update of the app state
-	const [isSetAppEnabled, setIsSetAppEnabled] = useSetAppEnabled();
-	useDebug("boolean", "isSetAppEnabled", [isSetAppEnabled, setIsSetAppEnabled]);
-
-	const tr = useTr();
-	const { currentRoute } = useCurrentRoute();
-
-	const isAuthenticated = !!app.auth.user.role;
-	const password = app.auth.user.password.get();
+		document.body.classList.toggle("dark", colorScheme === "dark");
+		StatusBar.setStyle({ style: colorScheme === "dark" ? Style.Dark : Style.Light }).catch(() => {});
+	}, [colorScheme]);
 
 	return (
-		<MantineProvider forceColorScheme={app.colorScheme.value} theme={theme}>
+		<MantineProvider forceColorScheme={colorScheme} theme={theme}>
 			<WriteToolboxClasses />
 			<FullViewport>
 				{/* <SafeAreaInset> */}
 				<Vertical gap={6} padding={12} heightFull>
-					<Header
-						isAuthenticated={isAuthenticated}
-						tr={tr}
-						isModalOpened={app.auth.isModalOpened}
-						email={app.auth.user.email}
-						password={password}
-						authError={app.auth.error}
-						isAuthLoading={app.auth.isLoading}
-						loginView={app.auth.loginView}
-						lang={app.lang.value}
-						isLangLoading={app.lang.isLoading}
-						colorScheme={app.colorScheme.value}
-						isColorSchemeLoading={app.colorScheme.isLoading}
-						role={app.auth.user.role}
-						currentRoute={currentRoute}
-					/>
+					<Header />
 					<RouterRender subPath="/" />
 				</Vertical>
 				{/* </SafeAreaInset> */}

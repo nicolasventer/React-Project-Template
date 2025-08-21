@@ -4,6 +4,7 @@ import "@mantine/core/styles.css";
 import "@mantine/carousel/styles.css";
 
 import { clientEnv } from "@/clientEnv";
+import { goBackCallbackRef } from "@/globalState";
 import { setRouterBaseRoute } from "@/routerInstance.gen";
 import { MainLayout } from "@/routes";
 import { App } from "@capacitor/app";
@@ -16,7 +17,9 @@ dayjs.extend(relativeTime);
 
 setRouterBaseRoute(clientEnv.BASE_URL);
 
-App.addListener("backButton", ({ canGoBack }) => (canGoBack ? window.history.back() : App.exitApp()));
+App.addListener("backButton", ({ canGoBack }) =>
+	goBackCallbackRef.current ? goBackCallbackRef.current() : canGoBack ? window.history.back() : App.exitApp()
+);
 
 // need to disable strict mode to use the autoEnableSetApp feature of the redux devtools
 const bStrictMode = true;

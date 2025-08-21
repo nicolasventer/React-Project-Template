@@ -1,33 +1,19 @@
 import { api } from "@/api/api";
-import { setAppWithUpdate } from "@/globalState";
-import { HashedString } from "@/utils/Redux/HashedString";
+import { app } from "@/globalState";
 import toast from "react-hot-toast";
 
-const updateNewPassword = (newPassword: string) => {
-	const hashedNewPassword = new HashedString(newPassword);
-	setAppWithUpdate("updateNewPassword", [hashedNewPassword], (prev) => {
-		prev.resetPassword.newPassword = hashedNewPassword;
-	});
-};
+const updateNewPassword = (newPassword: string) => app.resetPassword.newPassword.setValue(newPassword);
 
-const _updateIsResetPasswordLoading = () => {
-	setAppWithUpdate("updateIsResetPasswordLoading", (prev) => {
-		prev.resetPassword.isLoading = true;
-	});
-};
+const _updateIsResetPasswordLoading = () => app.resetPassword.isLoading.setValue(true);
 
 const _updateResetPasswordError = (error: string) => {
-	setAppWithUpdate("updateResetPasswordError", [error], (prev) => {
-		prev.resetPassword.error = error;
-		prev.resetPassword.isLoading = false;
-	});
+	app.resetPassword.error.setValue(error);
+	app.resetPassword.isLoading.setValue(false);
 };
 
 const _updateResetPasswordSuccess = () => {
-	setAppWithUpdate("updateResetPasswordSuccess", [], (prev) => {
-		prev.resetPassword.isLoading = false;
-		prev.resetPassword.error = "";
-	});
+	app.resetPassword.isLoading.setValue(false);
+	app.resetPassword.error.setValue("");
 };
 
 const resetPasswordFn = (token: string, newPassword: string) => () => {
@@ -54,10 +40,8 @@ const resetPasswordFn = (token: string, newPassword: string) => () => {
 };
 
 const updateInputToken = (inputToken: string) => {
-	setAppWithUpdate("updateInputToken", [inputToken], (prev) => {
-		prev.resetPassword.inputToken = inputToken;
-		prev.resetPassword.error = "";
-	});
+	app.resetPassword.inputToken.setValue(inputToken);
+	app.resetPassword.error.setValue("");
 };
 
 export const resetPassword = {

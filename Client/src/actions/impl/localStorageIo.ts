@@ -1,4 +1,4 @@
-import { loadLocalStorageState, LOCAL_STORAGE_KEY, localStorageStateStore, setAppWithUpdate } from "@/globalState";
+import { app, loadLocalStorageState, LOCAL_STORAGE_KEY, localStorageStateStore } from "@/globalState";
 import { saveAs } from "@/utils/clientUtils";
 import toast from "react-hot-toast";
 
@@ -7,10 +7,8 @@ const IMPORT_DATA = (readData: string, onSuccess: () => void) => {
 		const data = JSON.parse(readData); // check that readData is a JSON string
 		localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
 		const newLocalStorageState = loadLocalStorageState();
-		setAppWithUpdate("importLocalStorageState", (prev) => {
-			prev.colorScheme.value = newLocalStorageState.colorScheme;
-			prev.lang.value = newLocalStorageState.lang;
-		});
+		app.colorScheme.data.setValue(newLocalStorageState.colorScheme);
+		app.lang.data.setValue(newLocalStorageState.lang);
 		onSuccess();
 	} catch (error) {
 		console.error(error);

@@ -1,21 +1,19 @@
 import type { Lang } from "@/dict";
-import { setAppWithUpdate } from "@/globalState";
+import { app } from "@/globalState";
 import { wait } from "@/Shared/SharedUtils";
 
-const updateLangLoading = (lang: Lang, useTransition: boolean) =>
-	setAppWithUpdate("updateLangLoading", [lang, useTransition], (prev) => (prev.lang.isLoading = true));
-const updateLangValue = (lang: Lang) =>
-	setAppWithUpdate("updateLangValue", [lang], (prev) => {
-		prev.lang.isLoading = false;
-		prev.lang.value = lang;
-	});
+const _updateLangValue = (lang: Lang) => {
+	app.lang.data.setValue(lang);
+	app.lang.isLoading.setValue(false);
+};
+
 const updateLangFn = (lang: Lang, useTransition: boolean) => () => {
 	if (useTransition) {
-		document.startViewTransition(() => updateLangValue(lang));
+		document.startViewTransition(() => _updateLangValue(lang));
 		return Promise.resolve();
 	} else {
-		updateLangLoading(lang, useTransition);
-		return wait(200).then(() => updateLangValue(lang));
+		app.lang.isLoading.setValue(true);
+		return wait(200).then(() => _updateLangValue(lang));
 	}
 };
 

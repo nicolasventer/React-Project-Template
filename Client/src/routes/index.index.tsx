@@ -1,7 +1,7 @@
 import { actions } from "@/actions/actions.impl";
 import type { ImagePublicCategoryType, ImageUserCategoryType } from "@/components/home/imageCategories";
 import { ImageGallery } from "@/components/home/ImageGallery";
-import { useApp } from "@/globalState";
+import { app } from "@/globalState";
 import type { MultiImageOutput } from "@/Shared/SharedModel";
 import { shuffle } from "@/Shared/SharedUtils";
 import { Vertical } from "@/utils/ComponentToolbox";
@@ -42,29 +42,32 @@ const getUserImagesByCategory = (
 });
 
 export const Home = () => {
-	const app = useApp();
-	const { images, imageView, auth, vote } = app;
-
-	const token = auth.token.get();
+	const imagesValues = app.images.values.use();
+	const imagesError = app.images.error.use();
+	const imagesIsLoading = app.images.isLoading.use();
+	const imageView = app.imageView.use();
+	const token = app.auth.token.use();
+	const voteError = app.vote.error.use();
+	const voteLoadingImageId = app.vote.loadingImageId.use();
 
 	// Fetch images when component mounts or when imageView changes
 	useEffect(() => void actions.images.get(token), [imageView, token]);
 
 	const imagesByCategory = useMemo(
-		() => (imageView === "Public" ? getPublicImagesByCategory(images.values) : getUserImagesByCategory(images.values)),
-		[images.values, imageView]
+		() => (imageView === "Public" ? getPublicImagesByCategory(imagesValues) : getUserImagesByCategory(imagesValues)),
+		[imagesValues, imageView]
 	);
 
 	return (
 		<Vertical heightFull>
-			{(images.error || vote.error) && (
+			{(imagesError || voteError) && (
 				<Alert color="red" icon={<InfoIcon />}>
-					{images.error || vote.error}
+					{imagesError || voteError}
 				</Alert>
 			)}
 			<ImageGallery
-				isImagesLoading={images.isLoading}
-				loadingImageId={vote.loadingImageId}
+				isImagesLoading={imagesIsLoading}
+				loadingImageId={voteLoadingImageId}
 				token={token}
 				imagesByCategory={imagesByCategory}
 			/>

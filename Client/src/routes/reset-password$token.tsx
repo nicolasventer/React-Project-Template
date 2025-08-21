@@ -1,15 +1,14 @@
 import { ResetPassword } from "@/components/resetPassword/ResetPassword";
-import { useApp } from "@/globalState";
+import { app } from "@/globalState";
 import { useRouteParams } from "@/routerInstance.gen";
 
 export const ResetPasswordPage = () => {
 	const { token } = useRouteParams("/reset-password?token");
-	const { resetPassword } = useApp();
 
-	const newPassword = resetPassword.newPassword.get();
-	const isResetPasswordLoading = resetPassword.isLoading;
-	const resetPasswordError = resetPassword.error;
-	const inputToken = resetPassword.inputToken;
+	const newPassword = app.resetPassword.newPassword.use();
+	const isResetPasswordLoading = app.resetPassword.isLoading.use();
+	const resetPasswordError = app.resetPassword.error.use();
+	const inputToken = app.resetPassword.inputToken.use();
 
 	return (
 		<ResetPassword

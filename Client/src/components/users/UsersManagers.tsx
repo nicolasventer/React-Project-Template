@@ -112,7 +112,7 @@ export const userColumnManager = new ColumnManager<
 			<Select
 				data={ROLES}
 				value={editedUser?.role ?? user.role}
-				onChange={(value) => actions.users.edited.role.update(user.userId, value as RoleType)}
+				onChange={(value) => actions.users.edited.role.update(user, value as RoleType)}
 				size="xs"
 				clearable={false}
 			/>

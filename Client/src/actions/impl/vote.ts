@@ -1,24 +1,19 @@
 import { api } from "@/api/api";
-import { checkAndRefreshToken, setAppWithUpdate } from "@/globalState";
+import { app, checkAndRefreshToken } from "@/globalState";
 import type { CreateVote, UpdateVote } from "@/Shared/SharedModel";
 import toast from "react-hot-toast";
 
-const _updateVoteLoading = (imageId: number | null) =>
-	setAppWithUpdate("updateVoteLoading", [imageId], (prev) => {
-		prev.vote.loadingImageId = imageId;
-	});
+const _updateVoteLoading = (imageId: number | null) => app.vote.loadingImageId.setValue(imageId);
 
-const _updateVoteError = (error: string) =>
-	setAppWithUpdate("updateVoteError", [error], (prev) => {
-		prev.vote.error = error;
-		prev.vote.loadingImageId = null;
-	});
+const _updateVoteError = (error: string) => {
+	app.vote.error.setValue(error);
+	app.vote.loadingImageId.setValue(null);
+};
 
-const _updateVoteSuccess = () =>
-	setAppWithUpdate("updateVoteSuccess", (prev) => {
-		prev.vote.error = "";
-		prev.vote.loadingImageId = null;
-	});
+const _updateVoteSuccess = () => {
+	app.vote.error.setValue("");
+	app.vote.loadingImageId.setValue(null);
+};
 
 const createVote = async (token: string, createVoteData: CreateVote) => {
 	const validToken = await checkAndRefreshToken(token);

@@ -1,17 +1,17 @@
 import { api } from "@/api/api";
 import { clientEnv } from "@/clientEnv";
+// eslint-disable-next-line project-structure/independent-modules
 import type { UserColumnState, UserFilterState, UserSortState } from "@/components/users/UsersManagers";
+// eslint-disable-next-line project-structure/independent-modules
 import { userColumnManager, userFilterManager, userSortManager } from "@/components/users/UsersManagers";
 import type { Lang } from "@/dict";
 import type { ColorSchemeType, MultiImageOutput, MultiUserOutput, RoleType, UserOutput } from "@/Shared/SharedModel";
 import { en } from "@/tr/en";
-import type { NotArray } from "@/utils/Redux/GlobalApp";
-import { GlobalApp } from "@/utils/Redux/GlobalApp";
-import { HashedString } from "@/utils/Redux/HashedString";
-import type { TypeOfStore } from "@/utils/Store";
+import type { DeepTypeOfStore } from "@/utils/Store";
 import { store } from "@/utils/Store";
 import { getUrl } from "@/utils/useNavigate";
 import { jwtDecode } from "jwt-decode";
+import { createRef } from "react";
 
 export const IMAGE_VIEW_VALUES = ["Public", "You"] as const;
 export type ImageViewType = (typeof IMAGE_VIEW_VALUES)[number];
@@ -51,90 +51,13 @@ export const loadLocalStorageState = (): LocalStorageState => {
 const localStorageState = loadLocalStorageState();
 export const localStorageStateStore = store(localStorageState);
 
-export const { appStore, setAppWithUpdate, useInit, useSetAppEnabled } = new GlobalApp({
-	url: getUrl().replace(clientEnv.BASE_URL, ""),
-	lang: {
-		value: localStorageState.lang,
-		isLoading: false,
-	},
-	colorScheme: {
-		value: localStorageState.colorScheme,
-		isLoading: false,
-	},
-	wakeLock: {
-		isEnabled: false,
-		isLoading: false,
-	},
-	errorMessage: null as string | null,
-	shell: {
-		isAboveXl: false,
-		isAboveMd: false,
-	},
-	imageView: localStorageState.imageView,
-	images: {
-		error: "",
-		isLoading: false,
-		values: [] as MultiImageOutput["images"],
-	},
-	users: {
-		error: "",
-		isLoading: false,
-		values: [] as MultiUserOutput["users"],
-		editedValues: {} as Record<number, UserOutput | null>,
-		sort: localStorageState.userSortState,
-		filter: localStorageState.userFilterState,
-		column: localStorageState.userColumnState,
-		isSortAdditive: localStorageState.userIsSortAdditive,
-	},
-	vote: {
-		error: "",
-		loadingImageId: null as number | null,
-	},
-	auth: {
-		isModalOpened: false,
-		loginView: "Login" as LoginViewType,
-		isLoading: false,
-		token: new HashedString(localStorageState.authToken),
-		error: "",
-		user: {
-			email: "",
-			password: new HashedString(""),
-			role: localStorageState.userRole,
-		},
-	},
-	profile: {
-		isLoading: false,
-		error: "",
-		newPassword: new HashedString(""),
-		confirmNewPassword: new HashedString(""),
-		deleteAccount: {
-			buttonPressedAt: null as number | null,
-		},
-	},
-	resetPassword: {
-		isLoading: false,
-		error: "",
-		newPassword: new HashedString(""),
-		inputToken: "",
-	},
-});
-export type AppState = TypeOfStore<typeof appStore>;
-export const useApp = () => appStore.use();
-
 export const trStore = store(en);
 export const useTr = () => trStore.use();
-
-export const mainContentStore = store<HTMLDivElement | null>(null);
-
-const updateToken = (token: string) =>
-	setAppWithUpdate("updateToken", [token], (prev) => {
-		prev.auth.token = new HashedString(token);
-	});
 
 const refreshToken = (token: string) =>
 	api.v1.auth.token.refresh.get({ headers: { "x-token": token } }).then(({ data, error }) => {
 		if (data) {
-			updateToken(data.token);
+			app.auth.token.setValue(data.token);
 			return data.token;
 		} else throw error;
 	});
@@ -153,39 +76,74 @@ export const checkAndRefreshToken = async (token: string) => {
 	}
 };
 
-/** @deprecated do not use this function, just manage the state manually */
-export const handlePromise = <T>(
-	promise: Promise<T>,
-	{
-		functionName,
-		functionParams = [],
-		onUpdateLoading,
-		onSuccess,
-		onError,
-	}: {
-		functionName: string;
-		functionParams?: NotArray<unknown>[];
-		onUpdateLoading: (prev: AppState, isLoading: boolean) => void;
-		onSuccess: (prev: AppState, value: T) => void;
-		onError?: (prev: AppState) => void;
-	}
-) => {
-	const loadingFunctionName = `${functionName}Loading`;
-	setAppWithUpdate(loadingFunctionName, functionParams, (prev) => onUpdateLoading(prev, true));
-	return promise
-		.then((value) => {
-			setAppWithUpdate(functionName, functionParams, (prev) => {
-				prev.errorMessage = null;
-				onSuccess(prev, value);
-				onUpdateLoading(prev, false);
-			});
-		})
-		.catch((error) => {
-			setAppWithUpdate(functionName, functionParams, (prev) => {
-				prev.errorMessage =
-					typeof error === "object" && error && "message" in error ? (error.message as string) : "Unknown error";
-				onError?.(prev);
-				onUpdateLoading(prev, false);
-			});
-		});
+// used to override the default back button behavior (mobile only)
+export const goBackCallbackRef = createRef<() => void>();
+
+export const app = {
+	colorScheme: {
+		data: store(localStorageState.colorScheme),
+		isLoading: store(false),
+	},
+	lang: {
+		data: store(localStorageState.lang),
+		isLoading: store(false),
+	},
+	wakeLock: {
+		isEnabled: store(false),
+		isLoading: store(false),
+	},
+	auth: {
+		isModalOpened: store(false),
+		loginView: store<LoginViewType>("Login"),
+		isLoading: store(false),
+		token: store(localStorageState.authToken),
+		error: store(""),
+		user: {
+			email: store(""),
+			password: store(""),
+			role: store(localStorageState.userRole),
+		},
+	},
+	url: store(getUrl().replace(clientEnv.BASE_URL, "")),
+	shell: {
+		isAboveXl: store(false),
+		isAboveMd: store(false),
+	},
+	imageView: store(localStorageState.imageView),
+	images: {
+		error: store(""),
+		isLoading: store(false),
+		values: store<MultiImageOutput["images"]>([]),
+	},
+	users: {
+		error: store(""),
+		isLoading: store(false),
+		values: store<MultiUserOutput["users"]>([]),
+		editedValues: store<Record<number, UserOutput | null>>({}),
+		sort: store(localStorageState.userSortState),
+		filter: store(localStorageState.userFilterState),
+		column: store(localStorageState.userColumnState),
+		isSortAdditive: store(localStorageState.userIsSortAdditive),
+	},
+	vote: {
+		error: store(""),
+		loadingImageId: store<number | null>(null),
+	},
+	profile: {
+		isLoading: store(false),
+		error: store(""),
+		newPassword: store(""),
+		confirmNewPassword: store(""),
+		deleteAccount: {
+			buttonPressedAt: store<number | null>(null),
+		},
+	},
+	resetPassword: {
+		isLoading: store(false),
+		error: store(""),
+		newPassword: store(""),
+		inputToken: store(""),
+	},
 };
+
+export type AppState = DeepTypeOfStore<typeof app>;

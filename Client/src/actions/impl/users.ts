@@ -1,26 +1,21 @@
 import { api } from "@/api/api";
+// eslint-disable-next-line project-structure/independent-modules
 import type { UserFilterState, UserSortState } from "@/components/users/UsersManagers";
-import { checkAndRefreshToken, setAppWithUpdate } from "@/globalState";
+import { app, checkAndRefreshToken } from "@/globalState";
 import type { MultiUserOutput, RoleType, UserOutput } from "@/Shared/SharedModel";
-import { deepEqual } from "@/utils/Redux/ISerializable";
 import { toast } from "react-hot-toast";
 
-const _updateUsersLoading = () =>
-	setAppWithUpdate("updateUsersLoading", (prev) => {
-		prev.users.isLoading = true;
-	});
+const _updateUsersLoading = () => app.users.isLoading.setValue(true);
 
-const _updateUsers = ({ users }: MultiUserOutput) =>
-	setAppWithUpdate("updateUsers", (prev) => {
-		prev.users.isLoading = false;
-		prev.users.values = users;
-	});
+const _updateUsers = ({ users }: MultiUserOutput) => {
+	app.users.isLoading.setValue(false);
+	app.users.values.setValue(users);
+};
 
-const _updateUsersError = (error: string) =>
-	setAppWithUpdate("updateUsersError", [error], (prev) => {
-		prev.users.error = error;
-		prev.users.isLoading = false;
-	});
+const _updateUsersError = (error: string) => {
+	app.users.error.setValue(error);
+	app.users.isLoading.setValue(false);
+};
 
 const getUsers = async (token: string) => {
 	const validToken = await checkAndRefreshToken(token);
@@ -41,30 +36,16 @@ const getUsers = async (token: string) => {
 		});
 };
 
-const updateSortState = (sortState: UserSortState) =>
-	setAppWithUpdate("updateSortState", (prev) => {
-		prev.users.sort = sortState;
-	});
+const updateSortState = (sortState: UserSortState) => app.users.sort.setValue(sortState);
 
-const updateFilterState = (filterState: UserFilterState) =>
-	setAppWithUpdate("updateFilterState", (prev) => {
-		prev.users.filter = filterState;
-	});
+const updateFilterState = (filterState: UserFilterState) => app.users.filter.setValue(filterState);
 
-const toggleSortAdditive = () =>
-	setAppWithUpdate("toggleSortAdditive", (prev) => {
-		prev.users.isSortAdditive = !prev.users.isSortAdditive;
-	});
+const toggleSortAdditive = () => app.users.isSortAdditive.setValue((value) => !value);
 
-const updateEditedUserRole = (userId: number, role: RoleType) =>
-	setAppWithUpdate("updateEditedValueRole", [userId, role], (prev) => {
-		const user = prev.users.values.find((u) => u.userId === userId);
-		const editedValue = prev.users.editedValues[userId] ?? user;
-		if (!editedValue) return;
-		const newEditedValue = { ...editedValue, role };
-		if (deepEqual(newEditedValue, user)) prev.users.editedValues[userId] = null;
-		else prev.users.editedValues[userId] = newEditedValue;
-	});
+const updateEditedUserRole = (user: UserOutput, role: RoleType) => {
+	if (user.role === role) app.users.editedValues.setValue((prev) => ({ ...prev, [user.userId]: null }));
+	else app.users.editedValues.setValue((prev) => ({ ...prev, [user.userId]: { ...user, role } }));
+};
 
 const saveEditedUserFn = (token: string, editedValue: UserOutput) => async () => {
 	const validToken = await checkAndRefreshToken(token);
@@ -74,12 +55,9 @@ const saveEditedUserFn = (token: string, editedValue: UserOutput) => async () =>
 		.patch({ role: editedValue.role }, { headers: { "x-token": validToken } })
 		.then(async ({ data, error }) => {
 			if (data) {
-				setAppWithUpdate("saveUserUpdate", [editedValue.userId, editedValue.role], (prev) => {
-					const user = prev.users.values.find((u) => u.userId === editedValue.userId);
-					if (user) user.role = editedValue.role;
-					delete prev.users.editedValues[editedValue.userId];
-					prev.users.isLoading = false;
-				});
+				app.users.values.setValue((prev) => prev.map((user) => (user.userId === editedValue.userId ? editedValue : user)));
+				app.users.editedValues.setValue((prev) => ({ ...prev, [editedValue.userId]: null }));
+				app.users.isLoading.setValue(false);
 				toast.success("Role updated");
 			} else {
 				toast.error("Failed to update role");
@@ -93,10 +71,7 @@ const saveEditedUserFn = (token: string, editedValue: UserOutput) => async () =>
 		});
 };
 
-const cancelEditedUserFn = (userId: number) => () =>
-	setAppWithUpdate("cancelEditedUser", [userId], (prev) => {
-		prev.users.editedValues[userId] = null;
-	});
+const cancelEditedUserFn = (userId: number) => () => app.users.editedValues.setValue((prev) => ({ ...prev, [userId]: null }));
 
 export const users = {
 	get: getUsers,

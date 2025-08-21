@@ -1,6 +1,5 @@
 import { auth } from "@/actions/impl/auth";
 import { colorScheme } from "@/actions/impl/colorsScheme";
-import { errorMessage } from "@/actions/impl/errorMessage";
 import { images } from "@/actions/impl/images";
 import { lang } from "@/actions/impl/lang";
 import { localStorageIo } from "@/actions/impl/localStorageIo";
@@ -13,17 +12,16 @@ import { vote } from "@/actions/impl/vote";
 import { wakeLock } from "@/actions/impl/wakeLock";
 
 export const actions = {
-	auth,
-	colorScheme,
-	errorMessage,
-	images,
-	lang,
-	localStorageIo,
-	profile,
-	resetPassword,
-	shell,
-	url,
-	users,
-	vote,
-	wakeLock,
+	auth: auth,
+	colorScheme: colorScheme,
+	images: images,
+	lang: lang,
+	localStorageIo: localStorageIo,
+	profile: profile,
+	resetPassword: resetPassword,
+	shell: shell,
+	url: url,
+	users: users,
+	vote: vote,
+	wakeLock: wakeLock,
 };
