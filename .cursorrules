@@ -4,7 +4,7 @@
 This is a full-stack React starter template with:
 - **Server**: Bun, ElysiaJS, TypeBox, Drizzle ORM, Bun:test
 - **Client**: Bun, React with Vite, ElysiaJS/Eden, TypeBox, Playwright
-- **State Management**: Custom implementation with globalState and setAppWithUpdate
+- **State Management**: Custom Store implementation with globalState and actions
 - **Router**: Custom implementation auto-generated from routes folder
 - **Translation**: Custom implementation with src/tr/* files
 - **API**: Auto-generated with bun run genApi
@@ -121,12 +121,23 @@ export default Users;
 - Destructure props
 - Create props interface when more than 4 props
 - Use ComponentToolbox utilities (Horizontal, Vertical, etc.)
+- Access global state using store.use() hook
+- Update state using store.setValue() or actions
 
 ### State Management
-- All global state in src/globalState.ts
-- Use setAppWithUpdate for state changes
-- LocalStorageState for persistence
+- All global state in src/globalState.ts using custom Store class
+- Use store.use() and store.setValue() for state access and updates
 - Actions in src/actions/ for API calls and state updates
+- LocalStorageState for persistence with automatic sync
+- Store class provides useState-like interface with global state
+
+### Store Implementation
+- Custom Store class in src/utils/Store.ts
+- Each store instance has .use() method that returns current value
+- Each store instance has .setValue() method for updates
+- Stores can be nested in objects (app.colorScheme.data.use())
+- Automatic React integration with useState-like behavior
+- Supports both direct value updates and function updates
 
 ### Routing
 - Routes auto-generated from src/routes/ folder structure
@@ -170,8 +181,8 @@ export default Users;
 
 ### Common Tasks
 1. **Creating new pages**: Add route file in src/routes/, create components in src/components/
-2. **API integration**: Use actions in src/actions/, update globalState
-3. **Component development**: Use ComponentToolbox utilities, follow props interface pattern
+2. **API integration**: Use actions in src/actions/, update globalState using store.setValue()
+3. **Component development**: Use ComponentToolbox utilities, follow props interface pattern, use store.use() for state
 4. **Database operations**: Create DAO classes, implement in Impl classes
 5. **Testing**: Write integration tests for server, E2E tests for client
 
