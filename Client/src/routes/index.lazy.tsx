@@ -42,7 +42,8 @@ export const MainLayout = () => {
 	useEffect(() => actions.shell.isAboveMd.update(isAboveMd), [isAboveMd]);
 
 	// navigate to the app state url
-	useEffect(() => navigateToCustomRouteFn(clientEnv.BASE_URL + app.url)(), [app.url]);
+	const appUrl = app.url.use();
+	useEffect(() => navigateToCustomRouteFn(clientEnv.BASE_URL + appUrl)(), [appUrl]);
 
 	// sync the local storage state with the app state
 	const colorScheme = app.colorScheme.data.use();
