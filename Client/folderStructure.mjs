@@ -28,7 +28,7 @@ export const folderStructureConfig = createFolderStructure({
 				// src/*.gen.ts
 				{ name: "*.gen.ts" },
 				// src/api/
-				{ name: "api", children: [{ name: "api.ts" }, { name: "api.gen.ts" }] },
+				{ name: "api", children: [{ name: "api.ts" }, { name: "api.(config|gen|mock).ts" }] },
 				// src/assets/
 				{ ruleId: "assets-folder" },
 				// src/utils/
