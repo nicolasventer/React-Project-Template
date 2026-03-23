@@ -26,6 +26,32 @@ export const debounceFn = <T extends unknown[]>(fn: (...args: T) => void, ms: nu
 };
 
 /**
+ * Executes the given function and updates the cached result when the dependencies change.
+ * @example
+ * const sumCache = createCachedFn();
+ * let a = 0;
+ * let b = 0;
+ * const sum = (a: number, b: number) => {
+ * 	console.log(a + b);
+ * 	return a + b;
+ * };
+ * let res = sumCache(() => sum(a, b), [a, b]); // logs 0 and returns 0
+ * res = sumCache(() => sum(a, b), [a, b]); // returns 0 (cached result)
+ * a = 1;
+ * res = sumCache(() => sum(a, b), [a, b]); // logs 1 and returns 1
+ * @returns
+ */
+export const createCachedFn = () => {
+	let lastDeps: unknown[] = [];
+	let lastResult: unknown;
+	return <T>(fn: () => T, deps: unknown[]): T => {
+		if (lastDeps.length === deps.length && lastDeps.every((dep, index) => dep === deps[index])) return lastResult as T;
+		lastDeps = deps;
+		return (lastResult = fn());
+	};
+};
+
+/**
  * Throttles the given function, be sure to store the throttled function in a variable to keep the reference. \
  * The function will be called at most once every `ms` milliseconds and will be called with the last arguments passed. \
  * You can also pass an `onCall` function that will be called with the result of the function. \
