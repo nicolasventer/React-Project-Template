@@ -1,0 +1,8 @@
+.todo-app header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem;
+	max-width: 36rem;
+	margin: 0 auto 1.5rem;
+}

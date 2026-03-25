@@ -13,38 +13,34 @@ export const folderStructureConfig = createFolderStructure({
 		{
 			name: "src",
 			children: [
-				// src/clientEnv.ts
-				{ name: "clientEnv.ts" },
-				// src/globalState.ts
-				{ name: "globalState.ts" },
-				// src/dict.ts
-				{ name: "dict.ts" },
 				// src/index.css
 				{ name: "index.css" },
 				// src/index.tsx
 				{ name: "index.tsx" },
+				// src/localStorage.ts
+				{ name: "localStorage.ts" },
 				// src/vite-env.d.ts
 				{ name: "vite-env.d.ts" },
-				// src/*.gen.ts
-				{ name: "*.gen.ts" },
 				// src/api/
 				{ name: "api", children: [{ name: "api.ts" }, { name: "api.(config|gen|mock).ts" }] },
 				// src/assets/
 				{ ruleId: "assets-folder" },
-				// src/utils/
-				{ name: "utils", children: [] },
-				// src/routes/
-				{ ruleId: "routes-folder" },
-				{ name: "tr", children: [{ name: "{snake_case}.ts" }] },
-				// src/actions/
-				{
-					name: "actions",
-					children: [{ name: "actions.(impl|interface).ts" }, { name: "_*.ts" }, { ruleId: "actions-subfolder" }],
-				},
 				// src/components/
 				{ ruleId: "components-folder" },
-				// src/Shared/
-				{ name: "Shared", children: [] },
+				// src/config/
+				{ name: "config", children: [{ name: "cliConfig.ts" }, { name: "srvConfig.ts" }] },
+				// src/dict/
+				{ name: "dict", children: [{ name: "index.ts" }, { name: "lang", children: [{ name: "{snake_case}.ts" }] }] },
+				// src/logic/
+				{ ruleId: "logic-folder" },
+				// src/pages/
+				{ ruleId: "pages-folder" },
+				// src/types/
+				{ name: "types", children: [{ name: "{PascalCase}.type.ts" }] },
+				// src/routes/
+				{ ruleId: "routes-folder" },
+				// src/utils/
+				{ name: "utils", children: [] },
 			],
 		},
 	],
@@ -55,13 +51,25 @@ export const folderStructureConfig = createFolderStructure({
 			children: [
 				{ name: "_?{camelCase}", ruleId: "components-folder" },
 				{ name: "{PascalCase}(.lazy)?.tsx" },
-				{ name: "{PascalCase}.module.css" },
+				{ name: "{PascalCase}.css" },
 				{ name: "{camelCase}(.lazy)?.ts" },
 			],
 		},
 		"routes-folder": {
 			name: "routes",
-			children: [{ name: "*.tsx" }, { name: "*.module.css" }, { name: "*", ruleId: "routes-folder" }],
+			children: [{ name: "*.tsx" }, { name: "*.css" }, { name: "*", ruleId: "routes-folder" }],
+		},
+		"logic-folder": {
+			name: "logic",
+			children: [{ name: "{camelCase}.ts" }, { name: "{camelCase}", ruleId: "logic-folder" }],
+		},
+		"pages-folder": {
+			name: "pages",
+			children: [
+				{ name: "{camelCase}", ruleId: "pages-folder" },
+				{ name: "{PascalCase}(.lazy)?.tsx" },
+				{ name: "{PascalCase}.css" },
+			],
 		},
 		"assets-folder": {
 			name: "assets",
@@ -103,10 +111,6 @@ export const folderStructureConfig = createFolderStructure({
 		"other-folder": {
 			name: "other",
 			children: [{ name: "*" }, { name: "*", ruleId: "other-folder" }],
-		},
-		"actions-subfolder": {
-			name: "impl",
-			children: [{ name: "{camelCase}.ts" }, { name: "{camelCase}", ruleId: "actions-subfolder" }],
 		},
 	},
 });

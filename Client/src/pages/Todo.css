@@ -1,0 +1,47 @@
+.todo-app {
+	--todo-surface-background: #fff;
+	--todo-border-color: #e4e4e7;
+	--todo-text-color: #18181b;
+	--todo-muted-text-color: #71717a;
+	--todo-light-mode-accent-color: #2563eb;
+	--todo-accent-color: var(--todo-light-mode-accent-color);
+	--todo-accent-subtle-background: #eff6ff;
+	--todo-danger-color: #dc2626;
+	--todo-border-radius: 12px;
+	box-sizing: border-box;
+	min-height: 100vh;
+	padding: 1rem 1.25rem 2rem;
+	background: linear-gradient(165deg, #f4f4f5, #d4d4d8);
+	color: var(--todo-text-color);
+	font-family: system-ui, sans-serif;
+}
+
+html[data-theme="dark"] .todo-app {
+	--todo-surface-background: #18181b;
+	--todo-border-color: #3f3f46;
+	--todo-text-color: #fafafa;
+	--todo-muted-text-color: #a1a1aa;
+	--todo-dark-mode-accent-color: #60a5fa;
+	--todo-accent-color: var(--todo-dark-mode-accent-color);
+	--todo-accent-subtle-background: #1e3a5f;
+	--todo-danger-color: #f87171;
+	background: linear-gradient(165deg, #09090b, #27272a);
+}
+
+.todo-app *,
+.todo-app *::before,
+.todo-app *::after {
+	box-sizing: inherit;
+}
+
+.todo-app main {
+	max-width: 36rem;
+	margin: 0 auto;
+}
+
+.todo-app h1 {
+	margin: 0 0 1rem;
+	font-size: clamp(1.75rem, 4vw, 2.25rem);
+	font-weight: 700;
+	letter-spacing: -0.03em;
+}

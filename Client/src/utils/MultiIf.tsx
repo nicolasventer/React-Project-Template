@@ -1,4 +1,5 @@
-import { useMemo, type ReactNode } from "react";
+import type { ReactNode } from "react";
+import { useMemo } from "react";
 
 /** The parameters of the MultiIf function */
 export type MultiIfProps = {
@@ -20,7 +21,7 @@ export type MultiIfProps = {
 export const MultiIf = ({ deps, branches, else: else_ }: MultiIfProps) =>
 	useMemo(() => {
 		const branch = branches.find((branch) => branch[0]());
-		const Component = branch ? branch[1] : else_ ?? (() => null);
+		const Component = branch ? branch[1] : (else_ ?? (() => null));
 		return <Component />;
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, deps);
@@ -56,7 +57,7 @@ export const SwitchV = <T, U = T>({ value, transform, cases, defaultCase }: Swit
 	useMemo(() => {
 		const transformedValue = transform ? transform(value) : (value as unknown as U);
 		const foundCase = cases.find(([u]) => u === transformedValue);
-		const Component = foundCase ? foundCase[1] : defaultCase ?? (() => null);
+		const Component = foundCase ? foundCase[1] : (defaultCase ?? (() => null));
 		return <Component value={value} transformedValue={transformedValue} />;
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [value]);

@@ -1,0 +1,146 @@
+.todo-app .row {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.todo-app {
+	--todo-row-top-padding: 0.65rem;
+}
+
+.todo-app .row.top {
+	align-items: flex-start;
+	padding: var(--todo-row-top-padding) 0.75rem;
+}
+
+.todo-app form.row {
+	margin-bottom: 1rem;
+}
+
+.todo-app .grow {
+	display: flex;
+	align-items: center;
+	gap: 0.55rem;
+	flex: 1;
+	min-width: 0;
+	cursor: pointer;
+}
+
+.todo-app .grow span {
+	flex: 1;
+	min-width: 0;
+	line-height: 1.45;
+	word-break: break-word;
+}
+
+.todo-app .field {
+	flex: 1;
+	min-width: 0;
+	padding: 0.6rem 0.85rem;
+	border: 1px solid var(--todo-border-color);
+	border-radius: var(--todo-border-radius);
+	background: var(--todo-surface-background);
+	color: inherit;
+	font: inherit;
+}
+
+.todo-app .field.query {
+	display: block;
+	width: 100%;
+	margin-bottom: 0.75rem;
+}
+
+.todo-app .field::placeholder {
+	color: var(--todo-muted-text-color);
+}
+
+.todo-app .field:focus {
+	outline: 2px solid var(--todo-accent-color);
+	outline-offset: 2px;
+}
+
+.todo-app .checkbox {
+	margin-top: 0.2rem;
+	width: 1.1rem;
+	height: 1.1rem;
+	flex-shrink: 0;
+	accent-color: var(--todo-accent-color);
+}
+
+.todo-app .done {
+	color: var(--todo-muted-text-color);
+	text-decoration: line-through;
+}
+
+.todo-app .link,
+.todo-app .primary,
+.todo-app .danger,
+.todo-app .pill {
+	border: none;
+	border-radius: 8px;
+	background: transparent;
+	font: inherit;
+	font-size: 0.8rem;
+	font-weight: 600;
+	cursor: pointer;
+	padding: 0.35rem 0.5rem;
+}
+
+.todo-app .link {
+	color: var(--todo-accent-color);
+	text-decoration: underline;
+	text-underline-offset: 3px;
+}
+
+.todo-app .link:hover {
+	opacity: 0.85;
+}
+
+.todo-app .link.current {
+	text-decoration-thickness: 2px;
+}
+
+.todo-app .link.clear {
+	margin-left: auto;
+	color: var(--todo-muted-text-color);
+	text-decoration: underline;
+}
+
+.todo-app .link.clear:hover {
+	color: var(--todo-danger-color);
+}
+
+.todo-app .primary {
+	background: var(--todo-accent-color);
+	color: #fff;
+	padding: 0.6rem 1rem;
+	border-radius: var(--todo-border-radius);
+	white-space: nowrap;
+}
+
+.todo-app .primary:hover {
+	filter: brightness(1.05);
+}
+
+.todo-app .danger {
+	color: var(--todo-danger-color);
+}
+
+.todo-app .danger:hover {
+	background: rgb(220 38 38 / 0.08);
+}
+
+.todo-app .pill {
+	border: 1px solid transparent;
+	color: var(--todo-muted-text-color);
+}
+
+.todo-app .pill:hover {
+	color: var(--todo-text-color);
+}
+
+.todo-app .pill.on {
+	border-color: var(--todo-border-color);
+	color: var(--todo-text-color);
+	background: var(--todo-surface-background);
+}

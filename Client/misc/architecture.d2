@@ -1,0 +1,34 @@
+"index.tsx" -> "pages/routes"
+"index.tsx" -> "global"
+
+"global": {
+  "config"
+  "dict"
+  "types"
+  "utils"
+}
+
+"pages/routes" -> "global"
+"pages/routes" -> "api"
+"pages/routes" -> "components"
+"pages/routes" -> "logic"."index.ts"
+"pages/routes" -> "assets"
+
+"components" -> "api"
+"components" -> "logic"."index.ts"
+"components" -> "assets"
+"components" -> "global"
+
+"logic"."index.ts" -> "logic"."module 1"
+"logic"."index.ts" -> "logic"."module 2"
+
+"logic" -> "global"
+"logic" -> "localStorage.ts"
+
+"localStorage.ts" -> "global"
+
+"api" -> "global"
+
+# "global"."dict" {
+#   "dict.ts" -> "lang"
+# }

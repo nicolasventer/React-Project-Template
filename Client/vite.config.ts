@@ -1,28 +1,12 @@
-import mdx from "@mdx-js/rollup";
 import react from "@vitejs/plugin-react";
-import { routerPlugin } from "easy-react-router/plugin";
 import path from "path";
 import { env } from "process";
-import type { PluginOption } from "vite";
 import { defineConfig } from "vite";
 import mkcert from "vite-plugin-mkcert";
 
 export default defineConfig({
-	// remove base if deployed with vite commands (i.e. `bunx --bun vite build` && `vite preview`)
-	// deployment with vite commands is required when some path are dynamic (i.e. `/hello/:name`)
 	base: "./",
-	plugins: [
-		// autoMemo(),
-		routerPlugin(),
-		{ enforce: "pre", ...mdx() } as PluginOption,
-		react({ include: /\.(jsx|js|mdx|md|tsx|ts)$/ }),
-		...(env.USE_HTTPS ? [mkcert()] : []),
-	],
-	server: {
-		watch: {
-			ignored: ["**/playwright-report/**", "**/coverage-reports/**"],
-		},
-	},
+	plugins: [react(), ...(env.USE_HTTPS ? [mkcert()] : [])],
 	resolve: { alias: { "@": path.resolve(__dirname, "src") } },
 	build: {
 		rollupOptions: {

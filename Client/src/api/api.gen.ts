@@ -14,7 +14,7 @@ export type Api = {
 					query?: Record<string, unknown> | undefined;
 					fetch?: RequestInit | undefined;
 			  }
-			| undefined
+			| undefined,
 	) => Promise<TreatyResponse<{ 200: string }>>;
 	compile: {
 		post: (
@@ -25,7 +25,7 @@ export type Api = {
 						query?: Record<string, unknown> | undefined;
 						fetch?: RequestInit | undefined;
 				  }
-				| undefined
+				| undefined,
 		) => Promise<
 			TreatyResponse<{
 				200: string | { error: string };
@@ -44,6 +44,7 @@ export type Api = {
 	};
 	execute: {
 		post: (
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			body: { body: any; url: string },
 			options?:
 				| {
@@ -51,7 +52,7 @@ export type Api = {
 						query?: Record<string, unknown> | undefined;
 						fetch?: RequestInit | undefined;
 				  }
-				| undefined
+				| undefined,
 		) => Promise<
 			TreatyResponse<{
 				200: Response;
@@ -75,7 +76,7 @@ export type Api = {
 						query?: Record<string, unknown> | undefined;
 						fetch?: RequestInit | undefined;
 				  }
-				| undefined
+				| undefined,
 		) => Promise<
 			TreatyResponse<{
 				200: "v1 is running";
@@ -93,7 +94,7 @@ export type Api = {
 		users: ((params: { id: string | number }) => {
 			patch: (
 				body: { role: "user" | "superAdmin" | "admin" },
-				options: { headers: { "x-token": string }; query?: Record<string, unknown> | undefined; fetch?: RequestInit | undefined }
+				options: { headers: { "x-token": string }; query?: Record<string, unknown> | undefined; fetch?: RequestInit | undefined },
 			) => Promise<
 				TreatyResponse<{
 					200: { userId: number };
@@ -111,7 +112,7 @@ export type Api = {
 			>;
 			delete: (
 				body: unknown,
-				options: { headers: { "x-token": string }; query?: Record<string, unknown> | undefined; fetch?: RequestInit | undefined }
+				options: { headers: { "x-token": string }; query?: Record<string, unknown> | undefined; fetch?: RequestInit | undefined },
 			) => Promise<
 				TreatyResponse<{
 					200: { userId: number };
@@ -136,7 +137,7 @@ export type Api = {
 							query?: Record<string, unknown> | undefined;
 							fetch?: RequestInit | undefined;
 					  }
-					| undefined
+					| undefined,
 			) => Promise<
 				TreatyResponse<{
 					200: { userId: number; email: string; role: "user" | "superAdmin" | "admin"; lastLoginTime: number };
@@ -177,7 +178,7 @@ export type Api = {
 						headers: { "x-token": string };
 						query?: Record<string, unknown> | undefined;
 						fetch?: RequestInit | undefined;
-					}
+					},
 				) => Promise<
 					TreatyResponse<{
 						200: "User updated";
@@ -200,7 +201,7 @@ export type Api = {
 						headers: { "x-token": string };
 						query?: Record<string, unknown> | undefined;
 						fetch?: RequestInit | undefined;
-					}
+					},
 				) => Promise<
 					TreatyResponse<{
 						200: "User deleted";
@@ -229,7 +230,7 @@ export type Api = {
 								query?: Record<string, unknown> | undefined;
 								fetch?: RequestInit | undefined;
 						  }
-						| undefined
+						| undefined,
 				) => Promise<
 					TreatyResponse<{
 						200: { role: "user" | "superAdmin" | "admin"; token: string };
@@ -280,7 +281,7 @@ export type Api = {
 								query?: Record<string, unknown> | undefined;
 								fetch?: RequestInit | undefined;
 						  }
-						| undefined
+						| undefined,
 				) => Promise<
 					TreatyResponse<{
 						200: "Reset password link sent" | { link: string };
@@ -307,7 +308,7 @@ export type Api = {
 								query?: Record<string, unknown> | undefined;
 								fetch?: RequestInit | undefined;
 						  }
-						| undefined
+						| undefined,
 				) => Promise<
 					TreatyResponse<{
 						200: "Password updated";
@@ -329,7 +330,7 @@ export type Api = {
 		votes: ((params: { id: string | number }) => {
 			patch: (
 				body: { isPositive: boolean },
-				options: { headers: { "x-token": string }; query?: Record<string, unknown> | undefined; fetch?: RequestInit | undefined }
+				options: { headers: { "x-token": string }; query?: Record<string, unknown> | undefined; fetch?: RequestInit | undefined },
 			) => Promise<
 				TreatyResponse<{
 					200: "Vote updated";
@@ -348,7 +349,7 @@ export type Api = {
 			>;
 			delete: (
 				body: unknown,
-				options: { headers: { "x-token": string }; query?: Record<string, unknown> | undefined; fetch?: RequestInit | undefined }
+				options: { headers: { "x-token": string }; query?: Record<string, unknown> | undefined; fetch?: RequestInit | undefined },
 			) => Promise<
 				TreatyResponse<{
 					200: "Vote deleted";
@@ -368,7 +369,7 @@ export type Api = {
 		}) & {
 			post: (
 				body: { imageId: number; isPositive: boolean },
-				options: { headers: { "x-token": string }; query?: Record<string, unknown> | undefined; fetch?: RequestInit | undefined }
+				options: { headers: { "x-token": string }; query?: Record<string, unknown> | undefined; fetch?: RequestInit | undefined },
 			) => Promise<
 				TreatyResponse<{
 					200: { voteId: number };

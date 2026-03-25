@@ -1,0 +1,11 @@
+.todo-app .todo-item {
+	border-bottom: 1px solid var(--todo-border-color);
+}
+
+.todo-app .todo-item:last-child {
+	border-bottom: none;
+}
+
+.todo-app .todo-item.todo-item-on {
+	background: var(--todo-accent-subtle-background);
+}

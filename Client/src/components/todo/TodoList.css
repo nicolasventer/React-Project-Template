@@ -1,0 +1,17 @@
+.todo-app .todo-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	border: 1px solid var(--todo-border-color);
+	border-radius: var(--todo-border-radius);
+	background: var(--todo-surface-background);
+	box-shadow: 0 4px 24px rgb(0 0 0 / 0.06);
+}
+
+.todo-app .todo-empty {
+	padding: 1.25rem 1rem;
+	text-align: center;
+	color: var(--todo-muted-text-color);
+	font-size: 0.9rem;
+	border-bottom: 1px solid var(--todo-border-color);
+}

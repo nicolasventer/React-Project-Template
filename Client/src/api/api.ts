@@ -1,7 +1,7 @@
 import { apiConfig } from "@/api/api.config";
 import type { Api } from "@/api/api.gen";
 import { apiMock } from "@/api/api.mock";
-import { SRV_URL } from "@/Shared/SharedConfig";
+import { SRV_URL } from "@/config/srvConfig";
 import { treaty } from "@elysiajs/eden";
 
 export const api = apiConfig.isMockEnabled ? apiMock : (treaty(SRV_URL).api as unknown as Api);

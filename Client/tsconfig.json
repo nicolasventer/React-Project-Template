@@ -25,5 +25,5 @@
 
 		"noErrorTruncation": true
 	},
-	"include": ["src", "tests/testUtils.ts", "_*.ts", "playwright.config.ts", "**/*.md", "**/*.mdx"]
+	"include": ["src"]
 }

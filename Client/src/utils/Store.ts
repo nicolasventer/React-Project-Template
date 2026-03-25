@@ -11,13 +11,16 @@ export type NotFunction<T> = T extends (...args: unknown[]) => unknown ? never :
  */
 class Store_<T extends NotFunction<unknown>> {
 	private onChange: Dispatch<SetStateAction<T>>[];
-
 	/**
 	 * Constructor for the global state.
 	 * @param val - The initial value of the global state.
 	 * @param debugLabel - The label to use for debugging.
 	 */
-	constructor(private val: T, private debugLabel?: string) {
+	constructor(
+		private val: T,
+		/** @deprecated (set as deprecated to discourage access) */
+		public readonly debugLabel?: string,
+	) {
 		// @ts-expect-error cannot handle the case where T is a function
 		this.onChange = [(v) => void (this.val = typeof v === "function" ? v(this.val) : v)];
 	}
@@ -41,7 +44,14 @@ class Store_<T extends NotFunction<unknown>> {
 	/**
 	 * Sets the current value of the global state.
 	 */
-	public setValue = (v: SetStateAction<T>) => this.onChange.forEach((onChange) => onChange(v));
+	public setValue = (v: SetStateAction<T>, useTransition = false) => {
+		const fn = () => {
+			this.onChange[0](v); // Run once to ensure a stable computed value, especially for random or timestamp-based computations.
+			for (let i = 1; i < this.onChange.length; i++) this.onChange[i](this.val);
+		};
+		if (useTransition) document.startViewTransition(fn);
+		else fn();
+	};
 
 	/**
 	 * @deprecated (set as deprecated to discourage use) \
@@ -146,14 +156,8 @@ export function store<T extends NotFunction<unknown>>(val?: T, debugLabel?: stri
 export type TypeOfStore<T extends Store<any>> = T extends Store<infer U> ? U : never;
 
 /**
- * The type of the state of the deeply nested stores.
- * @template T - The type to browse
- * @returns The type of the state of the deeply nested stores.
+ * Recursively get the type of the state of the store.
+ * @template T - The type of the object that contains store.
+ * @returns The type of the object with the type of the store inferred.
  */
-export type DeepTypeOfStore<T> = T extends Store<infer U>
-	? U
-	: T extends Record<string, unknown>
-	? {
-			[K in keyof T]: DeepTypeOfStore<T[K]>;
-	  }
-	: T;
+export type RecursiveTypeOfStore<T> = T extends Store<infer U> ? U : { [K in keyof T]: RecursiveTypeOfStore<T[K]> };

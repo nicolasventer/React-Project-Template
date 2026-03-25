@@ -1,148 +1,38 @@
-# Client
+# React + TypeScript + Vite (template)
 
-This is the client side of the application.
+Opinionated React 19 + Vite 8 + TypeScript starter with ESLint (folder structure and module boundaries), i18n, and a single `app` façade from `@/logic`. See [project-understanding.md](project-understanding.md) for architecture and [how-to.md](how-to.md) for common tasks.
 
-# Development
+## Prerequisites
 
-## Requirements
+- [Bun](https://bun.sh) (recommended; this repo has a `bun.lock`), or Node 20+ with npm/pnpm/yarn
+- For `bun run depgraph`: [Graphviz](https://graphviz.org/) (`dot` on your `PATH`)
+- For `bun run preview`: the [`serve`](https://www.npmjs.com/package/serve) CLI (install globally or run `bun add -d serve`). If you prefer not to use it, use `bun run _preview` after a build (Vite’s built-in preview server)
 
-- [bun](https://bun.sh/)
-- [typedoc](https://typedoc.org/)
-- [serve](https://www.npmjs.com/package/serve)
-- [playwright](https://playwright.dev/) + ([VsCode extension](https://marketplace.visualstudio.com/items?itemName=ms-playwright.playwright))
+## Setup
 
-## Installation
-
-```sh
+```bash
 bun install
 ```
 
-## Run
+Equivalent: `npm install`, `pnpm install`, or `yarn`.
 
-```sh
-bun run dev
-```
+## Commands
 
-## Build
+Run with `bun run <script>` (or `npm run`, `pnpm run`, `yarn`).
 
-Build and preview in development mode with:
-
-```sh
-bun run build
-bun run preview
-```
-
-Build and preview in production mode with:
-
-```sh
-bun run buildProd
-bun run previewProd
-```
-
-## Deploy
-
-Build and deploy in production mode with:
-
-```sh
-bun run buildDeploy
-```
-
-Generate the static html files with (already done by `buildDeploy`):
-
-```sh
-bun run genHtml
-```
-
-## Test
-
-Execute tests with:
-
-```sh
-bun run test
-```
-
-Execute tests coverage with:
-
-```sh
-bun run cov
-```
-
-Execute tests in ui with:
-
-```sh
-bun run testui
-```
-
-Execute test codegen with:
-
-```sh
-bun run codegen
-```
+| Script                | Command                | Description                                                                                                                   |
+| --------------------- | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| **Dev server**        | `bun run dev`          | Start Vite dev server (default URL in terminal)                                                                               |
+| **Dev (LAN)**         | `bun run devhost`      | Dev server bound to all interfaces (`bunx --bun vite --host`)                                                                 |
+| **Dev (HTTPS)**       | `bun run devhttps`     | Dev server with HTTPS (`USE_HTTPS=true`, uses `npx vite`)                                                                     |
+| **Dev (HTTPS + LAN)** | `bun run devhttpshost` | HTTPS + `--host`                                                                                                              |
+| **Production build**  | `bun run build`        | `tsc -b` then `vite build` → output in `dist/`                                                                                |
+| **Preview (serve)**   | `bun run preview`      | Static server on port **4173** for `./dist` (needs `serve` on PATH)                                                           |
+| **Preview (Vite)**    | `bun run _preview`     | `vite preview` for the built app                                                                                              |
+| **Lint**              | `bun run lint`         | ESLint on the project                                                                                                         |
+| **Dependency graph**  | `bun run depgraph`     | Writes `graph-dependencies.html` (needs `dot`). On Windows the script opens the file; elsewhere open it in a browser manually |
 
 ## Documentation
 
-```sh
-bun run doc
-```
-
-## Dependency graph
-
-```sh
-bun run depgraph
-```
-
-You can visually check that the [Project structure](#project-structure) is respected.
-
-## Lint
-
-Get the linting report with:
-
-```sh
-bun run lint
-```
-
-Fix the linting issues with:
-
-```sh
-bun run lintfix
-```
-
-## GenAPI
-
-Generate the api with:
-
-```sh
-bun run genApi
-```
-
-Edit the file [\_genApi.ts](./_genApi.ts) if you want to change the api generation.
-
-TODO: capacitor
-
-# Project structure
-
-![client_project_structure](./misc/d2/client_project_structure.png)
-
-- `(readOnlyGlobalState)` is not a folder.
-- All components placed in a folder that start with `_` are common components.
-
-## Enable api mock
-
-To enable the api mock, it is recommended to add `enableApiMock()` in the `src/index.ts` file.
-
-## Configure the UI preview
-
-You can configure the UI preview by calling the `configurePreview` function in the `src/index.ts` file.  
-When the UI preview is enabled, the components implemented with the `withPreview` HOC will render the preview UI instead of the real UI.
-If the `configurePreview` function is called with the `dynamic` preview type, it will returns an object that can be used to dynamically switch between the real UI and the preview UI.
-
-```jsx
-const bPreview = configurePreview("dynamic", false);
-
-const Main = () => {
-	const [isPreview, setIsPreview] = useState(false);
-	bPreview.useEffect((setPreview) => setPreview(isPreview), [isPreview]);
-
-	return <Checkbox checked={isPreview} onChange={() => setIsPreview(!isPreview)} />;
-};
-```
+- [project-understanding.md](project-understanding.md) — layout, stack, routing, `app`, ESLint rules
+- [how-to.md](how-to.md) — routes, logic, localStorage, config, translations, ESLint structure

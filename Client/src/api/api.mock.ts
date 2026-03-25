@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Api } from "@/api/api.gen";
-import type { Treaty } from "@elysiajs/eden";
 
+/*
 type TreatyResponse<T extends Record<number, unknown>> = Treaty.TreatyResponse<T>; // TODO: export
 
 const mockResponse = <T>(data: T): TreatyResponse<{ 200: T; 422: any }> => ({
@@ -18,6 +18,7 @@ const mockNotFound = (message: string): TreatyResponse<{ 404: string }> => ({
 	status: 404,
 	headers: undefined,
 });
+*/
 
 const buildFn =
 	(path: string[], root: Record<string, any>) =>
@@ -36,6 +37,7 @@ const BuildProxy = <T extends object>(path: string[] = [], root: Record<string, 
 	});
 };
 
+/*
 const _nothingFn = () => {};
 
 type NothingFn = typeof _nothingFn;
@@ -46,7 +48,8 @@ type ObjProps<T extends (...params: any[]) => unknown> = {
 
 const funcWithProps = <T extends (...params: any[]) => unknown>(
 	func: (...params: Parameters<T>) => ReturnType<T>,
-	props: ObjProps<T>
+	props: ObjProps<T>,
 ) => Object.assign(func, props) as T;
+*/
 
 export const apiMock = BuildProxy<Api>();

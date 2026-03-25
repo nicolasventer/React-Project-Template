@@ -6,59 +6,108 @@ export const independentModulesConfig = createIndependentModules({
 	// debugMode: true,
 	modules: [
 		{
-			name: "Root",
-			pattern: ["src/*", "src/api/*", "src/tr/*", "*"],
-			allowImportsFrom: ["{root}", "src/utils/**", "src/routes/**", "src/Shared/**", "{misc}", "{externalLibs}"],
-			errorMessage: "🔥 The Root module should access to Root, Utils, Routes and Shared modules. 🔥",
+			name: "Index",
+			pattern: "src/index.tsx",
+			allowImportsFrom: ["{global}", "src/index.css", "src/pages/**", "src/routes/**"],
+			errorMessage: "🔥 The Index module should access to global, Pages and Routes modules. 🔥",
 		},
 
 		{
-			name: "Utils",
-			pattern: "src/utils/**",
-			allowImportsFrom: ["src/utils/**", "{externalLibs}"],
-			errorMessage: "🔥 The Utils module should access to Utils modules only. 🔥",
-		},
-
-		{
-			name: "Shared",
-			pattern: "src/Shared/**",
-			allowImportsFrom: ["src/Shared/**", "{externalLibs}"],
-			errorMessage: "🔥 The Shared module should access to Shared modules only. 🔥",
+			name: "Pages",
+			pattern: "src/pages/**",
+			allowImportsFrom: ["src/pages/**", "src/components/**", "{readWriteStates}"],
+			errorMessage: "🔥 The Pages module should access to Pages, Components and readWriteStates modules. 🔥",
 		},
 
 		{
 			name: "Routes",
 			pattern: "src/routes/**",
-			allowImportsFrom: ["src/routes/**", "src/components/**", "{readWriteGlobalState}"],
-			errorMessage: "🔥 The Routes module should access to Routes and Components modules and readWriteGlobalState imports. 🔥",
-		},
-
-		{
-			name: "ActionsImpl",
-			pattern: "src/actions/actions.impl.ts",
-			allowImportsFrom: ["src/actions/**"],
-			errorMessage: "🔥 The ActionsImpl module should access to Actions module. 🔥",
-		},
-
-		{
-			name: "Actions",
-			pattern: "src/actions/**",
-			allowImportsFrom: ["src/actions/**", "{readWriteGlobalState}", "src/api/api.ts"],
-			errorMessage: "🔥 The Actions module should access to Actions module, readWriteGlobalState imports and api.ts. 🔥",
+			allowImportsFrom: ["src/routes/**", "src/components/**", "{readWriteStates}"],
+			errorMessage: "🔥 The Routes module should access to Routes, Components and readWriteStates modules. 🔥",
 		},
 
 		{
 			name: "Components",
 			pattern: "src/components/**",
-			allowImportsFrom: ["src/components/_*/**", "{dirname}/**", "{readWriteGlobalState}"],
+			allowImportsFrom: ["src/components/_*/**", "{dirname}/**", "{readWriteStates}"],
 			errorMessage:
-				"🔥 The Components module should access to its subfolders, all common components and readWriteGlobalState imports. 🔥",
+				"🔥 The Components module should access to its subfolders, all common components and readWriteStates modules. 🔥",
+		},
+
+		{
+			name: "Assets",
+			pattern: "src/assets/**",
+			allowImportsFrom: ["src/assets/**"],
+			errorMessage: "🔥 The Assets module should access to Assets module only. 🔥",
+		},
+
+		{
+			name: "logic/index.ts",
+			pattern: "src/logic/index.ts",
+			allowImportsFrom: ["src/logic/**", "src/localStorage.ts"],
+			errorMessage: "🔥 The logic/index.ts module should access to Logic and LocalStorage modules only. 🔥",
+		},
+
+		{
+			name: "Api",
+			pattern: "src/api/**",
+			allowImportsFrom: ["src/api/**", "{global}"],
+			errorMessage: "🔥 The Api module should access to Api and global modules. 🔥",
+		},
+
+		{
+			name: "Logic",
+			pattern: "src/logic/**",
+			allowImportsFrom: ["{global}", "src/localStorage.ts"],
+			errorMessage: "🔥 The Logic module should access to Logic, global and localStorage modules. 🔥",
+		},
+
+		{
+			name: "LocalStorage",
+			pattern: "src/localStorage.ts",
+			allowImportsFrom: ["{global}"],
+			errorMessage: "🔥 The LocalStorage module should access to global module only. 🔥",
+		},
+
+		{
+			name: "Config",
+			pattern: "src/config/**",
+			allowImportsFrom: ["{global}"],
+			errorMessage: "🔥 The Config module should access to global module only. 🔥",
+		},
+
+		{
+			name: "Dict",
+			pattern: "src/dict/**",
+			allowImportsFrom: ["src/dict/**"],
+			errorMessage: "🔥 The Dict module should access to Dict module only. 🔥",
+		},
+
+		{
+			name: "Utils",
+			pattern: "src/utils/**",
+			allowImportsFrom: ["src/utils/**"],
+			errorMessage: "🔥 The Utils module should access to Utils module only. 🔥",
+		},
+
+		{
+			name: "Types",
+			pattern: "src/types/**",
+			allowImportsFrom: ["src/types/**"],
+			errorMessage: "🔥 The Types module should access to Types module only. 🔥",
 		},
 
 		{
 			name: "Tests",
 			pattern: "tests/**",
 			allowImportsFrom: ["**"],
+		},
+
+		{
+			name: "ViteEnv",
+			pattern: "src/vite-env.d.ts",
+			allowImportsFrom: [],
+			errorMessage: "🔥 The ViteEnv module should not import anything. 🔥",
 		},
 
 		// All files not specified in the rules are not allowed to import anything.
@@ -71,20 +120,7 @@ export const independentModulesConfig = createIndependentModules({
 		},
 	],
 	reusableImportPatterns: {
-		misc: ["src/assets/**"],
-		root: ["src/*", "src/api/*", "src/tr/*", "*"],
-		readWriteGlobalState: [
-			"src/dict.ts",
-			"src/tr/en.ts",
-			"src/globalState.ts",
-			"src/clientEnv.ts",
-			"src/actions/actions.impl.ts",
-			"src/*.gen.ts",
-			"src/utils/**",
-			"src/Shared/**",
-			"{misc}",
-			"{externalLibs}",
-		],
-		externalLibs: [],
+		global: ["src/config/**", "src/dict/**", "src/types/**", "src/utils/**"],
+		readWriteStates: ["{global}", "src/assets/**", "src/logic/index.ts", "src/api/api.ts"],
 	},
 });
