@@ -14,20 +14,23 @@ _[back to top](#project-understanding)_
 
 ```
 src/
-├── index.tsx              # React entry: createRoot, StrictMode, global CSS
-├── index.css
+├── index.tsx              # React entry: createRoot, StrictMode
 ├── localStorage.ts        # Load/save one persisted snapshot; sync driven from AppLifeCycle
-├── vite-env.d.ts
 ├── api/                   # Eden Treaty client, mock, generated types, api.config
 ├── assets/                # Static assets (images, fonts, …) per folderStructure rules
-├── components/            # React UI; feature folders + _common/ + app/ (e.g. AppLifeCycle)
+├── components/            # React UI
+│   └── app/
+│     └── AppLifeCycle.tsx # Effects on state changes (i18n load, persistence, theme/CSS vars)
 ├── config/                # cliConfig (defaults/types), srvConfig (API base URL)
 ├── dict/                  # i18n: index + lazy lang/*.ts chunks
-├── logic/                 # Domain modules (independent) + index.ts → app
-├── pages/                 # Top-level screens (App shell, Home, Todo, NotFound, …)
+├── logic/                 # Domain modules (independent) + index.ts → `app` facade
+│   └── index.ts           # Builds the `app` object facade
+├── pages/                 # Top-level screens (App shell, Home, Todo, NotFound)
+│   └── App.tsx            # App shell (providers + routing via SwitchV) + mounts AppLifeCycle
 ├── routes/                # Reserved by ESLint folder rules (optional future use)
 ├── types/                 # Shared *.type.ts
 └── utils/                 # Store, hooks, MultiIf / SwitchV, helpers
+    └── hooks/             # Shared React hooks (mount, interval, loading, etc.)
 ```
 
 Enforced layout: `folderStructure.mjs`. Import boundaries: `independentModules.mjs`.
@@ -52,12 +55,24 @@ _[back to top](#project-understanding)_
 
 ## Entry, shell, and lifecycle
 
-| File                                      | Role                                                                                                                                    |
-| ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| **`src/index.tsx`**                       | Mount the app, import global CSS; optional one-off library setup (e.g. dayjs locale) that does not need React context.                  |
-| **`src/pages/App.tsx`**                   | Application shell: providers (when you add them), routing (`SwitchV` + `app.route`), mount **`AppLifeCycle`**, app-wide modals/portals. |
-| **`src/components/app/AppLifeCycle.tsx`** | Headless component: effects on state changes — load translations when `lang` changes, persist to `localStorage`,                        |
-|                                           | update `document.documentElement` / CSS variables.                                                                                      |
+### `src/index.tsx` (entry)
+
+Third-party setup that should run once at startup — e.g. default locale for `dayjs`, side-effect imports for a design system, or other library initialization.
+
+### `src/pages/App.tsx` (application shell)
+
+- **Providers** — wrap the tree with context-based APIs (e.g. theme, query client, toast hosts).
+- **Routing** — map the current route to pages (`SwitchV` + `app.route` here; you can swap in another router while keeping this shell role).
+- **Lifecycle** — render **`AppLifeCycle`** once near the root so global effects run for the whole session.
+- **Global UI** — app-wide modals, command palettes, or portals not tied to a single page.
+
+### `src/components/app/AppLifeCycle.tsx` (effects on state changes)
+
+Headless component (returns `null`) that centralizes `useEffect` and store-driven effects when domain state changes:
+
+- **Persistence** — sync in-memory state to `localStorage` via `app.localStorage.update`.
+- **i18n** — when language changes, load the matching dict chunk and update `app.tr`.
+- **Document / DOM** — e.g. `data-theme` on `document.documentElement`, or CSS variables when config changes.
 
 _[back to top](#project-understanding)_
 
