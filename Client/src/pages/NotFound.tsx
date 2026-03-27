@@ -7,19 +7,19 @@ export const NotFound = () => {
 	const tr = app.tr.use();
 
 	return (
-		<div className="notFound">
-			<header className="notFound-header">
+		<div className="not-found">
+			<header className="not-found-header">
 				<span />
-				<div className="pageHeader-actions">
+				<div className="page-header-actions">
 					<LangButton tr={tr} />
 					<DarkModeButton tr={tr} />
 				</div>
 			</header>
-			<main className="notFound-main">
-				<h1 className="notFound-title">{tr["404 Not Found"]}</h1>
-				<p className="notFound-text">{tr["Go to Home page"]}</p>
-				<button type="button" className="notFound-btn" onClick={app.route.navigateToRouteFn({ url: "/" })}>
-					{tr["Go to Home page"]}
+			<main className="not-found-main">
+				<h1 className="not-found-title">{tr.NotFoundTitle}</h1>
+				<p className="not-found-text">{tr.GoToHomePage}</p>
+				<button type="button" className="not-found-btn" onClick={app.route.navigateToRouteFn({ url: "/" })}>
+					{tr.GoToHomePage}
 				</button>
 			</main>
 		</div>

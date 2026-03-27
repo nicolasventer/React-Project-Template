@@ -22,8 +22,16 @@ export const independentModulesConfig = createIndependentModules({
 		{
 			name: "Routes",
 			pattern: "src/routes/**",
-			allowImportsFrom: ["src/routes/**", "src/components/**", "{readWriteStates}"],
-			errorMessage: "🔥 The Routes module should access to Routes, Components and readWriteStates modules. 🔥",
+			allowImportsFrom: ["src/routes/**", "src/components/**", "{readWriteStates}", "src/routerInstance.gen.ts"],
+			errorMessage:
+				"🔥 The Routes module should access to Routes, Components, readWriteStates and routerInstance.gen.ts modules. 🔥",
+		},
+
+		{
+			name: "RouterInstance",
+			pattern: "src/routerInstance.gen.ts",
+			allowImportsFrom: ["src/routes/**"],
+			errorMessage: "🔥 The RouterInstance module should access to Routes module only. 🔥",
 		},
 
 		{
@@ -44,8 +52,8 @@ export const independentModulesConfig = createIndependentModules({
 		{
 			name: "logic/index.ts",
 			pattern: "src/logic/index.ts",
-			allowImportsFrom: ["src/logic/**", "src/localStorage.ts"],
-			errorMessage: "🔥 The logic/index.ts module should access to Logic and LocalStorage modules only. 🔥",
+			allowImportsFrom: ["src/logic/**", "{ref}"],
+			errorMessage: "🔥 The logic/index.ts module should access to Logic and Ref modules only. 🔥",
 		},
 
 		{
@@ -58,15 +66,15 @@ export const independentModulesConfig = createIndependentModules({
 		{
 			name: "Logic",
 			pattern: "src/logic/**",
-			allowImportsFrom: ["{global}", "src/localStorage.ts"],
-			errorMessage: "🔥 The Logic module should access to Logic, global and localStorage modules. 🔥",
+			allowImportsFrom: ["{global}", "{ref}"],
+			errorMessage: "🔥 The Logic module should access to Logic, global and Ref modules. 🔥",
 		},
 
 		{
-			name: "LocalStorage",
-			pattern: "src/localStorage.ts",
+			name: "Ref",
+			pattern: ["src/localStorage.ts", "src/globalRef.ts"],
 			allowImportsFrom: ["{global}"],
-			errorMessage: "🔥 The LocalStorage module should access to global module only. 🔥",
+			errorMessage: "🔥 The Ref module should access to global module only. 🔥",
 		},
 
 		{
@@ -121,6 +129,7 @@ export const independentModulesConfig = createIndependentModules({
 	],
 	reusableImportPatterns: {
 		global: ["src/config/**", "src/dict/**", "src/types/**", "src/utils/**"],
+		ref: ["src/globalRef.ts", "src/localStorage.ts"],
 		readWriteStates: ["{global}", "src/assets/**", "src/logic/index.ts", "src/api/api.ts"],
 	},
 });

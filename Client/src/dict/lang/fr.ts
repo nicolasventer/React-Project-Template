@@ -1,10 +1,10 @@
 import type { Tr } from "./en";
 
 export const fr: Tr = {
-	"404 Not Found": "404 Non trouvé",
-	"Redirect cancelled.": "Redirection annulée.",
-	"Redirecting to the home page...": "Redirection vers la page d'accueil...",
-	"Go to Home page": "Aller à la page d'accueil",
+	NotFoundTitle: "404 Non trouvé",
+	RedirectCancelled: "Redirection annulée.",
+	RedirectingToHome: "Redirection vers la page d'accueil...",
+	GoToHomePage: "Aller à la page d'accueil",
 	Cancel: "Annuler",
 
 	ThemeLight: "Clair",
@@ -32,6 +32,8 @@ export const fr: Tr = {
 	TodoOpen: "Ouvrir",
 	TodoOpenAria: "Ouvrir la tâche : {title}",
 	TodoBackHome: "Accueil",
+	TodoOpenLastOpened: "Dernière ouverte",
+	TodoOpenLastOpenedNone: "Aucune tâche n’a encore été ouverte dans cette session.",
 	TodoSearchPlaceholder: "Filtrer les tâches…",
 	TodoNoMatches: "Aucune tâche ne correspond au filtre.",
 };

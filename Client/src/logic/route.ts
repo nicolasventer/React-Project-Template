@@ -1,3 +1,5 @@
+import type { Tr } from "@/dict/lang/en";
+import { globalRef } from "@/globalRef";
 import { store } from "@/utils/Store";
 
 export type Route = { url: "/" } | { url: "/todo" } | { url: "/todo?:id"; id: string } | { url: "/404" };
@@ -29,9 +31,24 @@ const navigateToRouteFn = (route: Route) => () => {
 	state.route.setValue(route, true);
 };
 
+const openTodoFn = (todoId: string) => () => {
+	globalRef.lastOpenedTodoId = globalRef.currentTodoId;
+	globalRef.currentTodoId = todoId;
+	navigateToRouteFn({ url: "/todo?:id", id: todoId })();
+};
+
+const openLastOpenedTodoFn = (tr: Tr) => () => {
+	if (globalRef.lastOpenedTodoId) openTodoFn(globalRef.lastOpenedTodoId)();
+	else window.alert(tr.TodoOpenLastOpenedNone);
+};
+
 export const route = {
 	state: state,
 	navigateToRouteFn: navigateToRouteFn,
+	todo: {
+		openFn: openTodoFn,
+		openLastOpenedFn: openLastOpenedTodoFn,
+	},
 };
 
 window.addEventListener("popstate", () => {

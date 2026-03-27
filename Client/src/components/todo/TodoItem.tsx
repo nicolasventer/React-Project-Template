@@ -28,7 +28,7 @@ export const TodoItem = forwardRef<HTMLLIElement, TodoItemProps>(function TodoIt
 					aria-label={openAria}
 					aria-current={selected ? "true" : undefined}
 					title={openAria}
-					onClick={app.route.navigateToRouteFn({ url: "/todo?:id", id: todo.id })}
+					onClick={app.route.todo.openFn(todo.id)}
 				>
 					{tr.TodoOpen}
 				</button>

@@ -15,7 +15,8 @@ _[back to top](#project-understanding)_
 ```
 src/
 ├── index.tsx              # React entry: createRoot, StrictMode
-├── localStorage.ts        # Load/save one persisted snapshot; sync driven from AppLifeCycle
+├── localStorage.ts        # Serialize/deserialize one app-wide snapshot to `localStorage`; sync from lifecycle
+├── globalRef.ts           # Mutable object for session-only, non-Store values shared across logic modules
 ├── api/                   # Eden Treaty client, mock, generated types, api.config
 ├── assets/                # Static assets (images, fonts, …) per folderStructure rules
 ├── components/            # React UI
@@ -25,9 +26,9 @@ src/
 ├── dict/                  # i18n: index + lazy lang/*.ts chunks
 ├── logic/                 # Domain modules (independent) + index.ts → `app` facade
 │   └── index.ts           # Builds the `app` object facade
-├── pages/                 # Top-level screens (App shell, Home, Todo, NotFound)
+├── pages/                 # Slot for manual routing
 │   └── App.tsx            # App shell (providers + routing via SwitchV) + mounts AppLifeCycle
-├── routes/                # Reserved by ESLint folder rules (optional future use)
+├── routes/                # Slot for [Easy React Router](https://github.com/nicolasventer/Easy-React-Router) file-based routes
 ├── types/                 # Shared *.type.ts
 └── utils/                 # Store, hooks, MultiIf / SwitchV, helpers
     └── hooks/             # Shared React hooks (mount, interval, loading, etc.)
@@ -39,17 +40,17 @@ _[back to top](#project-understanding)_
 
 ## Tech stack
 
-| Area                | Technology                                                               |
-| ------------------- | ------------------------------------------------------------------------ |
-| **Language**        | TypeScript                                                               |
-| **UI**              | React 19                                                                 |
-| **Bundler / dev**   | Vite 8                                                                   |
-| **State**           | Custom `Store` (`src/utils/Store.ts`) + domain modules in `src/logic/`   |
-| **Routing**         | Custom: `history` + `src/logic/route.ts` + `SwitchV` in `pages/App.tsx`  |
-| **HTTP (optional)** | `@elysiajs/eden` Treaty client (`src/api/api.ts`), types in `api.gen.ts` |
-| **i18n**            | Lazy-loaded `dict/lang/*`, strings in `app.tr`                           |
-| **Persistence**     | Single `localStorage` JSON blob (`src/localStorage.ts`)                  |
-| **Quality**         | ESLint (React, TypeScript, folder structure, independent modules)        |
+| Area                | Technology                                                                                                                                                      |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Language**        | TypeScript                                                                                                                                                      |
+| **UI**              | React 19                                                                                                                                                        |
+| **Bundler / dev**   | Vite 8                                                                                                                                                          |
+| **State**           | Custom `Store` (`src/utils/Store.ts`) + domain modules in `src/logic/`                                                                                          |
+| **Routing**         | Custom: `src/logic/route.ts` + `SwitchV` in `pages/App.tsx`; `src/routes/` prepared for [Easy React Router](https://github.com/nicolasventer/Easy-React-Router) |
+| **HTTP (optional)** | `@elysiajs/eden` Treaty client (`src/api/api.ts`), types in `api.gen.ts`                                                                                        |
+| **i18n**            | Lazy-loaded `dict/lang/*`, strings in `app.tr`                                                                                                                  |
+| **Persistence**     | Single `localStorage` JSON blob (`src/localStorage.ts`)                                                                                                         |
+| **Quality**         | ESLint (React, TypeScript, folder structure, independent modules)                                                                                               |
 
 _[back to top](#project-understanding)_
 
@@ -109,7 +110,11 @@ type Route = { url: "/" } | { url: "/todo" } | { url: "/todo?:id"; id: string } 
 
 ### Persisted snapshot (`localStorage`)
 
-`src/localStorage.ts` defines a single persisted shape: language, color scheme, todo list, and client UI config — see `LocalStorageState` and `initialLocalStorageState`.
+`src/localStorage.ts` — types, defaults, and helpers for the persisted snapshot with **JSON.stringify**; `AppLifeCycle` keeps it aligned with live state. See `LocalStorageState` and `initialLocalStorageState`.
+
+### Session refs (`globalRef`)
+
+`src/globalRef.ts` exports a plain mutable object for data that should **not** use `Store` (no subscriptions, no persistence) but still needs to be shared between logic modules — for example history, library references, states needed for only update, not render.
 
 ### `Lang` and translations
 
@@ -135,3 +140,4 @@ _[back to top](#project-understanding)_
 ## Related docs
 
 - **`How-to.md`** — how to add a route, logic, data to localStorage, config, translation (lang or word).
+- **[Easy React Router](https://github.com/nicolasventer/Easy-React-Router)** — file-based `src/routes/`, Vite plugin, and static route generation.

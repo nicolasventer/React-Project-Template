@@ -8,10 +8,15 @@ export type TodoAppHeaderProps = { tr: Tr };
 
 export const TodoAppHeader = ({ tr }: TodoAppHeaderProps) => (
 	<header>
-		<button type="button" className="link" onClick={app.route.navigateToRouteFn({ url: "/" })}>
-			{tr.TodoBackHome}
-		</button>
-		<div className="pageHeader-actions">
+		<div className="page-header-nav">
+			<button type="button" className="link" onClick={app.route.navigateToRouteFn({ url: "/" })}>
+				{tr.TodoBackHome}
+			</button>
+			<button type="button" className="link" onClick={app.route.todo.openLastOpenedFn(tr)}>
+				{tr.TodoOpenLastOpened}
+			</button>
+		</div>
+		<div className="page-header-actions">
 			<LangButton tr={tr} />
 			<DarkModeButton tr={tr} />
 		</div>

@@ -3,7 +3,6 @@ import { DEFAULT_CONFIG } from "@/config/cliConfig";
 import type { Lang } from "@/dict";
 import type { ColorSchemeType } from "@/types/ColorScheme.type";
 import type { Todo } from "@/types/Todo.type";
-import { store } from "@/utils/Store";
 
 const LOCAL_STORAGE_KEY = "template_globalState" as const;
 
@@ -24,12 +23,7 @@ const _loadLocalStorageState = (): LocalStorageState => {
 };
 export const initialLocalStorageState = _loadLocalStorageState();
 
-const _state = {
-	data: store(initialLocalStorageState),
-};
-
 const updateLocalStorageState = (localStorageState: LocalStorageState) => {
-	_state.data.setValue(localStorageState);
 	localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(localStorageState));
 };
 

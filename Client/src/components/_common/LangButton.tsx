@@ -14,7 +14,7 @@ export const LangButton = ({ tr }: LangButtonProps) => {
 	return (
 		<button
 			type="button"
-			className={clsx("langButton", loading && "langButton--loading")}
+			className={clsx("lang-button", loading && "lang-button--loading")}
 			disabled={loading}
 			aria-busy={loading}
 			aria-label={loading ? tr.LangLoading : switchLabel}
@@ -22,9 +22,9 @@ export const LangButton = ({ tr }: LangButtonProps) => {
 			onClick={app.lang.updateFn(lang === "en" ? "fr" : "en", true)}
 		>
 			{loading ? (
-				<span className="langButton-spinner" aria-hidden />
+				<span className="lang-button-spinner" aria-hidden />
 			) : (
-				<span className="langButton-code" aria-hidden>
+				<span className="lang-button-code" aria-hidden>
 					{lang.toUpperCase()}
 				</span>
 			)}

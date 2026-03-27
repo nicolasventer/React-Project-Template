@@ -1,4 +1,4 @@
-.darkModeButton {
+.dark-mode-button {
 	position: relative;
 	--dm-track: #e4e4e7;
 	--dm-thumb-bg: #fff;
@@ -24,7 +24,7 @@
 		box-shadow 0.2s ease;
 }
 
-html[data-theme="dark"] .darkModeButton {
+html[data-theme="dark"] .dark-mode-button {
 	--dm-track: #3f3f46;
 	--dm-thumb-bg: #27272a;
 	--dm-border: #52525b;
@@ -32,26 +32,26 @@ html[data-theme="dark"] .darkModeButton {
 	--dm-accent: #60a5fa;
 }
 
-.darkModeButton:hover:not(:disabled) {
+.dark-mode-button:hover:not(:disabled) {
 	border-color: var(--dm-accent);
 	box-shadow: 0 0 0 3px color-mix(in srgb, var(--dm-accent) 22%, transparent);
 }
 
-.darkModeButton:focus {
+.dark-mode-button:focus {
 	outline: none;
 }
 
-.darkModeButton:focus-visible {
+.dark-mode-button:focus-visible {
 	border-color: var(--dm-accent);
 	box-shadow: 0 0 0 3px color-mix(in srgb, var(--dm-accent) 35%, transparent);
 }
 
-.darkModeButton:disabled {
+.dark-mode-button:disabled {
 	opacity: 0.55;
 	cursor: wait;
 }
 
-.darkModeButton-track {
+.dark-mode-button-track {
 	position: relative;
 	display: flex;
 	align-items: center;
@@ -64,11 +64,11 @@ html[data-theme="dark"] .darkModeButton {
 	transition: background 0.25s ease;
 }
 
-.darkModeButton--dark .darkModeButton-track {
+.dark-mode-button--dark .dark-mode-button-track {
 	background: color-mix(in srgb, var(--dm-accent) 45%, var(--dm-track));
 }
 
-.darkModeButton-thumb {
+.dark-mode-button-thumb {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -83,22 +83,22 @@ html[data-theme="dark"] .darkModeButton {
 		color 0.2s ease;
 }
 
-.darkModeButton--dark .darkModeButton-thumb {
+.dark-mode-button--dark .dark-mode-button-thumb {
 	transform: translateX(1.05rem);
 }
 
-.darkModeButton-icon {
+.dark-mode-button-icon {
 	width: 0.7rem;
 	height: 0.7rem;
 }
 
-.darkModeButton-label {
+.dark-mode-button-label {
 	white-space: nowrap;
 	padding-right: 0.15rem;
 }
 
 @media (max-width: 380px) {
-	.darkModeButton-label {
+	.dark-mode-button-label {
 		position: absolute;
 		width: 1px;
 		height: 1px;
@@ -110,7 +110,7 @@ html[data-theme="dark"] .darkModeButton {
 		border: 0;
 	}
 
-	.darkModeButton {
+	.dark-mode-button {
 		padding: 0.35rem;
 	}
 }

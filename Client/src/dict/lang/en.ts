@@ -1,8 +1,8 @@
 export const en = {
-	"404 Not Found": "404 Not Found",
-	"Redirect cancelled.": "Redirect cancelled.",
-	"Redirecting to the home page...": "Redirecting to the home page...",
-	"Go to Home page": "Go to Home page",
+	NotFoundTitle: "404 Not Found",
+	RedirectCancelled: "Redirect cancelled.",
+	RedirectingToHome: "Redirecting to the home page...",
+	GoToHomePage: "Go to Home page",
 	Cancel: "Cancel",
 
 	ThemeLight: "Light",
@@ -30,6 +30,8 @@ export const en = {
 	TodoOpen: "Open",
 	TodoOpenAria: "Open task: {title}",
 	TodoBackHome: "Home",
+	TodoOpenLastOpened: "Last opened",
+	TodoOpenLastOpenedNone: "No todo has been opened yet in this session.",
 	TodoSearchPlaceholder: "Filter tasks…",
 	TodoNoMatches: "No tasks match your filter.",
 };

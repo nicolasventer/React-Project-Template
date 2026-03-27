@@ -10,7 +10,7 @@ export const Home = () => {
 		<div className="home">
 			<header className="home-header">
 				<span />
-				<div className="pageHeader-actions">
+				<div className="page-header-actions">
 					<LangButton tr={tr} />
 					<DarkModeButton tr={tr} />
 				</div>

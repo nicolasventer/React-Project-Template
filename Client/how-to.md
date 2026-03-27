@@ -7,6 +7,8 @@ This guide documents the main extension points in this template: routing, domain
 - [How-to](#how-to)
   - [Table of contents](#table-of-contents)
   - [How to add a route](#how-to-add-a-route)
+    - [Manual routing (default)](#manual-routing-default)
+    - [File-based routing (Easy React Router)](#file-based-routing-easy-react-router)
   - [How to add logic](#how-to-add-logic)
   - [How to add data to localStorage](#how-to-add-data-to-localstorage)
   - [How to add config](#how-to-add-config)
@@ -20,6 +22,10 @@ This guide documents the main extension points in this template: routing, domain
 
 ## How to add a route
 
+The template supports two approaches: the **default** manual router (`app.route` + `SwitchV`), or **file-based** routes under [`src/routes/`](src/routes/) via [Easy React Router](https://github.com/nicolasventer/Easy-React-Router).
+
+### Manual routing (default)
+
 Routing is custom: URL parsing and navigation live in [`src/logic/route.ts`](src/logic/route.ts), and the UI switch is in [`src/pages/App.tsx`](src/pages/App.tsx).
 
 1. in [`src/logic/route.ts`](src/logic/route.ts)
@@ -30,6 +36,13 @@ Routing is custom: URL parsing and navigation live in [`src/logic/route.ts`](src
    3. update `_getUrlFromRoute` to generate the correct URL
 2. in [`src/pages/`](src/pages/), create the page component corresponding to the new route
 3. in [`src/pages/App.tsx`](src/pages/App.tsx), add the case in `SwitchV` (ensure the `cases` key/discriminant matches what `Route` uses)
+
+### File-based routing (Easy React Router)
+
+Routing is file-based. Installation, Vite plugin, URL ↔ file mapping, layouts, lazy routes, static hosting, and the rest of the API are all described in the [Easy React Router README](https://github.com/nicolasventer/Easy-React-Router).
+
+1. in [`src/routes/`](src/routes/), create or change a route file (naming and path rules are in that README).
+2. if your editor (VS Code, Cursor, …) opens [`src/routerInstance.gen.ts`](src/routerInstance.gen.ts), close it **without saving** so you do not keep a stale buffer over the regenerated file and routes stay correct.
 
 _[↑ Back to top](#how-to)_
 
@@ -109,7 +122,9 @@ _[↑ Back to top](#how-to)_
 The allowed folder and file layout under [`src/`](src/) is defined in [`folderStructure.mjs`](folderStructure.mjs) using `eslint-plugin-project-structure`. ESLint loads it in [`eslint.config.js`](eslint.config.js) via the rule `project-structure/folder-structure`.
 
 1. open [`folderStructure.mjs`](folderStructure.mjs) and update the `structure` tree under the [`src/`](src/) node
-  - or add reusable rules referenced by `ruleId`, matching the plugin naming patterns (for example `{PascalCase}.tsx`, `{camelCase}.ts`, `{snake_case}.ts` under [`src/dict/lang/`](src/dict/lang/))
+
+- or add reusable rules referenced by `ruleId`, matching the plugin naming patterns (for example `{PascalCase}.tsx`, `{camelCase}.ts`, `{snake_case}.ts` under [`src/dict/lang/`](src/dict/lang/))
+
 2. if you introduce a new top-level folder under `src/`, add it explicitly in `structure`
 3. run lint and fix reported path or naming issues until the tree matches the config
 
