@@ -5,11 +5,12 @@ import { TodoList } from "@/components/todo/TodoList";
 import { TodoNewForm } from "@/components/todo/TodoNewForm";
 import { TodoSearchField } from "@/components/todo/TodoSearchField";
 import { app } from "@/logic";
-import "./Todo.css";
+import { useRouteParams } from "@/routerInstance.gen";
+import "./todo$id.css";
 
-export type TodoAppProps = { selectedId?: string };
+export const TodoApp = () => {
+	const { id } = useRouteParams("/todo?id");
 
-export const TodoApp = ({ selectedId }: TodoAppProps) => {
 	const tr = app.tr.use();
 
 	return (
@@ -19,7 +20,7 @@ export const TodoApp = ({ selectedId }: TodoAppProps) => {
 				<h1>{tr.TodoTitle}</h1>
 				<TodoNewForm tr={tr} />
 				<TodoSearchField tr={tr} />
-				<TodoList tr={tr} selectedId={selectedId} />
+				<TodoList tr={tr} selectedId={id} />
 				<TodoFooter tr={tr} />
 			</main>
 		</div>

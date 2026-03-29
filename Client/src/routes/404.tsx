@@ -1,7 +1,8 @@
 import { DarkModeButton } from "@/components/_common/DarkModeButton";
 import { LangButton } from "@/components/_common/LangButton";
 import { app } from "@/logic";
-import "./NotFound.css";
+import { navigateToRouteFn } from "@/routerInstance.gen";
+import "./404.css";
 
 export const NotFound = () => {
 	const tr = app.tr.use();
@@ -18,7 +19,7 @@ export const NotFound = () => {
 			<main className="not-found-main">
 				<h1 className="not-found-title">{tr.NotFoundTitle}</h1>
 				<p className="not-found-text">{tr.GoToHomePage}</p>
-				<button type="button" className="not-found-btn" onClick={app.route.navigateToRouteFn("/")}>
+				<button type="button" className="not-found-btn" onClick={navigateToRouteFn("/")}>
 					{tr.GoToHomePage}
 				</button>
 			</main>

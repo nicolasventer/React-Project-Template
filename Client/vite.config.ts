@@ -1,4 +1,5 @@
 import react from "@vitejs/plugin-react";
+import { routerPlugin } from "easy-react-router/plugin";
 import path from "path";
 import { env } from "process";
 import { defineConfig } from "vite";
@@ -6,7 +7,7 @@ import mkcert from "vite-plugin-mkcert";
 
 export default defineConfig({
 	base: "./",
-	plugins: [react(), ...(env.USE_HTTPS ? [mkcert()] : [])],
+	plugins: [react(), routerPlugin(), ...(env.USE_HTTPS ? [mkcert()] : [])],
 	resolve: { alias: { "@": path.resolve(__dirname, "src") } },
 	build: {
 		rollupOptions: {

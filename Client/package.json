@@ -38,6 +38,7 @@
 	"dependencies": {
 		"@elysiajs/eden": "1.4.8",
 		"clsx": "2.1.1",
+		"easy-react-router": "easy-react-router-1.0.0.tgz",
 		"react": "19.2.4",
 		"react-dom": "19.2.4"
 	}

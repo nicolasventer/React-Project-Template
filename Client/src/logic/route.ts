@@ -1,20 +1,13 @@
-import { STATIC_CONFIG } from "@/config/cliConfig";
 import type { Tr } from "@/dict/lang/en";
 import { globalRef } from "@/globalRef";
-import { BasicRouter } from "@/utils/BasicRouter";
+import { navigateToRouteFn } from "@/routerInstance.gen";
 
-const router = new BasicRouter(["/", "/todo?id", "/404"], true);
-
-router.setRouterBaseRoute(STATIC_CONFIG.BASE_URL);
-
-const state = {
-	route: router.getRouteStore(),
-};
+// here kept in route.ts but would be better in todo.ts
 
 const openTodoFn = (todoId: string) => () => {
 	globalRef.lastOpenedTodoId = globalRef.currentTodoId;
 	globalRef.currentTodoId = todoId;
-	router.navigateToRouteFn("/todo?id", { id: todoId })();
+	navigateToRouteFn("/todo?id", { id: todoId })();
 };
 
 const openLastOpenedTodoFn = (tr: Tr) => () => {
@@ -23,8 +16,6 @@ const openLastOpenedTodoFn = (tr: Tr) => () => {
 };
 
 export const route = {
-	state: state,
-	navigateToRouteFn: router.navigateToRouteFn,
 	todo: {
 		openFn: openTodoFn,
 		openLastOpenedFn: openLastOpenedTodoFn,
