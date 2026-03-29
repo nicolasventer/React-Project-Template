@@ -19,16 +19,18 @@
 "pages/routes" -> "logic"."index.ts"
 "pages/routes" -> "assets"
 "pages/routes"."routes" -> "routerInstance.gen.ts"
-"routerInstance.gen.ts" -> "pages/routes"."routes": {style: {stroke-dash: 3}}
+# "routerInstance.gen.ts" -> "pages/routes"."routes": {style: {stroke-dash: 3}}
 
 "components" -> "api"
 "components" -> "logic"."index.ts"
 "components" -> "assets"
 "components" -> "global"
+"components" -> "routerInstance.gen.ts"
 
 "logic"."index.ts" -> "logic"."module 1"
 "logic"."index.ts" -> "logic"."module 2"
 
+"logic" -> "routerInstance.gen.ts"
 "logic" -> "global"
 "logic" -> "ref"
 

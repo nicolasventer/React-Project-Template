@@ -37,9 +37,9 @@ export const independentModulesConfig = createIndependentModules({
 		{
 			name: "Components",
 			pattern: "src/components/**",
-			allowImportsFrom: ["src/components/_*/**", "{dirname}/**", "{readWriteStates}"],
+			allowImportsFrom: ["src/components/_*/**", "{dirname}/**", "{readWriteStates}", "src/routerInstance.gen.ts"],
 			errorMessage:
-				"🔥 The Components module should access to its subfolders, all common components and readWriteStates modules. 🔥",
+				"🔥 The Components module should access to its subfolders, all common components, readWriteStates and routerInstance.gen.ts modules. 🔥",
 		},
 
 		{
@@ -66,8 +66,8 @@ export const independentModulesConfig = createIndependentModules({
 		{
 			name: "Logic",
 			pattern: "src/logic/**",
-			allowImportsFrom: ["{global}", "{ref}"],
-			errorMessage: "🔥 The Logic module should access to Logic, global and Ref modules. 🔥",
+			allowImportsFrom: ["{global}", "{ref}", "src/routerInstance.gen.ts"],
+			errorMessage: "🔥 The Logic module should access to Logic, global, Ref and routerInstance.gen.ts modules. 🔥",
 		},
 
 		{
