@@ -14,11 +14,10 @@ export const App = () => {
 			<AppLifeCycle />
 			<SwitchV
 				value={route}
-				transform={(r) => r.url}
+				transform={(r) => r.path}
 				cases={[
 					["/", () => <Home />],
-					["/todo", () => <TodoApp />],
-					["/todo?:id", (r) => <TodoApp selectedId={r.value.url === "/todo?:id" ? r.value.id : undefined} />],
+					["/todo?id", (r) => <TodoApp selectedId={r.value.path === "/todo?id" ? r.value.params.id : undefined} />],
 					["/404", () => <NotFound />],
 				]}
 			/>

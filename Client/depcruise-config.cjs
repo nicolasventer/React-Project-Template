@@ -7,7 +7,7 @@ module.exports = {
 
 		includeOnly: "^src",
 
-		exclude: ["^src/(logic|utils|dict)", "^src/(logic|localStorage).ts", "^src/(routes|pages)/.*.css"],
+		exclude: ["^src/(logic|utils|dict)", "^src/localStorage.ts", "^src/(routes|pages)/.*.css"],
 
 		tsPreCompilationDeps: false,
 

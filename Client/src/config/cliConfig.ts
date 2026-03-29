@@ -6,3 +6,7 @@ export const DEFAULT_CONFIG = {
 };
 
 export type Config = typeof DEFAULT_CONFIG;
+
+export const STATIC_CONFIG = {
+	BASE_URL: "",
+};

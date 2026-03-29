@@ -26,11 +26,11 @@ src/
 ├── dict/                  # i18n: index + lazy lang/*.ts chunks
 ├── logic/                 # Domain modules (independent) + index.ts → `app` facade
 │   └── index.ts           # Builds the `app` object facade
-├── pages/                 # Slot for manual routing
-│   └── App.tsx            # App shell (providers + routing via SwitchV) + mounts AppLifeCycle
-├── routes/                # Slot for [Easy React Router](https://github.com/nicolasventer/Easy-React-Router) file-based routes
+├── pages/                 # Slot for manual routing (with BasicRouter)
+│   └── App.tsx            # App shell (providers + SwitchV on `app.route.state.route`) + mounts AppLifeCycle
+├── routes/                # Slot for file-based routing with [Easy React Router](https://github.com/nicolasventer/Easy-React-Router)
 ├── types/                 # Shared *.type.ts
-└── utils/                 # Store, hooks, MultiIf / SwitchV, helpers
+└── utils/                 # Store, hooks, MultiIf / SwitchV, BasicRouter, helpers
     └── hooks/             # Shared React hooks (mount, interval, loading, etc.)
 ```
 
@@ -38,19 +38,29 @@ Enforced layout: `folderStructure.mjs`. Import boundaries: `independentModules.m
 
 _[back to top](#project-understanding)_
 
+## Routing
+
+- **Routes** — Register path strings on **`BasicRouter`** in **`src/logic/route.ts`**, following **[Easy React Router conventions](https://github.com/nicolasventer/Easy-React-Router#file-based-routing)** (e.g. `/:key` for required segments, `?key` for optional params).
+- **Base** — **`setRouterBaseRoute(BASE_URL)`** strips the deployment base from the pathname so matching uses the app-relative path.
+- **Navigation** — **`navigateToRouteFn(path, params?)`** — go to a declared route (pass **params** when the pattern includes `:…` or `?…`). **`buildRouteLink(path, params?)`** — build an `href`. **`navigateToCustomRouteFn(url)`** — arbitrary URL (avoid unless necessary).
+- **UI** — **`app.route.state.route.use()`** for **`{ path, params }`**, then **`SwitchV`** to pick the page. **Note:** **`SwitchV`**’s **`value`** must be the **full route object**, with **`transform`** narrowing to **`path`** for the cases; if **`value`** were only **`path`**, the same path with different **params** might not re-run the branch.
+
+_[back to top](#project-understanding)_
+
 ## Tech stack
 
-| Area                | Technology                                                                                                                                                      |
-| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Language**        | TypeScript                                                                                                                                                      |
-| **UI**              | React 19                                                                                                                                                        |
-| **Bundler / dev**   | Vite 8                                                                                                                                                          |
-| **State**           | Custom `Store` (`src/utils/Store.ts`) + domain modules in `src/logic/`                                                                                          |
-| **Routing**         | Custom: `src/logic/route.ts` + `SwitchV` in `pages/App.tsx`; `src/routes/` prepared for [Easy React Router](https://github.com/nicolasventer/Easy-React-Router) |
-| **HTTP (optional)** | `@elysiajs/eden` Treaty client (`src/api/api.ts`), types in `api.gen.ts`                                                                                        |
-| **i18n**            | Lazy-loaded `dict/lang/*`, strings in `app.tr`                                                                                                                  |
-| **Persistence**     | Single `localStorage` JSON blob (`src/localStorage.ts`)                                                                                                         |
-| **Quality**         | ESLint (React, TypeScript, folder structure, independent modules)                                                                                               |
+| Area                | Technology                                                                                                                                                 |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Language**        | TypeScript                                                                                                                                                 |
+| **UI**              | React 19                                                                                                                                                   |
+| **Bundler / dev**   | Vite 8                                                                                                                                                     |
+| **State**           | Custom `Store` (`src/utils/Store.ts`) + domain modules in `src/logic/`                                                                                     |
+| **Routing**         | **BasicRouter** (`src/utils/BasicRouter.ts`) + `src/logic/route.ts` + `SwitchV` in `pages/App.tsx`;                                                        |
+|                     | `src/routes/` prepared for [Easy React Router](https://github.com/nicolasventer/Easy-React-Router) (same conventions / API shape for an easier transition) |
+| **HTTP (optional)** | `@elysiajs/eden` Treaty client (`src/api/api.ts`), types in `api.gen.ts`                                                                                   |
+| **i18n**            | Lazy-loaded `dict/lang/*`, strings in `app.tr`                                                                                                             |
+| **Persistence**     | Single `localStorage` JSON blob (`src/localStorage.ts`)                                                                                                    |
+| **Quality**         | ESLint (React, TypeScript, folder structure, independent modules)                                                                                          |
 
 _[back to top](#project-understanding)_
 
@@ -63,7 +73,7 @@ Third-party setup that should run once at startup — e.g. default locale for `d
 ### `src/pages/App.tsx` (application shell)
 
 - **Providers** — wrap the tree with context-based APIs (e.g. theme, query client, toast hosts).
-- **Routing** — map the current route to pages (`SwitchV` + `app.route` here; you can swap in another router while keeping this shell role).
+- **Routing** — map **`app.route`** to page components with **`SwitchV`** (see [Routing](#routing)).
 - **Lifecycle** — render **`AppLifeCycle`** once near the root so global effects run for the whole session.
 - **Global UI** — app-wide modals, command palettes, or portals not tied to a single page.
 
@@ -86,50 +96,48 @@ _[back to top](#project-understanding)_
 
 _[back to top](#project-understanding)_
 
-## Entity definitions (template domain)
+## Entity definitions
 
-### `Todo`
+### `Todo` (example)
 
-```typescript
-type Todo = {
-	id: string;
-	title: string;
-	done: boolean;
-};
-```
-
-`DoneFilter` is `"all" | "active" | "completed"` (`src/types/Todo.type.ts`).
+- **`app.todos`** (`src/logic/todos.ts`) — **`state`**: **`data`** ( **`Todo[]`** ), **`newTodo`**, **`doneFilter`**, **`search`** (each a **`Store`**).
+- **Actions** — **`todo`** (add/remove/toggle/update/clear), **`visibleTodos.get`** (filter + search), **`update`** helpers for the UI fields.
+- **`AppLifeCycle`** persists **`state.data`** to **`localStorage`**.
+- **`TodoApp`** and related components subscribe with **`.use()`** and call **`app.todos`**.
+- **Types** — **`Todo`**, **`DoneFilter`** in **`src/types/Todo.type.ts`**.
 
 ### `Route`
 
-Parsed from `window.location` in `src/logic/route.ts`:
-
-```typescript
-type Route = { url: "/" } | { url: "/todo" } | { url: "/todo?:id"; id: string } | { url: "/404" };
-```
+- **`app.route`** (`src/logic/route.ts`, **`BasicRouter`**) — **`state.route`** ( **`{ path, params }`** ), **`navigateToRouteFn`**, and helpers defined in that module.
+- Shell and pages read **`app.route`** for **`SwitchV`** and navigation so the UI tracks the URL ([Routing](#routing)).
 
 ### Persisted snapshot (`localStorage`)
 
-`src/localStorage.ts` — types, defaults, and helpers for the persisted snapshot with **JSON.stringify**; `AppLifeCycle` keeps it aligned with live state. See `LocalStorageState` and `initialLocalStorageState`.
+- **`src/localStorage.ts`** — types, defaults, and helpers for the JSON snapshot.
+- **`AppLifeCycle`** keeps persisted fields aligned with live **`Store`** state. See **`LocalStorageState`** and **`initialLocalStorageState`**.
 
 ### Session refs (`globalRef`)
 
-`src/globalRef.ts` exports a plain mutable object for data that should **not** use `Store` (no subscriptions, no persistence) but still needs to be shared between logic modules — for example history, library references, states needed for only update, not render.
+- **`src/globalRef.ts`** — plain mutable object (no **`Store`**, no persistence).
+- **Use** — shared across logic modules when **`Store`** is wrong: no subscriptions, no persistence (e.g. history, library refs, update-only state).
 
 ### `Lang` and translations
 
-`Lang` is keyed off `src/dict/index.ts`. Runtime strings live in `app.tr` (`src/logic/tr.ts`) after `AppLifeCycle` loads the chunk for the active language.
+- **`src/dict/index.ts`** — defines **`Lang`** and lazy lang chunks.
+- **`AppLifeCycle`** loads the active dict chunk; runtime strings live in **`app.tr`** (`src/logic/tr.ts`).
 
-### `Config` (todo UI tuning)
+### `Config`
 
-Defined by `DEFAULT_CONFIG` in `src/config/cliConfig.ts`, held in `app.config` (`src/logic/config.ts`).
+- **`app.config`** (`src/logic/config.ts`) — holds **`DEFAULT_CONFIG`** from **`src/config/cliConfig.ts`** (todo UI tuning).
+- **`STATIC_CONFIG`** — same file; values that should not change at runtime (e.g. base URL for the router).
 
 _[back to top](#project-understanding)_
 
-## Features (what this template demonstrates)
+## Features
 
 - **Home** — landing copy, language toggle, dark/light control, navigation to the todo screen.
-- **Todo app** — add/remove/toggle/edit todos, filter (all/active/completed), search, clear completed; styling knobs via `config`.
+- **Routing** — **`BasicRouter`** / **`app.route`**, **`SwitchV`** in **`App.tsx`**, 404; Easy React Router–compatible paths if you adopt `src/routes/` later (see [Routing](#routing)).
+- **Todo app (example)** — add/remove/toggle/edit todos, filter (all/active/completed), search, clear completed; styling knobs via `config`.
 - **Internationalization** — English/French (extend under `src/dict/lang/`).
 - **Theme** — `data-theme` on the document root for CSS.
 - **Persistence** — todos, language, theme, and config survive reloads via `localStorage`.
@@ -140,4 +148,4 @@ _[back to top](#project-understanding)_
 ## Related docs
 
 - **`How-to.md`** — how to add a route, logic, data to localStorage, config, translation (lang or word).
-- **[Easy React Router](https://github.com/nicolasventer/Easy-React-Router)** — file-based `src/routes/`, Vite plugin, and static route generation.
+- **[Easy React Router](https://github.com/nicolasventer/Easy-React-Router)** — file-based `src/routes/`, Vite plugin, and static route generation. Path conventions and navigation-style API align with **BasicRouter** so you can migrate without redesigning routes.

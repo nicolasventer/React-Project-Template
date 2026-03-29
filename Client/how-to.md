@@ -7,7 +7,7 @@ This guide documents the main extension points in this template: routing, domain
 - [How-to](#how-to)
   - [Table of contents](#table-of-contents)
   - [How to add a route](#how-to-add-a-route)
-    - [Manual routing (default)](#manual-routing-default)
+    - [BasicRouter (default)](#basicrouter-default)
     - [File-based routing (Easy React Router)](#file-based-routing-easy-react-router)
   - [How to add logic](#how-to-add-logic)
   - [How to add data to localStorage](#how-to-add-data-to-localstorage)
@@ -22,20 +22,21 @@ This guide documents the main extension points in this template: routing, domain
 
 ## How to add a route
 
-The template supports two approaches: the **default** manual router (`app.route` + `SwitchV`), or **file-based** routes under [`src/routes/`](src/routes/) via [Easy React Router](https://github.com/nicolasventer/Easy-React-Router).
+The template supports two approaches: the **default** [`BasicRouter`](src/utils/BasicRouter.ts) wired in [`src/logic/route.ts`](src/logic/route.ts) (`app.route` + `SwitchV` in [`src/pages/App.tsx`](src/pages/App.tsx)), or **file-based** routes under [`src/routes/`](src/routes/) via [Easy React Router](https://github.com/nicolasventer/Easy-React-Router).
 
-### Manual routing (default)
+### BasicRouter (default)
 
-Routing is custom: URL parsing and navigation live in [`src/logic/route.ts`](src/logic/route.ts), and the UI switch is in [`src/pages/App.tsx`](src/pages/App.tsx).
+[`BasicRouter`](src/utils/BasicRouter.ts) owns URL matching, `history` updates, and link building. [`src/logic/route.ts`](src/logic/route.ts) constructs the router with a **path list**, sets the base URL from config, and re-exports navigation helpers on `app.route`. The current route is a reactive store (`app.route.state.route`); the UI picks the page in [`src/pages/App.tsx`](src/pages/App.tsx) via `SwitchV` on `route.path`.
 
 1. in [`src/logic/route.ts`](src/logic/route.ts)
-   1. expand the `Route` type  
-      Try to match the URL with the parameters.  
-      Tip: if you do not deploy as a SPA, prefer optional query params like `?key=value` instead of mandatory path params like `/:value`.
-   2. update `_getRouteFromCurrentUrl` to return the matching `Route` variant
-   3. update `_getUrlFromRoute` to generate the correct URL
-2. in [`src/pages/`](src/pages/), create the page component corresponding to the new route
-3. in [`src/pages/App.tsx`](src/pages/App.tsx), add the case in `SwitchV` (ensure the `cases` key/discriminant matches what `Route` uses)
+   1. add your path string to the array passed to `new BasicRouter([...], …)`  
+      Paths use `/segments`, `:name` for path segments, and a trailing `?key` segment for optional query parameters (for example `/todo?id` matches `/todo` with `id` in the query string).  
+      Tip: if you do not deploy as a SPA, prefer optional query-style segments like `?key` over mandatory `/:value` segments where it helps.
+   2. if you need typed navigation from logic, add helpers that call `router.navigateToRouteFn` / `router.buildRouteLink` (see existing `todo` helpers).
+2. in [`src/pages/`](src/pages/), create the page component for the new route
+3. in [`src/pages/App.tsx`](src/pages/App.tsx), add a `SwitchV` case whose key is the **same path string** as in the router list; read `params` from the store value when the route has parameters
+
+Use `app.route.navigateToRouteFn(...)` (or wrappers on `route`) from components and logic to navigate; use `router.buildRouteLink` patterns via `route.ts` if you need hrefs elsewhere.
 
 ### File-based routing (Easy React Router)
 
