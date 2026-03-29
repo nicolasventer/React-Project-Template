@@ -90,6 +90,7 @@
 	color: var(--todo-accent-color);
 	text-decoration: underline;
 	text-underline-offset: 3px;
+	user-select: none;
 }
 
 .todo-app .link:hover {
