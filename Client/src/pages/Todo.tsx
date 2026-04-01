@@ -12,15 +12,17 @@ export type TodoAppProps = { selectedId?: string };
 export const TodoApp = ({ selectedId }: TodoAppProps) => {
 	const tr = app.tr.use();
 
+	const items = app.todos.state.data.use();
+
 	return (
 		<div className="todo-app">
 			<TodoAppHeader tr={tr} />
 			<main>
 				<h1>{tr.TodoTitle}</h1>
 				<TodoNewForm tr={tr} />
-				<TodoSearchField tr={tr} />
+				{items.length && <TodoSearchField tr={tr} />}
 				<TodoList tr={tr} selectedId={selectedId} />
-				<TodoFooter tr={tr} />
+				{items.length && <TodoFooter tr={tr} items={items} />}
 			</main>
 		</div>
 	);

@@ -9,3 +9,13 @@
 .todo-app .todo-item.todo-item-on {
 	background: var(--todo-accent-subtle-background);
 }
+
+.todo-app .todo-item .grow .todo-item-edit-field {
+	cursor: text;
+	margin: -0.15rem 0;
+	width: 100%;
+}
+
+.todo-app .todo-item .grow span {
+	cursor: default;
+}

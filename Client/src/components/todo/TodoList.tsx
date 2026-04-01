@@ -12,6 +12,7 @@ export const TodoList = ({ tr, selectedId }: TodoListProps) => {
 	const search = app.todos.state.search.use();
 	const visibleTodos = useMemo(() => app.todos.visibleTodos.get(items, doneFilter, search), [items, doneFilter, search]);
 	const selRef = useRef<HTMLLIElement>(null);
+	const editingData = app.todos.state.editingData.use();
 
 	useEffect(() => {
 		if (selectedId && selRef.current) selRef.current.scrollIntoView({ block: "nearest", behavior: "smooth" });
@@ -21,7 +22,14 @@ export const TodoList = ({ tr, selectedId }: TodoListProps) => {
 		<ul className="todo-list">
 			{!visibleTodos.length && !!items.length && <li className="todo-empty">{tr.TodoNoMatches}</li>}
 			{visibleTodos.map((t) => (
-				<TodoItem key={t.id} ref={t.id === selectedId ? selRef : undefined} tr={tr} todo={t} selected={t.id === selectedId} />
+				<TodoItem
+					key={t.id}
+					ref={t.id === selectedId ? selRef : undefined}
+					tr={tr}
+					todo={t}
+					selected={t.id === selectedId}
+					draft={editingData[t.id]}
+				/>
 			))}
 		</ul>
 	);

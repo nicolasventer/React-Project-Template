@@ -1,16 +1,13 @@
 import type { Tr } from "@/dict/lang/en";
 import { app } from "@/logic";
-import type { DoneFilter } from "@/types/Todo.type";
+import type { DoneFilter, Todo } from "@/types/Todo.type";
 import { DoneFilterValues } from "@/types/Todo.type";
 import "./TodoFooter.css";
 
-export type TodoFooterProps = { tr: Tr };
+export type TodoFooterProps = { tr: Tr; items: Todo[] };
 
-export const TodoFooter = ({ tr }: TodoFooterProps) => {
-	const items = app.todos.state.data.use();
+export const TodoFooter = ({ tr, items }: TodoFooterProps) => {
 	const doneFilter = app.todos.state.doneFilter.use();
-
-	if (!items.length) return null;
 
 	const activeCount = items.filter((t) => !t.done).length;
 	const doneCount = items.length - activeCount;

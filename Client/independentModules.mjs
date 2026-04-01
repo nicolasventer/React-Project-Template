@@ -66,8 +66,8 @@ export const independentModulesConfig = createIndependentModules({
 		{
 			name: "Logic",
 			pattern: "src/logic/**",
-			allowImportsFrom: ["{global}", "{ref}", "src/routerInstance.gen.ts"],
-			errorMessage: "🔥 The Logic module should access to Logic, global, Ref and routerInstance.gen.ts modules. 🔥",
+			allowImportsFrom: ["{global}", "{ref}", "src/api/api.ts", "src/routerInstance.gen.ts"],
+			errorMessage: "🔥 The Logic module should access to Logic, global, Ref, api.ts and routerInstance.gen.ts modules. 🔥",
 		},
 
 		{
