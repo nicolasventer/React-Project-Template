@@ -16,8 +16,7 @@ _[back to top](#project-understanding)_
 src/
 ├── index.tsx              # React entry: createRoot, StrictMode
 ├── localStorage.ts        # Serialize/deserialize one app-wide snapshot to `localStorage`; sync from lifecycle
-├── globalRef.ts           # Mutable object for session-only, non-Store values shared across logic modules
-├── api/                   # Eden Treaty client, mock, generated types, api.config
+├── api/                   # Typed HTTP client via ApiCaller (see src/utils/ApiCaller.ts)
 ├── assets/                # Static assets (images, fonts, …) per folderStructure rules
 ├── components/            # React UI
 │   └── app/
@@ -30,7 +29,7 @@ src/
 │   └── App.tsx            # App shell (providers + SwitchV on `app.route.state.route`) + mounts AppLifeCycle
 ├── routes/                # Slot for file-based routing with [Easy React Router](https://github.com/nicolasventer/Easy-React-Router)
 ├── types/                 # Shared *.type.ts
-└── utils/                 # Store, hooks, MultiIf / SwitchV, BasicRouter, helpers
+└── utils/                 # Store, ApiCaller, hooks, MultiIf / SwitchV, BasicRouter, helpers
     └── hooks/             # Shared React hooks (mount, interval, loading, etc.)
 ```
 
@@ -57,7 +56,7 @@ _[back to top](#project-understanding)_
 | **State**           | Custom `Store` (`src/utils/Store.ts`) + domain modules in `src/logic/`                                                                                     |
 | **Routing**         | **BasicRouter** (`src/utils/BasicRouter.ts`) + `src/logic/route.ts` + `SwitchV` in `pages/App.tsx`;                                                        |
 |                     | `src/routes/` prepared for [Easy React Router](https://github.com/nicolasventer/Easy-React-Router) (same conventions / API shape for an easier transition) |
-| **HTTP (optional)** | `@elysiajs/eden` Treaty client (`src/api/api.ts`), types in `api.gen.ts`                                                                                   |
+| **HTTP (optional)** | **ApiCaller** (`src/utils/ApiCaller.ts`); built client exported from `src/api/api.ts`                                                                      |
 | **i18n**            | Lazy-loaded `dict/lang/*`, strings in `app.tr`                                                                                                             |
 | **Persistence**     | Single `localStorage` JSON blob (`src/localStorage.ts`)                                                                                                    |
 | **Quality**         | ESLint (React, TypeScript, folder structure, independent modules)                                                                                          |
@@ -91,7 +90,7 @@ _[back to top](#project-understanding)_
 
 - **`Store`** (`src/utils/Store.ts`): `setValue`, `use()`, `useState()`, `useEffect` on the store; optional updates wrapped in **`document.startViewTransition`**.
 - **`Store.value`**: use **only inside the same `src/logic/*.ts` file** that owns that store. Elsewhere, read with **`.use()`** / **`.useState()`**.
-- **Cross-domain data**: logic functions take external values as **parameters**; the **component** (or `AppLifeCycle`) subscribes with **`.use()`** and passes arguments into actions — logic files do not import sibling `logic/*` modules.
+- **Cross-domain data**: logic functions take external values as **parameters**; the **component** subscribes with **`.use()`** and passes arguments into actions — logic files do not import sibling `logic/*` modules.
 - **`src/logic/index.ts`** is the only logic file that may import all domain modules and build **`app`**.
 
 _[back to top](#project-understanding)_
@@ -100,10 +99,12 @@ _[back to top](#project-understanding)_
 
 ### `Todo` (example)
 
-- **`app.todos`** (`src/logic/todos.ts`) — **`state`**: **`data`** ( **`Todo[]`** ), **`newTodo`**, **`doneFilter`**, **`search`** (each a **`Store`**).
-- **Actions** — **`todo`** (add/remove/toggle/update/clear), **`visibleTodos.get`** (filter + search), **`update`** helpers for the UI fields.
+- **`app.todos`** (`src/logic/todos.ts`) — **`state`**: **`data`** ( **`Todo[]`** ); **`editingData`** ( **`Store`** mapping todo id → inline draft title ); **`newTodo`**, **`doneFilter`**, **`search`** (each a **`Store`** ); **`randomTodo.loading`** and **`randomTodo.error`** ( **`Store`** ) for the lorem “add random todo” request.
+- **`fn`** — **`todo`**: **`add`**, **`remove`**, **`toggle`**, **`editing`** ( **`start`**, **`stop`**, **`onKeyDownFn`** for Enter/Escape ), **`random.add`** ( fetches text via **`api.get_text["/api/lorem"]`** ); **`todos`**: **`clearCompleted`**, **`visible.get`** ( filter + search ); **`doneFilter`**, **`search`**, **`newTodo`** each expose **`update`**; **`commit`** ( **`blur`**, **`skipBlur`** ) coordinates save vs. cancel when clicking outside an edit.
+- **`ref`** — internal **`blurCommit.skip`** flag so destroy/remove actions do not double-commit on blur.
+- **`effect`** — **`useFocusOnEdit`**, **`useScrollToSelectedId`** for list UX during edit and keyboard navigation.
 - **`AppLifeCycle`** persists **`state.data`** to **`localStorage`**.
-- **`TodoApp`** and related components subscribe with **`.use()`** and call **`app.todos`**.
+- **`Todo`** page and todo components subscribe with **`.use()`** and call **`app.todos.state`** / **`app.todos.fn`** / **`app.todos.effect`**.
 - **Types** — **`Todo`**, **`DoneFilter`** in **`src/types/Todo.type.ts`**.
 
 ### `Route`
@@ -115,11 +116,6 @@ _[back to top](#project-understanding)_
 
 - **`src/localStorage.ts`** — types, defaults, and helpers for the JSON snapshot.
 - **`AppLifeCycle`** keeps persisted fields aligned with live **`Store`** state. See **`LocalStorageState`** and **`initialLocalStorageState`**.
-
-### Session refs (`globalRef`)
-
-- **`src/globalRef.ts`** — plain mutable object (no **`Store`**, no persistence).
-- **Use** — shared across logic modules when **`Store`** is wrong: no subscriptions, no persistence (e.g. history, library refs, update-only state).
 
 ### `Lang` and translations
 
@@ -137,11 +133,11 @@ _[back to top](#project-understanding)_
 
 - **Home** — landing copy, language toggle, dark/light control, navigation to the todo screen.
 - **Routing** — **`BasicRouter`** / **`app.route`**, **`SwitchV`** in **`App.tsx`**, 404; Easy React Router–compatible paths if you adopt `src/routes/` later (see [Routing](#routing)).
-- **Todo app (example)** — add/remove/toggle/edit todos, filter (all/active/completed), search, clear completed; styling knobs via `config`.
+- **Todo app (example)** — add/remove/toggle/edit todos (inline editing, blur/keyboard commit), filter (all/active/completed), search, clear completed, optional random todo from the lorem API; styling knobs via `config`.
 - **Internationalization** — English/French (extend under `src/dict/lang/`).
 - **Theme** — `data-theme` on the document root for CSS.
 - **Persistence** — todos, language, theme, and config survive reloads via `localStorage`.
-- **Optional API** — mock or Treaty client; toggle in `src/api/api.config.ts`; base URL in `src/config/srvConfig.ts`.
+- **API call** — **ApiCaller** in `src/api/api.ts` (register routes on the builder, then `build(baseUrl)`); optional shared base URL in `src/config/srvConfig.ts`.
 
 _[back to top](#project-understanding)_
 

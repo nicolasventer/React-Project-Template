@@ -42,20 +42,22 @@ const resetAllConfigValues = () => {
 
 export const config = {
 	state: state,
-	value: {
-		display: displayConfigValue,
-		displayAll: displayAllConfigValues,
-		update: updateConfigValue,
-		reset: resetConfigValue,
-		resetAll: resetAllConfigValues,
+	fn: {
+		value: {
+			display: displayConfigValue,
+			displayAll: displayAllConfigValues,
+			update: updateConfigValue,
+			reset: resetConfigValue,
+			resetAll: resetAllConfigValues,
+		},
 	},
 };
 
 declare global {
 	interface Window {
-		config: typeof config.value;
+		config: typeof config.fn.value;
 	}
 }
 
 // expose config display and update
-window.config = config.value;
+window.config = config.fn.value;

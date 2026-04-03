@@ -19,7 +19,7 @@ export const LangButton = ({ tr }: LangButtonProps) => {
 			aria-busy={loading}
 			aria-label={loading ? tr.LangLoading : switchLabel}
 			title={loading ? tr.LangLoading : switchLabel}
-			onClick={app.lang.updateFn(lang === "en" ? "fr" : "en", true)}
+			onClick={app.lang.fn.updateFn(lang === "en" ? "fr" : "en", true)}
 		>
 			{loading ? (
 				<span className="lang-button-spinner" aria-hidden />

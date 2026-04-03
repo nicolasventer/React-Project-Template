@@ -1,6 +1,6 @@
 import type { Tr } from "@/dict/lang/en";
 import { app } from "@/logic";
-import { useEffect, useMemo, useRef } from "react";
+import { useMemo, useRef } from "react";
 import { TodoItem } from "./TodoItem";
 import "./TodoList.css";
 
@@ -10,13 +10,11 @@ export const TodoList = ({ tr, selectedId }: TodoListProps) => {
 	const items = app.todos.state.data.use();
 	const doneFilter = app.todos.state.doneFilter.use();
 	const search = app.todos.state.search.use();
-	const visibleTodos = useMemo(() => app.todos.visibleTodos.get(items, doneFilter, search), [items, doneFilter, search]);
-	const selRef = useRef<HTMLLIElement>(null);
+	const visibleTodos = useMemo(() => app.todos.fn.todos.visible.get(items, doneFilter, search), [items, doneFilter, search]);
+	const selectedRef = useRef<HTMLLIElement>(null);
 	const editingData = app.todos.state.editingData.use();
 
-	useEffect(() => {
-		if (selectedId && selRef.current) selRef.current.scrollIntoView({ block: "nearest", behavior: "smooth" });
-	}, [selectedId, visibleTodos]);
+	app.todos.effect.useScrollToSelectedId(selectedId, selectedRef);
 
 	return (
 		<ul className="todo-list">
@@ -24,7 +22,7 @@ export const TodoList = ({ tr, selectedId }: TodoListProps) => {
 			{visibleTodos.map((t) => (
 				<TodoItem
 					key={t.id}
-					ref={t.id === selectedId ? selRef : undefined}
+					ref={t.id === selectedId ? selectedRef : undefined}
 					tr={tr}
 					todo={t}
 					selected={t.id === selectedId}

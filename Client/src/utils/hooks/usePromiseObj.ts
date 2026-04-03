@@ -27,10 +27,10 @@ export const usePromiseObj = <T, U extends unknown[], V = unknown>(fn: (...args:
 				return data;
 			} catch (error) {
 				setState({ loading: false, error: error as V, data: null });
-				throw error;
+				return null;
 			}
 		},
-		[fn, state]
+		[fn, state],
 	);
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps

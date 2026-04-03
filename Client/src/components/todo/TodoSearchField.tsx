@@ -12,7 +12,7 @@ export const TodoSearchField = ({ tr }: TodoSearchFieldProps) => {
 			className="field query"
 			type="search"
 			value={search}
-			onChange={(e) => app.todos.search.update(e.target.value)}
+			onChange={(e) => app.todos.fn.search.update(e.target.value)}
 			placeholder={tr.TodoSearchPlaceholder}
 			autoComplete="off"
 			aria-label={tr.TodoSearchPlaceholder}

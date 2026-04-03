@@ -56,15 +56,14 @@ Domain logic lives under [`src/logic/`](src/logic/). The public entry is [`src/l
 1. in [`src/logic/`](src/logic/), create a new logic file
 2. if needed, in [`src/types/`](src/types/), create all the types you need to export
    - no need to put types only used in private outside of the logic file
-3. in the logic file:
-   1. create a state object that contains values that change the render
-   2. create a ref object that contains values that does not change the render
-   3. create functions used to update the states
-      - private (not exported) functions should be prefixed with `'_` (example: `_loadSomething`)
-   4. create functions used to compute derived values
-   5. export everything in a variable corresponding to the current logic
-      - Tip: each logic should be isolated; if an update depends on other values, pass those values in as parameters.
-4. re-export the new logic in [`src/logic/index.ts`](src/logic/index.ts)
+3. in the logic file, export one object for the domain (for example `todos`) built from these namespaces (use only what you need):
+   1. **`state`** – reactive stores (`store(...)`) for values that should trigger a re-render when they change
+   2. **`ref`** – plain objects for mutable values that should **not** trigger a re-render (flags, cached IDs between navigations, ...)
+   3. **`fn`** – functions: updates, navigation factories, helpers that compute derived values, event-handler factories (`…Fn` suffix when the value is a function that returns a handler). Private helpers that are not part of the exported API should be prefixed with `'_` (example: `_loadSomething`). Group related APIs in nested objects
+   4. **`effect`** – custom hooks (usually wrapping `useEffect`) for DOM or lifecycle behavior used from components
+   - Tip: keep each logic module isolated; if a function needs values from elsewhere, pass them in as parameters.
+   - See [`src/logic/todos.ts`](src/logic/todos.ts) for `state`, `ref`, `fn`, and `effect`; [`src/logic/lang.ts`](src/logic/lang.ts) for a smaller module with only `state` and `fn`.
+4. re-export the new logic in [`src/logic/index.ts`](src/logic/index.ts) and attach it to `app`
 
 _[↑ Back to top](#how-to)_
 

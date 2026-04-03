@@ -31,7 +31,7 @@ export const DarkModeButton = ({ tr }: DarkModeButtonProps) => {
 			aria-pressed={isDark}
 			aria-label={isDark ? tr.ThemeSwitchToLight : tr.ThemeSwitchToDark}
 			title={isDark ? tr.ThemeSwitchToLight : tr.ThemeSwitchToDark}
-			onClick={app.colorScheme.updateFn(isDark ? "light" : "dark", true)}
+			onClick={app.colorScheme.fn.updateFn(isDark ? "light" : "dark", true)}
 		>
 			<span className="dark-mode-button-track" aria-hidden>
 				<span className="dark-mode-button-thumb">{isDark ? <IconMoon /> : <IconSun />}</span>

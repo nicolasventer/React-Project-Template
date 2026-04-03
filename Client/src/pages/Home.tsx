@@ -18,7 +18,7 @@ export const Home = () => {
 			<main className="home-main">
 				<h1 className="home-title">{tr.Home}</h1>
 				<p className="home-subtitle">{tr.HomeSubtitle}</p>
-				<button type="button" className="home-cta" onClick={app.route.navigateToRouteFn("/todo?id", {})}>
+				<button type="button" className="home-cta" onClick={app.route.fn.navigateToRouteFn("/todo?id", {})}>
 					{tr.OpenTodos}
 				</button>
 			</main>

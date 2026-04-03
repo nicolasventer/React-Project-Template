@@ -13,8 +13,6 @@ export const folderStructureConfig = createFolderStructure({
 		{
 			name: "src",
 			children: [
-				// src/globalRef.ts
-				{ name: "globalRef.ts" },
 				// src/index.css
 				{ name: "index.css" },
 				// src/index.tsx

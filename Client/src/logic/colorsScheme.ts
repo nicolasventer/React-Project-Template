@@ -25,5 +25,7 @@ const updateColorSchemeFn = (colorScheme: ColorSchemeType, useTransition: boolea
 
 export const colorScheme = {
 	state: state,
-	updateFn: updateColorSchemeFn,
+	fn: {
+		updateFn: updateColorSchemeFn,
+	},
 };

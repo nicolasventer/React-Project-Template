@@ -3,7 +3,8 @@ import { initialLocalStorageState } from "@/localStorage";
 import type { DoneFilter, Todo } from "@/types/Todo.type";
 import { store } from "@/utils/Store";
 import { wait } from "@/utils/utils";
-import type { KeyboardEvent } from "react";
+import type { KeyboardEvent, RefObject } from "react";
+import { useEffect } from "react";
 
 const state = {
 	data: store(initialLocalStorageState.todos),
@@ -107,35 +108,61 @@ const blurCommit = (id: string, draft: string | undefined) => {
 	commitEditingTodo_(id, draft);
 };
 
+const useFocusOnEdit = (isEditing: boolean, inputRef: RefObject<HTMLInputElement | null>) => {
+	useEffect(() => {
+		if (isEditing && inputRef.current) {
+			inputRef.current.focus();
+			inputRef.current.select();
+		}
+	}, [isEditing, inputRef]);
+};
+
+const useScrollToSelectedId = (selectedId: string | undefined, selectedRef: RefObject<HTMLLIElement | null>) =>
+	useEffect(() => {
+		if (selectedId && selectedRef.current) selectedRef.current.scrollIntoView({ block: "nearest", behavior: "smooth" });
+	}, [selectedId, selectedRef]);
+
 export const todos = {
 	state: state,
 	ref: ref,
-	todo: {
-		addRandom: addRandomTodo,
-		add: addTodo,
-		remove: removeTodo,
-		toggle: toggleTodo,
-		clearCompleted: clearCompletedTodos,
-		editing: {
-			start: startEditingTodo,
-			stop: stopEditingTodo,
-			onKeyDownFn: onKeyDownFn,
+	fn: {
+		todo: {
+			add: addTodo,
+			remove: removeTodo,
+			toggle: toggleTodo,
+			editing: {
+				start: startEditingTodo,
+				stop: stopEditingTodo,
+				onKeyDownFn: onKeyDownFn,
+			},
+			random: {
+				add: addRandomTodo,
+			},
+		},
+		todos: {
+			completed: {
+				clear: clearCompletedTodos,
+			},
+			visible: {
+				get: getVisibleTodos,
+			},
+		},
+		doneFilter: {
+			update: updateDoneFilter,
+		},
+		search: {
+			update: updateSearch,
+		},
+		newTodo: {
+			update: updateNewTodo,
+		},
+		commit: {
+			blur: blurCommit,
+			skipBlur: skipBlurCommit,
 		},
 	},
-	doneFilter: {
-		update: updateDoneFilter,
-	},
-	search: {
-		update: updateSearch,
-	},
-	visibleTodos: {
-		get: getVisibleTodos,
-	},
-	newTodo: {
-		update: updateNewTodo,
-	},
-	commit: {
-		blur: blurCommit,
-		skipBlur: skipBlurCommit,
+	effect: {
+		useFocusOnEdit: useFocusOnEdit,
+		useScrollToSelectedId: useScrollToSelectedId,
 	},
 };

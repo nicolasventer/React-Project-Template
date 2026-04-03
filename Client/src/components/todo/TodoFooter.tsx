@@ -23,14 +23,14 @@ export const TodoFooter = ({ tr, items }: TodoFooterProps) => {
 						key={f}
 						type="button"
 						className={doneFilter === f ? "pill on" : "pill"}
-						onClick={() => app.todos.doneFilter.update(f)}
+						onClick={() => app.todos.fn.doneFilter.update(f)}
 					>
 						{label(f)}
 					</button>
 				))}
 			</div>
 			{doneCount > 0 && (
-				<button type="button" className="link clear" onClick={() => app.todos.todo.clearCompleted()}>
+				<button type="button" className="link clear" onClick={app.todos.fn.todos.completed.clear}>
 					{tr.TodoClearCompleted}
 				</button>
 			)}

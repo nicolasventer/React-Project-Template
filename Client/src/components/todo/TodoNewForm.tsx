@@ -15,14 +15,14 @@ export const TodoNewForm = ({ tr }: TodoNewFormProps) => {
 				className="row"
 				onSubmit={(e) => {
 					e.preventDefault();
-					app.todos.todo.add(draft);
-					app.todos.newTodo.update("");
+					app.todos.fn.todo.add(draft);
+					app.todos.fn.newTodo.update("");
 				}}
 			>
 				<input
 					className="field"
 					value={draft}
-					onChange={(e) => app.todos.newTodo.update(e.target.value)}
+					onChange={(e) => app.todos.fn.newTodo.update(e.target.value)}
 					placeholder={tr.TodoPlaceholder}
 					autoComplete="off"
 					aria-label={tr.TodoPlaceholder}
@@ -35,7 +35,7 @@ export const TodoNewForm = ({ tr }: TodoNewFormProps) => {
 					className="todo-add-random"
 					disabled={randomLoading}
 					aria-busy={randomLoading}
-					onClick={() => app.todos.todo.addRandom()}
+					onClick={app.todos.fn.todo.random.add}
 				>
 					{randomLoading ? tr.TodoAddRandomLoading : tr.TodoAddRandom}
 				</button>
