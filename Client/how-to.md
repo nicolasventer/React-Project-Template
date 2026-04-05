@@ -101,7 +101,7 @@ _[↑ Back to top](#how-to)_
 
 ## How to add translation (lang or word)
 
-Translations are organized as language modules under [`src/dict/lang/`](src/dict/lang/), and English is the reference key set.
+Translations are organized as language modules under [`src/dict/lang/`](src/dict/lang/), and English is the reference key set. Conventions for section order, subgroups (`heading`, `action`, `status`, …), and placeholders are documented in [`src/dict/README.md`](src/dict/README.md).
 
 ### How to add a lang
 

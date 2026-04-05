@@ -18,7 +18,7 @@ export const TodoApp = ({ selectedId }: TodoAppProps) => {
 		<div className="todo-app">
 			<TodoAppHeader tr={tr} />
 			<main>
-				<h1>{tr.TodoTitle}</h1>
+				<h1>{tr.todo.heading.title}</h1>
 				<TodoNewForm tr={tr} />
 				{items.length && <TodoSearchField tr={tr} />}
 				<TodoList tr={tr} selectedId={selectedId} />

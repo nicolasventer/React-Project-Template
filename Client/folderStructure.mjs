@@ -32,7 +32,10 @@ export const folderStructureConfig = createFolderStructure({
 				// src/config/
 				{ name: "config", children: [{ name: "cliConfig.ts" }, { name: "srvConfig.ts" }] },
 				// src/dict/
-				{ name: "dict", children: [{ name: "index.ts" }, { name: "lang", children: [{ name: "{snake_case}.ts" }] }] },
+				{
+					name: "dict",
+					children: [{ name: "index.ts" }, { name: "README.md" }, { name: "lang", children: [{ name: "{snake_case}.ts" }] }],
+				},
 				// src/logic/
 				{ ruleId: "logic-folder" },
 				// src/pages/

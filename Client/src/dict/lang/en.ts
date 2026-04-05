@@ -1,44 +1,76 @@
 export const en = {
-	NotFoundTitle: "404 Not Found",
-	RedirectCancelled: "Redirect cancelled.",
-	RedirectingToHome: "Redirecting to the home page...",
-	GoToHomePage: "Go to Home page",
-	Cancel: "Cancel",
-
-	ThemeLight: "Light",
-	ThemeDark: "Dark",
-	ThemeSwitchToLight: "Switch to light mode",
-	ThemeSwitchToDark: "Switch to dark mode",
-
-	LangSwitchToEnglish: "Switch to English",
-	LangSwitchToFrench: "Switch to French",
-	LangLoading: "Loading language…",
-
-	Home: "Home",
-	HomeSubtitle: "A minimal React template.",
-	OpenTodos: "Open todo list",
-
-	TodoTitle: "Todos",
-	TodoPlaceholder: "What needs to be done?",
-	TodoAdd: "Add",
-	TodoAddRandom: "Add random",
-	TodoAddRandomLoading: "Adding…",
-	TodoAddRandomFailed: "Could not add a random task.",
-	TodoAll: "All",
-	TodoActive: "Active",
-	TodoCompleted: "Done",
-	TodoClearCompleted: "Clear completed",
-	TodoItemsLeft: "{n} left",
-	TodoDelete: "Delete",
-	TodoEdit: "Edit",
-	TodoEditAria: "Edit task: {title}",
-	TodoOpen: "Open",
-	TodoOpenAria: "Open task: {title}",
-	TodoBackHome: "Home",
-	TodoOpenLastOpened: "Last opened",
-	TodoOpenLastOpenedNone: "No todo has been opened yet in this session.",
-	TodoSearchPlaceholder: "Filter tasks…",
-	TodoNoMatches: "No tasks match your filter.",
+	notFound: {
+		heading: {
+			title: "404 Not Found",
+		},
+		action: {
+			goToHomePage: "Go to Home page",
+		},
+	},
+	theme: {
+		label: {
+			light: "Light",
+			dark: "Dark",
+		},
+		action: {
+			switchToLight: "Switch to light mode",
+			switchToDark: "Switch to dark mode",
+		},
+	},
+	lang: {
+		action: {
+			switchToEnglish: "Switch to English",
+			switchToFrench: "Switch to French",
+		},
+		status: {
+			loading: "Loading language…",
+		},
+	},
+	home: {
+		heading: {
+			title: "Home",
+			subtitle: "A minimal React template.",
+		},
+		action: {
+			openTodos: "Open todo list",
+		},
+	},
+	todo: {
+		heading: {
+			title: "Todos",
+		},
+		form: {
+			placeholder: "What needs to be done?",
+			searchPlaceholder: "Filter tasks…",
+		},
+		filter: {
+			all: "All",
+			active: "Active",
+			completed: "Done",
+		},
+		action: {
+			add: "Add",
+			addRandom: "Add random",
+			backHome: "Home",
+			cancel: "Cancel",
+			clearCompleted: "Clear completed",
+			delete: "Delete",
+			edit: "Edit",
+			open: "Open",
+			openLastOpened: "Last opened",
+		},
+		aria: {
+			editTask: "Edit task: {title}",
+			openTask: "Open task: {title}",
+		},
+		status: {
+			addRandomLoading: "Adding…",
+			addRandomFailed: "Could not add a random task.",
+			itemsLeft: "{n} left",
+			openLastOpenedNone: "No todo has been opened yet in this session.",
+			noMatches: "No tasks match your filter.",
+		},
+	},
 };
 
 export type Tr = typeof en;

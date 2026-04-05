@@ -8,8 +8,8 @@ export type TodoItemProps = { tr: Tr; todo: Todo; selected: boolean; draft: stri
 
 export const TodoItem = forwardRef<HTMLLIElement, TodoItemProps>(function TodoItem({ tr, todo, selected, draft }, ref) {
 	const isEditing = draft !== undefined;
-	const openAria = tr.TodoOpenAria.replace("{title}", todo.title);
-	const editAria = tr.TodoEditAria.replace("{title}", todo.title);
+	const openAria = tr.todo.aria.openTask.replace("{title}", todo.title);
+	const editAria = tr.todo.aria.editTask.replace("{title}", todo.title);
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	app.todos.effect.useFocusOnEdit(isEditing, inputRef);
@@ -50,12 +50,12 @@ export const TodoItem = forwardRef<HTMLLIElement, TodoItemProps>(function TodoIt
 					<button
 						type="button"
 						className="link"
-						aria-label={tr.Cancel}
-						title={tr.Cancel}
+						aria-label={tr.todo.action.cancel}
+						title={tr.todo.action.cancel}
 						onMouseDown={app.todos.fn.commit.skipBlur}
 						onClick={() => app.todos.fn.todo.editing.stop(todo.id)}
 					>
-						{tr.Cancel}
+						{tr.todo.action.cancel}
 					</button>
 				) : (
 					<>
@@ -66,7 +66,7 @@ export const TodoItem = forwardRef<HTMLLIElement, TodoItemProps>(function TodoIt
 							title={editAria}
 							onClick={() => app.todos.fn.todo.editing.start(todo.id, todo.title)}
 						>
-							{tr.TodoEdit}
+							{tr.todo.action.edit}
 						</button>
 						<button
 							type="button"
@@ -76,12 +76,12 @@ export const TodoItem = forwardRef<HTMLLIElement, TodoItemProps>(function TodoIt
 							title={openAria}
 							onClick={app.route.fn.todo.openFn(todo.id)}
 						>
-							{tr.TodoOpen}
+							{tr.todo.action.open}
 						</button>
 					</>
 				)}
 				<button type="button" className="danger" onClick={() => app.todos.fn.todo.remove(todo.id)}>
-					{tr.TodoDelete}
+					{tr.todo.action.delete}
 				</button>
 			</div>
 		</li>

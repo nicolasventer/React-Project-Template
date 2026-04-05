@@ -16,10 +16,10 @@ export const Home = () => {
 				</div>
 			</header>
 			<main className="home-main">
-				<h1 className="home-title">{tr.Home}</h1>
-				<p className="home-subtitle">{tr.HomeSubtitle}</p>
+				<h1 className="home-title">{tr.home.heading.title}</h1>
+				<p className="home-subtitle">{tr.home.heading.subtitle}</p>
 				<button type="button" className="home-cta" onClick={app.route.fn.navigateToRouteFn("/todo?id", {})}>
-					{tr.OpenTodos}
+					{tr.home.action.openTodos}
 				</button>
 			</main>
 		</div>

@@ -9,7 +9,7 @@ export const LangButton = ({ tr }: LangButtonProps) => {
 	const lang = app.lang.state.data.use();
 	const loading = app.lang.state.isLoading.use();
 
-	const switchLabel = lang === "en" ? tr.LangSwitchToFrench : tr.LangSwitchToEnglish;
+	const switchLabel = lang === "en" ? tr.lang.action.switchToFrench : tr.lang.action.switchToEnglish;
 
 	return (
 		<button
@@ -17,8 +17,8 @@ export const LangButton = ({ tr }: LangButtonProps) => {
 			className={clsx("lang-button", loading && "lang-button--loading")}
 			disabled={loading}
 			aria-busy={loading}
-			aria-label={loading ? tr.LangLoading : switchLabel}
-			title={loading ? tr.LangLoading : switchLabel}
+			aria-label={loading ? tr.lang.status.loading : switchLabel}
+			title={loading ? tr.lang.status.loading : switchLabel}
 			onClick={app.lang.fn.updateFn(lang === "en" ? "fr" : "en", true)}
 		>
 			{loading ? (

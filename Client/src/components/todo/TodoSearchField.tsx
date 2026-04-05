@@ -13,9 +13,9 @@ export const TodoSearchField = ({ tr }: TodoSearchFieldProps) => {
 			type="search"
 			value={search}
 			onChange={(e) => app.todos.fn.search.update(e.target.value)}
-			placeholder={tr.TodoSearchPlaceholder}
+			placeholder={tr.todo.form.searchPlaceholder}
 			autoComplete="off"
-			aria-label={tr.TodoSearchPlaceholder}
+			aria-label={tr.todo.form.searchPlaceholder}
 		/>
 	);
 };

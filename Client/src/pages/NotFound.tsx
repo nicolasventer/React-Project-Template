@@ -16,10 +16,10 @@ export const NotFound = () => {
 				</div>
 			</header>
 			<main className="not-found-main">
-				<h1 className="not-found-title">{tr.NotFoundTitle}</h1>
-				<p className="not-found-text">{tr.GoToHomePage}</p>
+				<h1 className="not-found-title">{tr.notFound.heading.title}</h1>
+				<p className="not-found-text">{tr.notFound.action.goToHomePage}</p>
 				<button type="button" className="not-found-btn" onClick={app.route.fn.navigateToRouteFn("/")}>
-					{tr.GoToHomePage}
+					{tr.notFound.action.goToHomePage}
 				</button>
 			</main>
 		</div>

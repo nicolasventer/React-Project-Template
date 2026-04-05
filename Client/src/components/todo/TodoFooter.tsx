@@ -12,11 +12,12 @@ export const TodoFooter = ({ tr, items }: TodoFooterProps) => {
 	const activeCount = items.filter((t) => !t.done).length;
 	const doneCount = items.length - activeCount;
 
-	const label = (f: DoneFilter) => (f === "all" ? tr.TodoAll : f === "active" ? tr.TodoActive : tr.TodoCompleted);
+	const label = (f: DoneFilter) =>
+		f === "all" ? tr.todo.filter.all : f === "active" ? tr.todo.filter.active : tr.todo.filter.completed;
 
 	return (
 		<footer className="todo-foot">
-			<span>{tr.TodoItemsLeft.replace("{n}", String(activeCount))}</span>
+			<span>{tr.todo.status.itemsLeft.replace("{n}", String(activeCount))}</span>
 			<div role="group" aria-label="Filter">
 				{DoneFilterValues.map((f) => (
 					<button
@@ -31,7 +32,7 @@ export const TodoFooter = ({ tr, items }: TodoFooterProps) => {
 			</div>
 			{doneCount > 0 && (
 				<button type="button" className="link clear" onClick={app.todos.fn.todos.completed.clear}>
-					{tr.TodoClearCompleted}
+					{tr.todo.action.clearCompleted}
 				</button>
 			)}
 		</footer>

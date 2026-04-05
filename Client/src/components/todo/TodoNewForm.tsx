@@ -23,12 +23,12 @@ export const TodoNewForm = ({ tr }: TodoNewFormProps) => {
 					className="field"
 					value={draft}
 					onChange={(e) => app.todos.fn.newTodo.update(e.target.value)}
-					placeholder={tr.TodoPlaceholder}
+					placeholder={tr.todo.form.placeholder}
 					autoComplete="off"
-					aria-label={tr.TodoPlaceholder}
+					aria-label={tr.todo.form.placeholder}
 				/>
 				<button type="submit" className="primary">
-					{tr.TodoAdd}
+					{tr.todo.action.add}
 				</button>
 				<button
 					type="button"
@@ -37,12 +37,12 @@ export const TodoNewForm = ({ tr }: TodoNewFormProps) => {
 					aria-busy={randomLoading}
 					onClick={app.todos.fn.todo.random.add}
 				>
-					{randomLoading ? tr.TodoAddRandomLoading : tr.TodoAddRandom}
+					{randomLoading ? tr.todo.status.addRandomLoading : tr.todo.action.addRandom}
 				</button>
 			</form>
 			{randomError && (
 				<p className="todo-add-random-error" role="alert">
-					{tr.TodoAddRandomFailed}
+					{tr.todo.status.addRandomFailed}
 				</p>
 			)}
 		</>

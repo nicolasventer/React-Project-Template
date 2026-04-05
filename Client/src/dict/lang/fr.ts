@@ -1,44 +1,76 @@
 import type { Tr } from "./en";
 
 export const fr: Tr = {
-	NotFoundTitle: "404 Non trouvé",
-	RedirectCancelled: "Redirection annulée.",
-	RedirectingToHome: "Redirection vers la page d'accueil...",
-	GoToHomePage: "Aller à la page d'accueil",
-	Cancel: "Annuler",
-
-	ThemeLight: "Clair",
-	ThemeDark: "Sombre",
-	ThemeSwitchToLight: "Passer en mode clair",
-	ThemeSwitchToDark: "Passer en mode sombre",
-
-	LangSwitchToEnglish: "Passer en anglais",
-	LangSwitchToFrench: "Passer en français",
-	LangLoading: "Chargement de la langue…",
-
-	Home: "Accueil",
-	HomeSubtitle: "Un modèle React minimal.",
-	OpenTodos: "Ouvrir la liste des tâches",
-
-	TodoTitle: "Tâches",
-	TodoPlaceholder: "Que faut-il faire ?",
-	TodoAdd: "Ajouter",
-	TodoAddRandom: "Ajouter au hasard",
-	TodoAddRandomLoading: "Ajout…",
-	TodoAddRandomFailed: "Impossible d'ajouter une tâche aléatoire.",
-	TodoAll: "Toutes",
-	TodoActive: "Actives",
-	TodoCompleted: "Terminées",
-	TodoClearCompleted: "Effacer les terminées",
-	TodoItemsLeft: "{n} restante(s)",
-	TodoDelete: "Supprimer",
-	TodoEdit: "Modifier",
-	TodoEditAria: "Modifier la tâche : {title}",
-	TodoOpen: "Ouvrir",
-	TodoOpenAria: "Ouvrir la tâche : {title}",
-	TodoBackHome: "Accueil",
-	TodoOpenLastOpened: "Dernière ouverte",
-	TodoOpenLastOpenedNone: "Aucune tâche n'a encore été ouverte dans cette session.",
-	TodoSearchPlaceholder: "Filtrer les tâches…",
-	TodoNoMatches: "Aucune tâche ne correspond au filtre.",
+	notFound: {
+		heading: {
+			title: "404 Non trouvé",
+		},
+		action: {
+			goToHomePage: "Aller à la page d'accueil",
+		},
+	},
+	theme: {
+		label: {
+			light: "Clair",
+			dark: "Sombre",
+		},
+		action: {
+			switchToLight: "Passer en mode clair",
+			switchToDark: "Passer en mode sombre",
+		},
+	},
+	lang: {
+		action: {
+			switchToEnglish: "Passer en anglais",
+			switchToFrench: "Passer en français",
+		},
+		status: {
+			loading: "Chargement de la langue…",
+		},
+	},
+	home: {
+		heading: {
+			title: "Accueil",
+			subtitle: "Un modèle React minimal.",
+		},
+		action: {
+			openTodos: "Ouvrir la liste des tâches",
+		},
+	},
+	todo: {
+		heading: {
+			title: "Tâches",
+		},
+		form: {
+			placeholder: "Que faut-il faire ?",
+			searchPlaceholder: "Filtrer les tâches…",
+		},
+		filter: {
+			all: "Toutes",
+			active: "Actives",
+			completed: "Terminées",
+		},
+		action: {
+			add: "Ajouter",
+			addRandom: "Ajouter au hasard",
+			backHome: "Accueil",
+			cancel: "Annuler",
+			clearCompleted: "Effacer les terminées",
+			delete: "Supprimer",
+			edit: "Modifier",
+			open: "Ouvrir",
+			openLastOpened: "Dernière ouverte",
+		},
+		aria: {
+			editTask: "Modifier la tâche : {title}",
+			openTask: "Ouvrir la tâche : {title}",
+		},
+		status: {
+			addRandomLoading: "Ajout…",
+			addRandomFailed: "Impossible d'ajouter une tâche aléatoire.",
+			itemsLeft: "{n} restante(s)",
+			openLastOpenedNone: "Aucune tâche n'a encore été ouverte dans cette session.",
+			noMatches: "Aucune tâche ne correspond au filtre.",
+		},
+	},
 };

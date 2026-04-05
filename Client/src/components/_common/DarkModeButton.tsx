@@ -29,15 +29,15 @@ export const DarkModeButton = ({ tr }: DarkModeButtonProps) => {
 			type="button"
 			className={clsx("dark-mode-button", isDark && "dark-mode-button--dark")}
 			aria-pressed={isDark}
-			aria-label={isDark ? tr.ThemeSwitchToLight : tr.ThemeSwitchToDark}
-			title={isDark ? tr.ThemeSwitchToLight : tr.ThemeSwitchToDark}
+			aria-label={isDark ? tr.theme.action.switchToLight : tr.theme.action.switchToDark}
+			title={isDark ? tr.theme.action.switchToLight : tr.theme.action.switchToDark}
 			onClick={app.colorScheme.fn.updateFn(isDark ? "light" : "dark", true)}
 		>
 			<span className="dark-mode-button-track" aria-hidden>
 				<span className="dark-mode-button-thumb">{isDark ? <IconMoon /> : <IconSun />}</span>
 			</span>
 			<span className="dark-mode-button-label" aria-hidden>
-				{isDark ? tr.ThemeDark : tr.ThemeLight}
+				{isDark ? tr.theme.label.dark : tr.theme.label.light}
 			</span>
 		</button>
 	);

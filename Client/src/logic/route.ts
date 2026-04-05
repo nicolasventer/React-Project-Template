@@ -23,7 +23,7 @@ const openTodoFn = (todoId: string) => () => {
 
 const openLastOpenedTodoFn = (tr: Tr) => () => {
 	if (ref.lastOpenedTodoId) openTodoFn(ref.lastOpenedTodoId)();
-	else window.alert(tr.TodoOpenLastOpenedNone);
+	else window.alert(tr.todo.status.openLastOpenedNone);
 };
 
 export const route = {

@@ -18,7 +18,7 @@ export const TodoList = ({ tr, selectedId }: TodoListProps) => {
 
 	return (
 		<ul className="todo-list">
-			{!visibleTodos.length && !!items.length && <li className="todo-empty">{tr.TodoNoMatches}</li>}
+			{!visibleTodos.length && !!items.length && <li className="todo-empty">{tr.todo.status.noMatches}</li>}
 			{visibleTodos.map((t) => (
 				<TodoItem
 					key={t.id}
