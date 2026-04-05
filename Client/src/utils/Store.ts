@@ -25,24 +25,15 @@ class Store_<T extends NotFunction<unknown>> {
 		this.onChange = [(v) => void (this.val = typeof v === "function" ? v(this.val) : v)];
 	}
 
-	/**
-	 * @deprecated (set as deprecated to discourage use) \
-	 * Returns the current value of the global state.
-	 */
+	/** Returns the current value of the global state. ({@link Store_.use} should be used instead) */
 	public get value() {
 		return this.val;
 	}
 
 	/**
-	 * @deprecated (set as deprecated to discourage use) \
-	 * Sets the current value of the global state.
-	 */
-	public set value(v: T) {
-		this.setValue(v);
-	}
-
-	/**
-	 * Sets the current value of the global state.
+	 * Sets the current value of the global state
+	 * @param v - The new value of the global state.
+	 * @param useTransition - Whether to use view transition.
 	 */
 	public setValue = (v: SetStateAction<T>, useTransition = false) => {
 		const fn = () => {
@@ -85,16 +76,27 @@ class Store_<T extends NotFunction<unknown>> {
 	/**
 	 * Returns the current value of the global state and a function to set it.
 	 * @param debugLabel - The label to use for debugging.
+	 * @param useTransition - Whether to use view transition.
 	 * @returns The current value of the global state and a function to set it.
 	 */
-	public useState = (debugLabel?: string) => {
+	public useState = (debugLabel?: string, useTransition = false) => {
 		const [s, setS] = useState(this.val);
 		useDebugValue(debugLabel ?? this.debugLabel);
 		useEffect(() => {
 			this.onChange.push(setS);
 			return () => void (this.onChange = this.onChange.filter((v) => v !== setS));
 		}, []);
-		const newSetS: Dispatch<SetStateAction<T>> = useCallback((newVal) => this.onChange.forEach((v) => v(newVal)), []);
+		const newSetS: Dispatch<SetStateAction<T>> = useCallback(
+			(newVal) => {
+				const fn = () => {
+					this.onChange[0](newVal); // Run once to ensure a stable computed value, especially for random or timestamp-based computations.
+					for (let i = 1; i < this.onChange.length; i++) this.onChange[i](this.val);
+				};
+				if (useTransition) document.startViewTransition(fn);
+				else fn();
+			},
+			[useTransition],
+		);
 		return [s, newSetS] as const;
 	};
 
