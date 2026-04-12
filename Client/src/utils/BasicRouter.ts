@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 import { flushSync } from "react-dom";
+import type { Store } from "./Store";
 import { store } from "./Store";
 
 /**
@@ -56,7 +57,7 @@ export class BasicRouter<RoutePath extends string> {
 	};
 
 	private routerBaseRoute = undefined as unknown as string;
-	private currentRoute = store<RouteWithParams<RoutePath>>({ path: "", params: {} } as RouteWithParams<RoutePath>);
+	private currentRoute: Store<RouteWithParams<RoutePath>>;
 	private localPath = "";
 
 	// routes sorted by decreasing ':' then by alphabetical order then by decreasing length
@@ -70,8 +71,13 @@ export class BasicRouter<RoutePath extends string> {
 	constructor(
 		routePathList: RoutePath[],
 		private isGlobal: boolean,
+		private debugLabel?: string,
 		public bUseRouteTransition = true,
 	) {
+		this.currentRoute = store<RouteWithParams<RoutePath>>(
+			{ path: "", params: {} } as RouteWithParams<RoutePath>,
+			this.debugLabel,
+		);
 		this.routeRegexes = routePathList
 			.sort((a, b) => {
 				for (let i = 0; i < Math.min(a.length, b.length); i++) {

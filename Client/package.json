@@ -3,7 +3,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
-		"build": "tsc -b && vite build",
+		"build": "tsc --noEmit && vite build && bun _genHtml.ts dist/index.html",
 		"preview": "serve -l 4173 ./dist",
 		"devhost": "bunx --bun vite --host",
 		"devhttps": "cross-env USE_HTTPS=true npx vite",
@@ -14,8 +14,9 @@
 	},
 	"devDependencies": {
 		"@eslint/js": "9.39.4",
+		"@types/bun": "1.3.12",
 		"@types/dom-view-transitions": "1.0.6",
-		"@types/node": "25.5.0",
+		"@types/node": "25.6.0",
 		"@types/react": "19.2.14",
 		"@types/react-dom": "19.2.3",
 		"@typescript-eslint/eslint-plugin": "8.57.1",

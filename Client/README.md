@@ -20,17 +20,17 @@ Equivalent: `npm install`, `pnpm install`, or `yarn`.
 
 Run with `bun run <script>` (or `npm run`, `pnpm run`, `yarn`).
 
-| Script                | Command                | Description                                                              |
-| --------------------- | ---------------------- | ------------------------------------------------------------------------ |
-| **Dev server**        | `bun run dev`          | Start Vite dev server (default URL in terminal)                          |
-| **Dev (LAN)**         | `bun run devhost`      | Dev server bound to all interfaces (`bunx --bun vite --host`)            |
-| **Dev (HTTPS)**       | `bun run devhttps`     | Dev server with HTTPS (`USE_HTTPS=true`, uses `npx vite`)                |
-| **Dev (HTTPS + LAN)** | `bun run devhttpshost` | HTTPS + `--host`                                                         |
-| **Production build**  | `bun run build`        | `tsc -b` then `vite build` → output in `dist/`                           |
-| **Preview (serve)**   | `bun run preview`      | Static server on port **4173** for `./dist` (needs `serve` on PATH)      |
-| **Preview (Vite)**    | `bun run _preview`     | `vite preview` for the built app                                         |
-| **Lint**              | `bun run lint`         | ESLint on the project                                                    |
-| **Dependency graph**  | `bun run depgraph`     | Writes `graph-dependencies.html` (needs `dot`) and opens it in a browser |
+| Script                | Command                | Description                                                                                           |
+| --------------------- | ---------------------- | ----------------------------------------------------------------------------------------------------- |
+| **Dev server**        | `bun run dev`          | Start Vite dev server (default URL in terminal)                                                       |
+| **Dev (LAN)**         | `bun run devhost`      | Dev server bound to all interfaces (`bunx --bun vite --host`)                                         |
+| **Dev (HTTPS)**       | `bun run devhttps`     | Dev server with HTTPS (`USE_HTTPS=true`, uses `npx vite`)                                             |
+| **Dev (HTTPS + LAN)** | `bun run devhttpshost` | HTTPS + `--host`                                                                                      |
+| **Production build**  | `bun run build`        | `tsc --noEmit` then `vite build` → output in `dist/` and generate HTML files from `staticRoutes.yaml` |
+| **Preview (serve)**   | `bun run preview`      | Static server on port **4173** for `./dist` (needs `serve` on PATH)                                   |
+| **Preview (Vite)**    | `bun run _preview`     | `vite preview` for the built app                                                                      |
+| **Lint**              | `bun run lint`         | ESLint on the project                                                                                 |
+| **Dependency graph**  | `bun run depgraph`     | Writes `graph-dependencies.html` (needs `dot`) and opens it in a browser                              |
 
 ## Documentation
 

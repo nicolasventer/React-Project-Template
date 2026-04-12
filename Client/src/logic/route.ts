@@ -2,7 +2,7 @@ import { STATIC_CONFIG } from "@/config/cliConfig";
 import type { Tr } from "@/dict/lang/en";
 import { BasicRouter } from "@/utils/BasicRouter";
 
-const router = new BasicRouter(["/", "/todo?id", "/404"], true);
+const router = new BasicRouter(["/", "/todo?id", "/404"], true, "route");
 
 router.setRouterBaseRoute(STATIC_CONFIG.BASE_URL);
 

@@ -7,7 +7,7 @@ import type { KeyboardEvent, RefObject } from "react";
 import { useEffect } from "react";
 
 const state = {
-	data: store(initialLocalStorageState.todos),
+	data: store(initialLocalStorageState.todos, "todos.data"),
 	editingData: store<Record<string, string | undefined>>({}), // id -> title
 	newTodo: store(""),
 	doneFilter: store<DoneFilter>("all"),

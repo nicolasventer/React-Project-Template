@@ -9,6 +9,7 @@ This guide documents the main extension points in this template: routing, domain
   - [How to add a route](#how-to-add-a-route)
     - [BasicRouter (default)](#basicrouter-default)
     - [File-based routing (Easy React Router)](#file-based-routing-easy-react-router)
+    - [Static HTML (`staticRoutes.yaml`)](#static-html-staticroutesyaml)
   - [How to add logic](#how-to-add-logic)
   - [How to add data to localStorage](#how-to-add-data-to-localstorage)
   - [How to add config](#how-to-add-config)
@@ -44,6 +45,15 @@ Routing is file-based. Installation, Vite plugin, URL ↔ file mapping, layouts,
 
 1. in [`src/routes/`](src/routes/), create or change a route file (naming and path rules are in that README).
 2. if your editor (VS Code, Cursor, …) opens [`src/routerInstance.gen.ts`](src/routerInstance.gen.ts), close it **without saving** so you do not keep a stale buffer over the regenerated file and routes stay correct.
+
+### Static HTML (`staticRoutes.yaml`)
+
+**staticRoutes.yaml** should contain all routes that should be generated as static HTML files. It needs to be updated manually when using **`BasicRouter`**. It can be updated automatically with **`Easy React Router`**. It is used for deployment.
+
+1. open [`staticRoutes.yaml`](staticRoutes.yaml) at the **Client** root (next to `_genHtml.ts`)
+2. add one line per **fully spelled** static URL you need, for example `- /about` or `- /` for the home shell
+3. **Dynamic routes** — this step cannot “solve” `/posts/:id` for every id; you only get files for **exact** paths you add (for example `- /posts/0` for one known slug). For open-ended variation, a better approach is **optional parameters**: one stable URL and optional query-style segments.
+4. run a production build so `dist/` is regenerated with the extra `.html` files
 
 _[↑ Back to top](#how-to)_
 

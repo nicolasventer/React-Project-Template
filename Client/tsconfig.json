@@ -13,6 +13,7 @@
 		"moduleResolution": "Bundler",
 		"isolatedModules": true,
 		"moduleDetection": "force",
+		"incremental": false,
 		"noEmit": true,
 		"jsx": "react-jsx",
 
@@ -25,5 +26,5 @@
 
 		"noErrorTruncation": true
 	},
-	"include": ["src"]
+	"include": ["src", "_genHtml.ts"]
 }

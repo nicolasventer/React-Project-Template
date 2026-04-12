@@ -2,6 +2,37 @@
 import type { DependencyList, Dispatch, SetStateAction } from "react";
 import { useCallback, useDebugValue, useEffect, useState } from "react";
 
+type WatchObject = { [key: string]: ((prefix?: string) => void) | WatchObject };
+type UnwatchObject = { [key: string]: (() => void) | UnwatchObject };
+
+declare global {
+	interface Window {
+		store: {
+			data: Record<string, unknown>;
+			watch: WatchObject;
+			unwatch: UnwatchObject;
+		};
+	}
+}
+
+window.store = {
+	data: {},
+	watch: {},
+	unwatch: {},
+};
+
+/** Recursively assigns the properties of the source object to the target object. */
+const setAtPath = (obj: object, pathStr: string, value: unknown) => {
+	let cur = obj;
+	const path = pathStr.split(".");
+	for (let i = 0; i < path.length - 1; i++) {
+		const key = path[i];
+		if (!(key in cur)) (cur as Record<string, unknown>)[key] = {};
+		cur = (cur as Record<string, unknown>)[key] as object;
+	}
+	(cur as Record<string, unknown>)[path[path.length - 1]] = value;
+};
+
 /** The type of a value that is not a function */
 export type NotFunction<T> = T extends (...args: unknown[]) => unknown ? never : T;
 
@@ -21,8 +52,25 @@ class Store_<T extends NotFunction<unknown>> {
 		/** @deprecated (set as deprecated to discourage access) */
 		public readonly debugLabel?: string,
 	) {
-		// @ts-expect-error cannot handle the case where T is a function
-		this.onChange = [(v) => void (this.val = typeof v === "function" ? v(this.val) : v)];
+		this.onChange = [
+			(v) => {
+				// @ts-expect-error cannot handle the case where T is a function
+				this.val = typeof v === "function" ? v(this.val) : v;
+				if (this.debugLabel) setAtPath(window.store.data, this.debugLabel, this.val);
+			},
+		];
+		if (this.debugLabel) {
+			setAtPath(window.store.data, this.debugLabel, this.val);
+			const watchFn = (prefix?: string) => {
+				const watch = () => {
+					if (prefix) console.log(prefix, this.val);
+					else console.log(this.val);
+				};
+				this.onChange.push(watch);
+				setAtPath(window.store.unwatch, this.debugLabel!, () => void (this.onChange = this.onChange.filter((v) => v !== watch)));
+			};
+			setAtPath(window.store.watch, this.debugLabel, watchFn);
+		}
 	}
 
 	/** Returns the current value of the global state. ({@link Store_.use} should be used instead) */

@@ -119,6 +119,13 @@ export const independentModulesConfig = createIndependentModules({
 			errorMessage: "🔥 The ViteEnv module should not import anything. 🔥",
 		},
 
+		{
+			name: "_*",
+			pattern: "_*/**",
+			allowImportsFrom: ["**"],
+			errorMessage: "🔥 The _* module should import anything. 🔥",
+		},
+
 		// All files not specified in the rules are not allowed to import anything.
 		{
 			name: "Unknown files",

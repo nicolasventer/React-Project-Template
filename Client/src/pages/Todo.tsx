@@ -20,9 +20,9 @@ export const TodoApp = ({ selectedId }: TodoAppProps) => {
 			<main>
 				<h1>{tr.todo.heading.title}</h1>
 				<TodoNewForm tr={tr} />
-				{items.length && <TodoSearchField tr={tr} />}
+				{!!items.length && <TodoSearchField tr={tr} />}
 				<TodoList tr={tr} selectedId={selectedId} />
-				{items.length && <TodoFooter tr={tr} items={items} />}
+				{!!items.length && <TodoFooter tr={tr} items={items} />}
 			</main>
 		</div>
 	);

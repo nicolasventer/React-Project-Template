@@ -10,30 +10,32 @@ _[back to top](#project-understanding)_
 
 ## Code organization
 
-### Client structure (`src/`)
+### Client structure
 
 ```
-src/
-├── index.tsx              # React entry: createRoot, StrictMode
-├── localStorage.ts        # Serialize/deserialize one app-wide snapshot to `localStorage`; sync from lifecycle
-├── api/                   # Typed HTTP client via ApiCaller (see src/utils/ApiCaller.ts)
-├── assets/                # Static assets (images, fonts, …) per folderStructure rules
-├── components/            # React UI
-│   └── app/
-│     └── AppLifeCycle.tsx # Effects on state changes (i18n load, persistence, theme/CSS vars)
-├── config/                # cliConfig (defaults/types), srvConfig (API base URL)
-├── dict/                  # i18n: index + lazy lang/*.ts chunks
-├── logic/                 # Domain modules (independent) + index.ts → `app` facade
-│   └── index.ts           # Builds the `app` object facade
-├── pages/                 # Slot for manual routing (with BasicRouter)
-│   └── App.tsx            # App shell (providers + SwitchV on `app.route.state.route`) + mounts AppLifeCycle
-├── routes/                # Slot for file-based routing with [Easy React Router](https://github.com/nicolasventer/Easy-React-Router)
-├── types/                 # Shared *.type.ts
-└── utils/                 # Store, ApiCaller, hooks, MultiIf / SwitchV, BasicRouter, helpers
-    └── hooks/             # Shared React hooks (mount, interval, loading, etc.)
+Client/
+├── folderStructure.mjs        # ESLint configuration for allowed folders/files under Client/
+├── independentModules.mjs     # ESLint configuration for per-area import allowlists (pages, logic isolation, …)
+├── staticRoutes.yaml          # Path list for static HTML generation for each route (to update manually)
+└── src/
+    ├── index.tsx              # React entry: createRoot, StrictMode
+    ├── localStorage.ts        # Serialize/deserialize one app-wide snapshot to `localStorage`; sync from lifecycle
+    ├── api/                   # Typed HTTP client via ApiCaller (see src/utils/ApiCaller.ts)
+    ├── assets/                # Static assets (images, fonts, …) per folderStructure rules
+    ├── components/            # React UI
+    │   └── app/
+    │     └── AppLifeCycle.tsx # Effects on state changes (i18n load, persistence, theme/CSS vars)
+    ├── config/                # cliConfig (defaults/types), srvConfig (API base URL)
+    ├── dict/                  # i18n: index + lazy lang/*.ts chunks
+    ├── logic/                 # Domain modules (independent) + index.ts → `app` facade
+    │   └── index.ts           # Builds the `app` object facade
+    ├── pages/                 # Slot for manual routing (with BasicRouter)
+    │   └── App.tsx            # App shell (providers + SwitchV on `app.route.state.route`) + mounts AppLifeCycle
+    ├── routes/                # Slot for file-based routing with [Easy React Router](https://github.com/nicolasventer/Easy-React-Router)
+    ├── types/                 # Shared *.type.ts
+    └── utils/                 # Store, ApiCaller, hooks, MultiIf / SwitchV, BasicRouter, helpers
+        └── hooks/             # Shared React hooks (mount, interval, loading, etc.)
 ```
-
-Enforced layout: `folderStructure.mjs`. Import boundaries: `independentModules.mjs`.
 
 _[back to top](#project-understanding)_
 
@@ -43,6 +45,7 @@ _[back to top](#project-understanding)_
 - **Base** — **`setRouterBaseRoute(BASE_URL)`** strips the deployment base from the pathname so matching uses the app-relative path.
 - **Navigation** — **`navigateToRouteFn(path, params?)`** — go to a declared route (pass **params** when the pattern includes `:…` or `?…`). **`buildRouteLink(path, params?)`** — build an `href`. **`navigateToCustomRouteFn(url)`** — arbitrary URL (avoid unless necessary).
 - **UI** — **`app.route.state.route.use()`** for **`{ path, params }`**, then **`SwitchV`** to pick the page. **Note:** **`SwitchV`**’s **`value`** must be the **full route object**, with **`transform`** narrowing to **`path`** for the cases; if **`value`** were only **`path`**, the same path with different **params** might not re-run the branch.
+- **Deployment** — **staticRoutes.yaml** should contain all routes that should be generated as static HTML files. It needs to be updated manually when using **`BasicRouter`**. It can be updated automatically with **`Easy React Router`**.
 
 _[back to top](#project-understanding)_
 
@@ -92,6 +95,7 @@ _[back to top](#project-understanding)_
 - **`Store.value`**: use **only inside the same `src/logic/*.ts` file** that owns that store. Elsewhere, read with **`.use()`** / **`.useState()`**.
 - **Cross-domain data**: logic functions take external values as **parameters**; the **component** subscribes with **`.use()`** and passes arguments into actions — logic files do not import sibling `logic/*` modules.
 - **`src/logic/index.ts`** is the only logic file that may import all domain modules and build **`app`**.
+- **Debug store values** — **`window.store.data`** (snapshot) or **`window.store.watch`** (subscribe from the console); only wired for **`Store`** instances that pass a **`debugLabel`**. **`window.store.unwatch`** removes a watcher.
 
 _[back to top](#project-understanding)_
 
