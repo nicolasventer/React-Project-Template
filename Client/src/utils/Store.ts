@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import type { DependencyList, Dispatch, SetStateAction } from "react";
-import { useCallback, useDebugValue, useEffect, useState } from "react";
+import { useCallback, useDebugValue, useEffect, useSyncExternalStore } from "react";
 
 type WatchObject = { [key: string]: ((prefix?: string) => void) | WatchObject };
 type UnwatchObject = { [key: string]: (() => void) | UnwatchObject };
@@ -33,6 +33,21 @@ const setAtPath = (obj: object, pathStr: string, value: unknown) => {
 	(cur as Record<string, unknown>)[path[path.length - 1]] = value;
 };
 
+/** Recursively deletes the properties of the source object at the given path. */
+const deleteAtPath = (obj: object, pathStr: string) => {
+	const cur = [obj];
+	const path = pathStr.split(".");
+	for (let i = 0; i < path.length; i++) {
+		const key = path[i];
+		cur.push((cur[cur.length - 1] as Record<string, unknown>)[key] as object);
+	}
+	delete (cur[cur.length - 1] as Record<string, unknown>)[path[path.length - 1]];
+	for (let i = cur.length - 2; i >= 0; i--) {
+		if (Object.keys(cur[i]).length === 0) delete cur[i];
+		else break;
+	}
+};
+
 /** The type of a value that is not a function */
 export type NotFunction<T> = T extends (...args: unknown[]) => unknown ? never : T;
 
@@ -41,7 +56,7 @@ export type NotFunction<T> = T extends (...args: unknown[]) => unknown ? never :
  * @template T - The type of the global state.
  */
 class Store_<T extends NotFunction<unknown>> {
-	private onChange: Dispatch<SetStateAction<T>>[];
+	private onChange: (() => void)[] = [];
 	/**
 	 * Constructor for the global state.
 	 * @param val - The initial value of the global state.
@@ -52,24 +67,19 @@ class Store_<T extends NotFunction<unknown>> {
 		/** @deprecated (set as deprecated to discourage access) */
 		public readonly debugLabel?: string,
 	) {
-		this.onChange = [
-			(v) => {
-				// @ts-expect-error cannot handle the case where T is a function
-				this.val = typeof v === "function" ? v(this.val) : v;
-				if (this.debugLabel) setAtPath(window.store.data, this.debugLabel, this.val);
-			},
-		];
 		if (this.debugLabel) {
-			setAtPath(window.store.data, this.debugLabel, this.val);
+			const debugLabel = this.debugLabel;
+			this.onChange.push(() => setAtPath(window.store.data, debugLabel, this.val));
+			setAtPath(window.store.data, debugLabel, this.val);
 			const watchFn = (prefix?: string) => {
-				const watch = () => {
-					if (prefix) console.log(prefix, this.val);
-					else console.log(this.val);
-				};
+				const watch = prefix ? () => console.log(prefix, this.val) : () => console.log(this.val);
 				this.onChange.push(watch);
-				setAtPath(window.store.unwatch, this.debugLabel!, () => void (this.onChange = this.onChange.filter((v) => v !== watch)));
+				setAtPath(window.store.unwatch, debugLabel, () => {
+					this.onChange = this.onChange.filter((v) => v !== watch);
+					deleteAtPath(window.store.unwatch, debugLabel);
+				});
 			};
-			setAtPath(window.store.watch, this.debugLabel, watchFn);
+			setAtPath(window.store.watch, debugLabel, watchFn);
 		}
 	}
 
@@ -85,8 +95,9 @@ class Store_<T extends NotFunction<unknown>> {
 	 */
 	public setValue = (v: SetStateAction<T>, useTransition = false) => {
 		const fn = () => {
-			this.onChange[0](v); // Run once to ensure a stable computed value, especially for random or timestamp-based computations.
-			for (let i = 1; i < this.onChange.length; i++) this.onChange[i](this.val);
+			// @ts-expect-error cannot handle the case where T is a function
+			this.val = typeof v === "function" ? v(this.val) : v;
+			for (const onChange of this.onChange) onChange();
 		};
 		if (useTransition) document.startViewTransition(fn);
 		else fn();
@@ -108,10 +119,11 @@ class Store_<T extends NotFunction<unknown>> {
 	 * @param onChange - The function to call when the global state changes.
 	 * @returns A function to unsubscribe from the global state.
 	 */
-	public subscribe = (onChange: Dispatch<SetStateAction<T>>) => {
+	public subscribe = (onChange: (v: T) => void) => {
 		onChange(this.val);
-		this.onChange.push(onChange);
-		return () => void (this.onChange = this.onChange.filter((v) => v !== onChange));
+		const fn = () => onChange(this.val);
+		this.onChange.push(fn);
+		return () => void (this.onChange = this.onChange.filter((v) => v !== fn));
 	};
 
 	/**
@@ -128,17 +140,18 @@ class Store_<T extends NotFunction<unknown>> {
 	 * @returns The current value of the global state and a function to set it.
 	 */
 	public useState = (debugLabel?: string, useTransition = false) => {
-		const [s, setS] = useState(this.val);
+		const subscribe = (refresh: () => void) => {
+			this.onChange.push(refresh);
+			return () => void (this.onChange = this.onChange.filter((v) => v !== refresh));
+		};
+		const s = useSyncExternalStore(subscribe, () => this.val);
 		useDebugValue(debugLabel ?? this.debugLabel);
-		useEffect(() => {
-			this.onChange.push(setS);
-			return () => void (this.onChange = this.onChange.filter((v) => v !== setS));
-		}, []);
 		const newSetS: Dispatch<SetStateAction<T>> = useCallback(
 			(newVal) => {
 				const fn = () => {
-					this.onChange[0](newVal); // Run once to ensure a stable computed value, especially for random or timestamp-based computations.
-					for (let i = 1; i < this.onChange.length; i++) this.onChange[i](this.val);
+					// @ts-expect-error cannot handle the case where T is a function
+					this.val = typeof newVal === "function" ? newVal(this.val) : newVal;
+					for (const onChange of this.onChange) onChange();
 				};
 				if (useTransition) document.startViewTransition(fn);
 				else fn();
@@ -170,7 +183,11 @@ class Store_<T extends NotFunction<unknown>> {
 	 * @param deps - The dependencies of the effect.
 	 */
 	public useEffect = (effect: (setVal: Dispatch<SetStateAction<T>>) => void, deps: DependencyList) => {
-		const newSetS: Dispatch<SetStateAction<T>> = useCallback((newVal) => this.onChange.forEach((v) => v(newVal)), []);
+		const newSetS: Dispatch<SetStateAction<T>> = useCallback((newVal) => {
+			// @ts-expect-error cannot handle the case where T is a function
+			this.val = typeof newVal === "function" ? newVal(this.val) : newVal;
+			for (const onChange of this.onChange) onChange();
+		}, []);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 		useEffect(() => effect(newSetS), deps);
 	};
