@@ -1,0 +1,7 @@
+/* CSS debug */
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	/* outline: 2px solid lime; */
+}
