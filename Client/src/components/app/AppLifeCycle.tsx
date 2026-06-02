@@ -6,7 +6,7 @@ export const AppLifeCycle = () => {
 	const lang = app.lang.state.data.use();
 
 	// load the translations when the language changes
-	app.tr.state.data.useEffect((setTr) => void dict[lang]().then(setTr), [lang]);
+	useEffect(() => void dict[lang]().then(app.tr.state.data.setValue), [lang]);
 
 	// sync the local storage state with the app state
 	const colorScheme = app.colorScheme.state.data.use();
