@@ -6,8 +6,8 @@ import "./LangButton.css";
 export type LangButtonProps = { tr: Tr };
 
 export const LangButton = ({ tr }: LangButtonProps) => {
-	const lang = app.lang.state.data.use();
-	const loading = app.lang.state.isLoading.use();
+	const lang = app.lang.data.use();
+	const loading = app.lang.isLoading.use();
 
 	const switchLabel = lang === "en" ? tr.lang.action.switchToFrench : tr.lang.action.switchToEnglish;
 

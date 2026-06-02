@@ -123,7 +123,7 @@ const useScrollToSelectedId = (selectedId: string | undefined, selectedRef: RefO
 	}, [selectedId, selectedRef]);
 
 export const todos = {
-	state: state,
+	...state,
 	ref: ref,
 	fn: {
 		todo: {

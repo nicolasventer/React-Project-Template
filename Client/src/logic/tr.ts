@@ -7,6 +7,6 @@ const state = {
 };
 
 export const tr = {
-	state: state,
+	...state,
 	use: state.data.use, // shortcut since we use it so often
 };

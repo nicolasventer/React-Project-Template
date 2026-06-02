@@ -5,9 +5,9 @@ import "./TodoNewForm.css";
 export type TodoNewFormProps = { tr: Tr };
 
 export const TodoNewForm = ({ tr }: TodoNewFormProps) => {
-	const draft = app.todos.state.newTodo.use();
-	const randomLoading = app.todos.state.randomTodo.loading.use();
-	const randomError = app.todos.state.randomTodo.error.use();
+	const draft = app.todos.newTodo.use();
+	const randomLoading = app.todos.randomTodo.loading.use();
+	const randomError = app.todos.randomTodo.error.use();
 
 	return (
 		<>

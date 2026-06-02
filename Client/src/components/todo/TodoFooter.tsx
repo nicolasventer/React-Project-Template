@@ -7,7 +7,7 @@ import "./TodoFooter.css";
 export type TodoFooterProps = { tr: Tr; items: Todo[] };
 
 export const TodoFooter = ({ tr, items }: TodoFooterProps) => {
-	const doneFilter = app.todos.state.doneFilter.use();
+	const doneFilter = app.todos.doneFilter.use();
 
 	const activeCount = items.filter((t) => !t.done).length;
 	const doneCount = items.length - activeCount;

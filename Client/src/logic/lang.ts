@@ -24,7 +24,7 @@ const updateLangFn = (lang: Lang, useTransition: boolean) => () => {
 };
 
 export const lang = {
-	state: state,
+	...state,
 	fn: {
 		updateFn: updateLangFn,
 	},

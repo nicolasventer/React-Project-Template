@@ -21,7 +21,7 @@ const IconMoon = () => (
 );
 
 export const DarkModeButton = ({ tr }: DarkModeButtonProps) => {
-	const colorScheme = app.colorScheme.state.data.use();
+	const colorScheme = app.colorScheme.data.use();
 	const isDark = colorScheme === "dark";
 
 	return (

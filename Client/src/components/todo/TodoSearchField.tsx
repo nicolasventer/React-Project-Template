@@ -5,7 +5,7 @@ import "./TodoSearchField.css";
 export type TodoSearchFieldProps = { tr: Tr };
 
 export const TodoSearchField = ({ tr }: TodoSearchFieldProps) => {
-	const search = app.todos.state.search.use();
+	const search = app.todos.search.use();
 
 	return (
 		<input

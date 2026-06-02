@@ -7,7 +7,7 @@ import { SwitchV } from "@/utils/MultiIf";
 import "./App.css";
 
 export const App = () => {
-	const route = app.route.state.route.use();
+	const route = app.route.route.use();
 
 	return (
 		<div className="app-shell">

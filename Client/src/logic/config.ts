@@ -41,7 +41,7 @@ const resetAllConfigValues = () => {
 };
 
 export const config = {
-	state: state,
+	...state,
 	fn: {
 		value: {
 			display: displayConfigValue,

@@ -27,7 +27,7 @@ const openLastOpenedTodoFn = (tr: Tr) => () => {
 };
 
 export const route = {
-	state: state,
+	...state,
 	ref: ref,
 	fn: {
 		navigateToRouteFn: router.navigateToRouteFn,

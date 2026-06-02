@@ -12,7 +12,7 @@ export type TodoAppProps = { selectedId?: string };
 export const TodoApp = ({ selectedId }: TodoAppProps) => {
 	const tr = app.tr.use();
 
-	const items = app.todos.state.data.use();
+	const items = app.todos.data.use();
 
 	return (
 		<div className="todo-app">
