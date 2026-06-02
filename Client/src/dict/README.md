@@ -26,11 +26,10 @@ Use the same subgroup names across features when the meaning fits:
 | ------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 | **`heading`** | Page or screen title, subtitle, section headings shown as primary copy.                                                                |
 | **`form`**    | Placeholders and labels tied to inputs (text fields, search, etc.).                                                                    |
-| **`filter`**  | Options for filtering or toggling visible subsets (tabs, pills).                                                                       |
 | **`action`**  | Buttons, links, and commands: verbs or short CTA phrases (`add`, `goToHomePage`, `cancel`).                                            |
 | **`aria`**    | Strings built for accessibility (often with placeholders like `{title}`). Prefer this over stuffing long aria text under `action`.     |
 | **`status`**  | Loading text, errors, counts, empty states, and other **feedback** that is not a direct user command.                                  |
-| **`label`**   | Short names for discrete choices or modes shown in the UI (e.g. “Light” / “Dark”), especially when paired with `action` for switching. |
+| **`label`**   | Short names for discrete choices or modes (tabs, pills, theme names), especially when paired with `action` for switching.              |
 
 Not every feature needs every subgroup—only add the ones you use.
 

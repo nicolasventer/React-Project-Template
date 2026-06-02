@@ -43,10 +43,12 @@ export const en = {
 			placeholder: "What needs to be done?",
 			searchPlaceholder: "Filter tasks…",
 		},
-		filter: {
-			all: "All",
-			active: "Active",
-			completed: "Done",
+		label: {
+			filter: {
+				active: "Active",
+				all: "All",
+				completed: "Done",
+			},
 		},
 		action: {
 			add: "Add",

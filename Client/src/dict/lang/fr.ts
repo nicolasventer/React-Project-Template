@@ -45,10 +45,12 @@ export const fr: Tr = {
 			placeholder: "Que faut-il faire ?",
 			searchPlaceholder: "Filtrer les tâches…",
 		},
-		filter: {
-			all: "Toutes",
-			active: "Actives",
-			completed: "Terminées",
+		label: {
+			filter: {
+				active: "Actives",
+				all: "Toutes",
+				completed: "Terminées",
+			},
 		},
 		action: {
 			add: "Ajouter",

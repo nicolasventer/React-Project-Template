@@ -13,7 +13,7 @@ export const TodoFooter = ({ tr, items }: TodoFooterProps) => {
 	const doneCount = items.length - activeCount;
 
 	const label = (f: DoneFilter) =>
-		f === "all" ? tr.todo.filter.all : f === "active" ? tr.todo.filter.active : tr.todo.filter.completed;
+		f === "all" ? tr.todo.label.filter.all : f === "active" ? tr.todo.label.filter.active : tr.todo.label.filter.completed;
 
 	return (
 		<footer className="todo-foot">
