@@ -1,13 +1,12 @@
 import { api } from "@/api/api";
-import { initialLocalStorageState } from "@/localStorage";
-import type { DoneFilter, Todo } from "@/types/Todo.type";
+import type { DoneFilter, Todo } from "@/features/todo/types/Todo.type";
 import { store } from "@/utils/Store";
 import { wait } from "@/utils/utils";
 import type { KeyboardEvent, RefObject } from "react";
 import { useEffect } from "react";
 
 const state = {
-	data: store(initialLocalStorageState.todos, "todos.data"),
+	data: store<Todo[]>([], "todos.data"),
 	editingData: store<Record<string, string | undefined>>({}), // id -> title
 	newTodo: store(""),
 	doneFilter: store<DoneFilter>("all"),

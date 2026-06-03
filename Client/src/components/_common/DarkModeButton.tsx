@@ -1,9 +1,9 @@
-import type { Tr } from "@/dict/lang/en";
 import { app } from "@/logic";
+import type { SharedTr } from "@/shared/dict/lang/en";
 import clsx from "clsx";
 import "./DarkModeButton.css";
 
-export type DarkModeButtonProps = { tr: Tr };
+export type DarkModeButtonProps = { tr: SharedTr };
 
 const IconSun = () => (
 	<svg className="dark-mode-button-icon" viewBox="0 0 24 24" aria-hidden>

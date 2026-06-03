@@ -1,10 +1,9 @@
-import type { Lang } from "@/dict";
-import { initialLocalStorageState } from "@/localStorage";
+import type { Lang } from "@/shared/dict";
 import { store } from "@/utils/Store";
 import { wait } from "@/utils/utils";
 
 const state = {
-	data: store(initialLocalStorageState.lang),
+	data: store<Lang>("en"),
 	isLoading: store(false),
 };
 

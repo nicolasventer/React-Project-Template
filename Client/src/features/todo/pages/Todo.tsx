@@ -1,18 +1,18 @@
-import { TodoAppHeader } from "@/components/todo/TodoAppHeader";
 import "@/components/todo/TodoCommon.css";
-import { TodoFooter } from "@/components/todo/TodoFooter";
-import { TodoList } from "@/components/todo/TodoList";
-import { TodoNewForm } from "@/components/todo/TodoNewForm";
-import { TodoSearchField } from "@/components/todo/TodoSearchField";
-import { app } from "@/logic";
+import { TodoAppHeader } from "@/features/todo/components/TodoAppHeader";
+import { TodoFooter } from "@/features/todo/components/TodoFooter";
+import { TodoList } from "@/features/todo/components/TodoList";
+import { TodoNewForm } from "@/features/todo/components/TodoNewForm";
+import { TodoSearchField } from "@/features/todo/components/TodoSearchField";
+import { todoApp } from "@/features/todo/logic";
 import "./Todo.css";
 
 export type TodoAppProps = { selectedId?: string };
 
 export const TodoApp = ({ selectedId }: TodoAppProps) => {
-	const tr = app.tr.use();
+	const tr = todoApp.tr.use();
 
-	const items = app.todos.data.use();
+	const items = todoApp.todos.data.use();
 
 	return (
 		<div className="todo-app">

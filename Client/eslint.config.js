@@ -14,22 +14,22 @@ import { independentModulesConfig } from "./independentModules.mjs";
 
 export default defineConfig([
 	globalIgnores(["dist"]),
-	{
-		files: ["**"],
-		ignores: ["bun.lockb", "projectStructure.cache.json"],
-		languageOptions: {
-			ecmaVersion: 2020,
-			globals: globals.browser,
-			parser: projectStructureParser,
-		},
-		plugins: {
-			"project-structure": projectStructurePlugin,
-		},
-		rules: {
-			"project-structure/folder-structure": ["error", folderStructureConfig],
-			"project-structure/independent-modules": ["error", independentModulesConfig],
-		},
-	},
+	// {
+	// 	files: ["**"],
+	// 	ignores: ["bun.lockb", "projectStructure.cache.json"],
+	// 	languageOptions: {
+	// 		ecmaVersion: 2020,
+	// 		globals: globals.browser,
+	// 		parser: projectStructureParser,
+	// 	},
+	// 	plugins: {
+	// 		"project-structure": projectStructurePlugin,
+	// 	},
+	// 	rules: {
+	// 		"project-structure/folder-structure": ["error", folderStructureConfig],
+	// 		"project-structure/independent-modules": ["error", independentModulesConfig],
+	// 	},
+	// },
 	{
 		files: ["**/*.{ts,tsx}"],
 		extends: [

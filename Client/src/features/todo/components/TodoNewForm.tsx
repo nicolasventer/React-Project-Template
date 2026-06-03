@@ -1,13 +1,13 @@
-import type { Tr } from "@/dict/lang/en";
-import { app } from "@/logic";
+import type { TodoTr } from "@/features/todo/dict/lang/en";
+import { todoApp } from "@/features/todo/logic";
 import "./TodoNewForm.css";
 
-export type TodoNewFormProps = { tr: Tr };
+export type TodoNewFormProps = { tr: TodoTr };
 
 export const TodoNewForm = ({ tr }: TodoNewFormProps) => {
-	const draft = app.todos.newTodo.use();
-	const randomLoading = app.todos.randomTodo.loading.use();
-	const randomError = app.todos.randomTodo.error.use();
+	const draft = todoApp.todos.newTodo.use();
+	const randomLoading = todoApp.todos.randomTodo.loading.use();
+	const randomError = todoApp.todos.randomTodo.error.use();
 
 	return (
 		<>
@@ -15,14 +15,14 @@ export const TodoNewForm = ({ tr }: TodoNewFormProps) => {
 				className="row"
 				onSubmit={(e) => {
 					e.preventDefault();
-					app.todos.fn.todo.add(draft);
-					app.todos.fn.newTodo.update("");
+					todoApp.todos.fn.todo.add(draft);
+					todoApp.todos.fn.newTodo.update("");
 				}}
 			>
 				<input
 					className="field"
 					value={draft}
-					onChange={(e) => app.todos.fn.newTodo.update(e.target.value)}
+					onChange={(e) => todoApp.todos.fn.newTodo.update(e.target.value)}
 					placeholder={tr.todo.form.placeholder}
 					autoComplete="off"
 					aria-label={tr.todo.form.placeholder}
@@ -35,7 +35,7 @@ export const TodoNewForm = ({ tr }: TodoNewFormProps) => {
 					className="todo-add-random"
 					disabled={randomLoading}
 					aria-busy={randomLoading}
-					onClick={app.todos.fn.todo.random.add}
+					onClick={todoApp.todos.fn.todo.random.add}
 				>
 					{randomLoading ? tr.todo.status.addRandomLoading : tr.todo.action.addRandom}
 				</button>

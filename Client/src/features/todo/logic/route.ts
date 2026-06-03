@@ -1,14 +1,11 @@
-import { STATIC_CONFIG } from "@/config/cliConfig";
-import type { Tr } from "@/dict/lang/en";
-import { BasicRouter } from "@/utils/BasicRouter";
+import type { TodoTr } from "@/features/todo/dict/lang/en";
+import { app } from "@/logic";
 
-const router = new BasicRouter(["/", "/todo?id", "/404"], true, "route");
-
-router.setRouterBaseRoute(STATIC_CONFIG.BASE_URL);
-
-const state = {
-	route: router.getRouteStore(),
-};
+declare global {
+	interface RoutePathObj {
+		"/todo?id": "/todo?id";
+	}
+}
 
 const ref = {
 	currentTodoId: undefined as string | undefined,
@@ -18,19 +15,17 @@ const ref = {
 const openTodoFn = (todoId: string) => () => {
 	ref.lastOpenedTodoId = ref.currentTodoId;
 	ref.currentTodoId = todoId;
-	router.navigateToRouteFn("/todo?id", { id: todoId })();
+	app.route.fn.navigateToRouteFn("/todo?id", { id: todoId })();
 };
 
-const openLastOpenedTodoFn = (tr: Tr) => () => {
+const openLastOpenedTodoFn = (tr: TodoTr) => () => {
 	if (ref.lastOpenedTodoId) openTodoFn(ref.lastOpenedTodoId)();
 	else window.alert(tr.todo.status.openLastOpenedNone);
 };
 
 export const route = {
-	...state,
 	ref: ref,
 	fn: {
-		navigateToRouteFn: router.navigateToRouteFn,
 		todo: {
 			openFn: openTodoFn,
 			openLastOpenedFn: openLastOpenedTodoFn,

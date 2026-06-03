@@ -1,8 +1,8 @@
 import { AppLifeCycle } from "@/components/app/AppLifeCycle";
+import { TodoApp } from "@/features/todo/pages/Todo";
 import { app } from "@/logic";
 import { Home } from "@/pages/Home";
 import { NotFound } from "@/pages/NotFound";
-import { TodoApp } from "@/pages/Todo";
 import { SwitchV } from "@/utils/MultiIf";
 import "./App.css";
 

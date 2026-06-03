@@ -1,8 +1,8 @@
-import { en } from "@/dict/lang/en";
+import { todoEn } from "@/features/todo/dict/lang/en";
 import { store } from "@/utils/Store";
 
 const state = {
-	data: store(en),
+	data: store(todoEn),
 	isLoading: store(false),
 };
 

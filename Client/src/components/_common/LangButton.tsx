@@ -1,9 +1,9 @@
-import type { Tr } from "@/dict/lang/en";
 import { app } from "@/logic";
+import type { SharedTr } from "@/shared/dict/lang/en";
 import clsx from "clsx";
 import "./LangButton.css";
 
-export type LangButtonProps = { tr: Tr };
+export type LangButtonProps = { tr: SharedTr };
 
 export const LangButton = ({ tr }: LangButtonProps) => {
 	const lang = app.lang.data.use();

@@ -1,8 +1,8 @@
 import type { Config } from "@/config/cliConfig";
 import { DEFAULT_CONFIG } from "@/config/cliConfig";
-import type { Lang } from "@/dict";
+import type { Todo } from "@/features/todo/types/Todo.type";
+import type { Lang } from "@/shared/dict";
 import type { ColorSchemeType } from "@/types/ColorScheme.type";
-import type { Todo } from "@/types/Todo.type";
 
 const LOCAL_STORAGE_KEY = "template_globalState" as const;
 
