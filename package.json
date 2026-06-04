@@ -1,0 +1,47 @@
+{
+	"name": "client",
+	"type": "module",
+	"scripts": {
+		"config": "bun run src/shared/Config.ts",
+		"dev": "vite",
+		"build": "tsc --noEmit && vite build",
+		"preview": "serve -l 4173 ./dist",
+		"devhost": "bunx --bun vite --host",
+		"devhttps": "cross-env USE_HTTPS=true npx vite",
+		"devhttpshost": "cross-env USE_HTTPS=true npx vite --host",
+		"_preview": "vite preview",
+		"lint": "eslint .",
+		"depgraph": "depcruise --version && depcruise --config depcruise-config.cjs --output-type archi src | dot -T svg | depcruise-wrap-stream-in-html > graph-dependencies.html && cmd /c \"start graph-dependencies.html\""
+	},
+	"devDependencies": {
+		"@eslint/js": "9.39.4",
+		"@types/bun": "1.3.12",
+		"@types/dom-view-transitions": "1.0.6",
+		"@types/node": "25.6.0",
+		"@types/react": "19.2.14",
+		"@types/react-dom": "19.2.3",
+		"@typescript-eslint/eslint-plugin": "8.58.1",
+		"@vitejs/plugin-react": "6.0.1",
+		"cross-env": "10.1.0",
+		"dependency-cruiser": "17.3.10",
+		"eslint": "9.39.4",
+		"eslint-plugin-no-relative-import-paths": "1.6.1",
+		"eslint-plugin-project-structure": "3.14.3",
+		"eslint-plugin-react": "7.37.5",
+		"eslint-plugin-react-hooks": "7.0.1",
+		"eslint-plugin-react-refresh": "0.5.2",
+		"globals": "17.5.0",
+		"typescript": "6.0.2",
+		"typescript-eslint": "8.58.1",
+		"vite": "8.0.8",
+		"vite-plugin-mkcert": "2.0.0",
+		"vite-plugin-svgr": "5.2.0"
+	},
+	"dependencies": {
+		"@sinclair/typebox": "0.34.49",
+		"clsx": "2.1.1",
+		"jsonc.min": "1.1.2",
+		"react": "19.2.5",
+		"react-dom": "19.2.5"
+	}
+}

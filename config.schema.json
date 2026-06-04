@@ -1,0 +1,47 @@
+{
+  "$id": "Config",
+  "additionalProperties": false,
+  "type": "object",
+  "required": [
+    "$schema",
+    "features"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "features": {
+      "type": "object",
+      "required": [
+        "counter",
+        "timer"
+      ],
+      "properties": {
+        "counter": {
+          "additionalProperties": false,
+          "type": "object",
+          "required": [
+            "enabled"
+          ],
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            }
+          }
+        },
+        "timer": {
+          "additionalProperties": false,
+          "type": "object",
+          "required": [
+            "enabled"
+          ],
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    }
+  }
+}

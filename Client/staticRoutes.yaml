@@ -1,6 +1,0 @@
-# Static routes
-- /todo
-- /
-# Dynamic routes
-# - /posts/:id is dynamic, uncomment example below to generate it
-# - /posts/0

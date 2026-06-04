@@ -1,0 +1,11 @@
+{
+	"$schema": "config.schema.json",
+	"features": {
+		"counter": {
+			"enabled": true,
+		},
+		"timer": {
+			"enabled": true,
+		},
+	},
+}
