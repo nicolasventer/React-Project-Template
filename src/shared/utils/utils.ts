@@ -9,6 +9,32 @@ export type TypedExclude<Type, K extends Type> = Exclude<Type, K>;
 export type Satisfies<T, U extends T> = U;
 
 /**
+ * Wraps the given function so it runs at most once. Subsequent calls return the result of the first invocation. \
+ * Be sure to store the wrapped function in a variable to keep the reference.
+ * @example
+ * const init = doOnceFn((value: number) => {
+ *   console.log("initialized with", value);
+ *   return value * 2;
+ * });
+ * init(5); // logs "initialized with 5", returns 10
+ * init(99); // returns 10 without calling the inner function
+ * @template T The type of the arguments of the function.
+ * @template U The return type of the function.
+ * @param fn The function to run once.
+ * @returns A function that invokes `fn` only on the first call.
+ */
+export const doOnceFn = <T extends unknown[], U>(fn: (...args: T) => U) => {
+	let isInitialized = false;
+	let returnValue: U;
+	const result = (...args: T): U => {
+		if (isInitialized) return returnValue;
+		isInitialized = true;
+		return (returnValue = fn(...args));
+	};
+	return result;
+};
+
+/**
  * Debounces the given function, be sure to store the debounced function in a variable to keep the reference.
  * @example
  * const debouncedFn = debounceFn(() => console.log("Hello"), 1000);

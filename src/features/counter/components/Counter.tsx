@@ -1,16 +1,15 @@
-import { useState } from "react";
+import { counter } from "@/features/counter/logic/counter";
 
-export const Counter = () => {
-	const urlSearchParams = new URLSearchParams(window.location.search);
-	const start = Number(urlSearchParams.get("start") ?? 0);
-	const increment = Number(urlSearchParams.get("increment") ?? 1);
-	const [count, setCount] = useState(start);
+export const Counter = ({ start, increment }: { start?: string; increment?: string }) => {
+	counter.fn.initState({ count: Number(start ?? 0) });
+	const incrementAmount = Number(increment ?? 1);
+	const count = counter.count.use();
 
 	return (
 		<div>
 			Counter: {count}
-			<button onClick={() => setCount(count + increment)}>Increment</button>
-			<button onClick={() => setCount(count - increment)}>Decrement</button>
+			<button onClick={counter.fn.addToCountFn(incrementAmount)}>Increment</button>
+			<button onClick={counter.fn.addToCountFn(-incrementAmount)}>Decrement</button>
 		</div>
 	);
 };

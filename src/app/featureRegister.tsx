@@ -1,23 +1,17 @@
 import configStr from "@/../config.jsonc?raw";
-import { Counter } from "@/features/counter/components/Counter";
-import { Timer } from "@/features/timer/components/Timer";
+import { CounterFeature } from "@/features/counter";
+import { TimerFeature } from "@/features/timer";
 import type { FeatureType } from "@/shared/Config";
 import { getValidConfig } from "@/shared/Config";
-import type { Feature } from "@/shared/types/Feature.types";
+import type { Feature } from "@/shared/types/Feature";
 
 const config = getValidConfig(configStr);
 
 const featureRegister: Record<FeatureType, Feature> = {
-	counter: {
-		route: "/counter?start?increment",
-		Render: Counter,
-	},
-	timer: {
-		route: "/timer?interval",
-		Render: Timer,
-	},
+	counter: CounterFeature,
+	timer: TimerFeature,
 };
 
-export const enabledFeatures = Object.entries(config.features)
+export const enabledFeatures = Object.entries(config.features.common)
 	.filter(([_, value]) => value.enabled)
 	.map(([key, _]) => featureRegister[key as FeatureType]);

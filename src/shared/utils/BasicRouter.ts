@@ -43,8 +43,29 @@ export type BuildLinkParams<RoutePath extends string> = keyof RouteParams<RouteP
 	? [path: RoutePath]
 	: [path: RoutePath, params: RouteParams<RoutePath>];
 
+/**
+ * Discriminated union of a route path and its typed parameters.
+ * `params` are inferred from path segments (`:param`) and query string (`?param`).
+ * @template {string} RoutePath The union of route path literals.
+ * @example
+ * type Route = RouteWithParams<"/counter" | "/user/:id">;
+ * // { path: "/counter"; params: {} } | { path: "/user/:id"; params: { id: string } }
+ */
 export type RouteWithParams<RoutePath extends string> = {
 	[key in RoutePath]: { path: key; params: RouteParams<key> };
+}[RoutePath];
+
+/**
+ * Discriminated union of a route path and its render function.
+ * `Render` receives parameters typed from the route path.
+ * @template {string} RoutePath The union of route path literals.
+ * @example
+ * type Feature = RouteWithRender<"/counter" | "/user/:id">;
+ * // { path: "/counter"; Render: (params: {}) => React.ReactNode }
+ * // | { path: "/user/:id"; Render: (params: { id: string }) => React.ReactNode }
+ */
+export type RouteWithRender<RoutePath extends string> = {
+	[key in RoutePath]: { path: key; Render: (params: RouteParams<key>) => React.ReactNode };
 }[RoutePath];
 
 /**

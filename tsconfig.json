@@ -3,6 +3,7 @@
 		"target": "ES2020",
 		"useDefineForClassFields": true,
 		"lib": ["ESNext", "DOM", "DOM.Iterable"],
+		"types": ["bun", "node"],
 		"module": "ESNext",
 		"skipLibCheck": true,
 		"paths": {
