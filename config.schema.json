@@ -13,31 +13,61 @@
     "features": {
       "type": "object",
       "required": [
-        "counter",
-        "timer"
+        "common",
+        "specific"
       ],
       "properties": {
-        "counter": {
-          "additionalProperties": false,
+        "common": {
           "type": "object",
           "required": [
-            "enabled"
+            "counter",
+            "timer"
           ],
           "properties": {
-            "enabled": {
-              "type": "boolean"
+            "counter": {
+              "additionalProperties": false,
+              "type": "object",
+              "required": [
+                "enabled"
+              ],
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "timer": {
+              "additionalProperties": false,
+              "type": "object",
+              "required": [
+                "enabled"
+              ],
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              }
             }
           }
         },
-        "timer": {
+        "specific": {
           "additionalProperties": false,
           "type": "object",
           "required": [
-            "enabled"
+            "timer"
           ],
           "properties": {
-            "enabled": {
-              "type": "boolean"
+            "timer": {
+              "additionalProperties": false,
+              "type": "object",
+              "required": [
+                "interval"
+              ],
+              "properties": {
+                "interval": {
+                  "type": "number"
+                }
+              }
             }
           }
         }

@@ -1,5 +1,6 @@
 import * as t from "@sinclair/typebox";
-import { Value, ValueError } from "@sinclair/typebox/value";
+import type { ValueError } from "@sinclair/typebox/value";
+import { Value } from "@sinclair/typebox/value";
 import { JSONC } from "jsonc.min";
 
 const FeatureTypeSchema = t.Union([t.Literal("counter"), t.Literal("timer")], { $id: "FeatureType" });
@@ -41,9 +42,9 @@ const DefaultConfig: Config = {
 	},
 };
 
-const errors: ValueError[] = [];
-export const getValidConfig = (config: string): Config => {
-	const obj = JSONC.parse(config);
+export const getValidConfig = (configStr: string): Config => {
+	const obj = JSONC.parse(configStr);
+	const errors: ValueError[] = [];
 	errors.push(...Value.Errors(ConfigSchema, obj));
 	if (errors.length > 0) {
 		console.error("Config errors:", errors);
@@ -55,5 +56,6 @@ export const getValidConfig = (config: string): Config => {
 
 if (import.meta.main) {
 	await Bun.write("config.schema.json", JSON.stringify(ConfigSchema, null, 2));
-	if (!(await Bun.file("config.json").exists())) await Bun.write("config.jsonc", JSON.stringify(DefaultConfig, null, 2));
+	await Bun.write("config.jsonc", JSON.stringify(DefaultConfig, null, 2));
+	console.log("Generated: config.schema.json, config.jsonc");
 }

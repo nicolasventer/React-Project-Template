@@ -1,11 +1,8 @@
-import configStr from "@/../config.jsonc?raw";
+import { config } from "@/bootstrap/config";
 import { CounterFeature } from "@/features/counter";
 import { TimerFeature } from "@/features/timer";
 import type { FeatureType } from "@/shared/Config";
-import { getValidConfig } from "@/shared/Config";
 import type { Feature } from "@/shared/types/Feature";
-
-const config = getValidConfig(configStr);
 
 const featureRegister: Record<FeatureType, Feature> = {
 	counter: CounterFeature,
