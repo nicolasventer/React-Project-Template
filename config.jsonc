@@ -1,16 +1,12 @@
 {
   "$schema": "config.schema.json",
   "features": {
-    "common": {
-      "counter": {
-        "enabled": true
-      },
-      "timer": {
-        "enabled": true
-      }
+    "counter": {
+      "enabled": true
     },
-    "specific": {
-      "timer": {
+    "timer": {
+      "enabled": true,
+      "specific": {
         "interval": 1000
       }
     }

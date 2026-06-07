@@ -10,15 +10,12 @@ export type FeatureType = t.Static<typeof FeatureTypeSchema>;
 const ConfigSchema = t.Object(
 	{
 		$schema: t.String(),
-		features: t.Object({
-			common: t.Record(FeatureTypeSchema, t.Object({ enabled: t.Boolean() }, { additionalProperties: false })),
-			specific: t.Object(
-				{ timer: t.Object({ interval: t.Number() }, { additionalProperties: false }) },
-				{ additionalProperties: false },
-			),
-		}),
+		features: t.Union([
+			t.Record(FeatureTypeSchema, t.Object({ enabled: t.Boolean() })),
+			t.Object({ timer: t.Object({ specific: t.Object({ interval: t.Number() }) }) }),
+		]),
 	},
-	{ $id: "Config", additionalProperties: false },
+	{ $id: "Config" },
 );
 
 export type Config = t.Static<typeof ConfigSchema>;
@@ -26,16 +23,12 @@ export type Config = t.Static<typeof ConfigSchema>;
 const DefaultConfig: Config = {
 	$schema: "config.schema.json",
 	features: {
-		common: {
-			counter: {
-				enabled: true,
-			},
-			timer: {
-				enabled: true,
-			},
+		counter: {
+			enabled: true,
 		},
-		specific: {
-			timer: {
+		timer: {
+			enabled: true,
+			specific: {
 				interval: 1000,
 			},
 		},

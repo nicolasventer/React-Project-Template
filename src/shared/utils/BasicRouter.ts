@@ -152,7 +152,7 @@ export class BasicRouter<RoutePath extends string> {
 		);
 		routeRegex ??= this.routeRegexes.find(({ regex }) => regex.test(path));
 		if (!routeRegex) {
-			this.currentRoute.setValue({ path: path, params: {} } as RouteWithParams<RoutePath>);
+			this.currentRoute.setValue({ path: "/404", params: {} } as RouteWithParams<RoutePath>);
 			return;
 		}
 		const params = path.match(routeRegex.regex)!.slice(1);

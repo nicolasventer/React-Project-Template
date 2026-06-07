@@ -1,0 +1,42 @@
+.root {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 1rem;
+	padding: 2rem 1.25rem;
+	text-align: center;
+}
+
+.title {
+	margin: 0;
+	font-size: clamp(1.5rem, 4vw, 2rem);
+	font-weight: 700;
+}
+
+.text {
+	margin: 0;
+	opacity: 0.75;
+	max-width: 28rem;
+}
+
+.btn {
+	padding: 0.6rem 1.1rem;
+	border: none;
+	border-radius: 10px;
+	background: #2563eb;
+	color: #fff;
+	font: inherit;
+	font-weight: 600;
+	cursor: pointer;
+	transition: filter 0.15s ease;
+}
+
+.btn:hover {
+	filter: brightness(1.05);
+}
+
+html[data-theme="dark"] .btn {
+	background: #3b82f6;
+}

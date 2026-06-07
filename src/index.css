@@ -5,3 +5,10 @@
 	box-sizing: border-box;
 	/* outline: 2px solid lime; */
 }
+
+html,
+body,
+#root {
+	height: 100%;
+	margin: 0;
+}

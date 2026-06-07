@@ -3,14 +3,26 @@ import type { RouterPath } from "@/shared/types/Router";
 import { BasicRouter } from "@/shared/utils/BasicRouter";
 
 const router = new BasicRouter<RouterPath>(
-	enabledFeatures.map((feature) => feature.route.path),
+	["/", "/404", ...enabledFeatures.map((feature) => feature.route.path)],
 	true,
+	"router",
 );
+
+router.setRouterBaseRoute("");
 
 const state = {
 	router: router.getRouteStore(),
 };
 
+const navigateToRouteFn = router.navigateToRouteFn;
+const navigateToCustomRouteFn = router.navigateToCustomRouteFn;
+const buildRouteLink = router.buildRouteLink;
+
 export const route = {
 	...state,
+	fn: {
+		navigateToRouteFn,
+		navigateToCustomRouteFn,
+		buildRouteLink,
+	},
 };

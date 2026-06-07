@@ -11,13 +11,9 @@
       "type": "string"
     },
     "features": {
-      "type": "object",
-      "required": [
-        "common",
-        "specific"
-      ],
-      "properties": {
-        "common": {
+      "additionalProperties": false,
+      "anyOf": [
+        {
           "type": "object",
           "required": [
             "counter",
@@ -25,7 +21,6 @@
           ],
           "properties": {
             "counter": {
-              "additionalProperties": false,
               "type": "object",
               "required": [
                 "enabled"
@@ -37,7 +32,6 @@
               }
             },
             "timer": {
-              "additionalProperties": false,
               "type": "object",
               "required": [
                 "enabled"
@@ -50,28 +44,35 @@
             }
           }
         },
-        "specific": {
-          "additionalProperties": false,
+        {
           "type": "object",
           "required": [
             "timer"
           ],
           "properties": {
             "timer": {
-              "additionalProperties": false,
               "type": "object",
               "required": [
-                "interval"
+                "specific"
               ],
               "properties": {
-                "interval": {
-                  "type": "number"
+                "specific": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "interval"
+                  ],
+                  "properties": {
+                    "interval": {
+                      "type": "number"
+                    }
+                  }
                 }
               }
             }
           }
         }
-      }
+      ]
     }
   }
 }

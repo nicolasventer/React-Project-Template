@@ -9,6 +9,6 @@ const featureRegister: Record<FeatureType, Feature> = {
 	timer: TimerFeature,
 };
 
-export const enabledFeatures = Object.entries(config.features.common)
+export const enabledFeatures = Object.entries(config.features)
 	.filter(([_, value]) => value.enabled)
 	.map(([key, _]) => featureRegister[key as FeatureType]);

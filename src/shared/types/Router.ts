@@ -1,8 +1,10 @@
 import type { RouteWithParams, RouteWithRender } from "@/shared/utils/BasicRouter";
 
 declare global {
-	// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-	interface RouterPathObj {}
+	interface RouterPathObj {
+		"/": "/";
+		"/404": "/404";
+	}
 }
 
 export type RouterPath = RouterPathObj[keyof RouterPathObj];
