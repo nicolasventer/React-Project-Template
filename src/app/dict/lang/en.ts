@@ -2,6 +2,7 @@ export const en = {
 	notFound: {
 		title: "404 Not Found",
 		goToHomePage: "Go to Home page",
+		notFoundPath: (path: string) => `The path "${path}" was not found`,
 	},
 	theme: {
 		light: "Light",

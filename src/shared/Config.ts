@@ -3,34 +3,32 @@ import type { ValueError } from "@sinclair/typebox/value";
 import { Value } from "@sinclair/typebox/value";
 import { JSONC } from "jsonc.min";
 
-const FeatureTypeSchema = t.Union([t.Literal("counter"), t.Literal("timer")], { $id: "FeatureType" });
-
-export type FeatureType = t.Static<typeof FeatureTypeSchema>;
-
 const ConfigSchema = t.Object(
 	{
 		$schema: t.String(),
-		features: t.Union([
-			t.Record(FeatureTypeSchema, t.Object({ enabled: t.Boolean() })),
-			t.Object({ timer: t.Object({ specific: t.Object({ interval: t.Number() }) }) }),
-		]),
+		features: t.Object({
+			counter: t.Object({ enabled: t.Boolean(), specific: t.Optional(t.Object({ increment: t.Number() })) }),
+			timer: t.Object({ enabled: t.Boolean() }),
+		}),
 	},
 	{ $id: "Config" },
 );
 
 export type Config = t.Static<typeof ConfigSchema>;
 
+export type FeatureType = keyof Config["features"];
+
 const DefaultConfig: Config = {
 	$schema: "config.schema.json",
 	features: {
 		counter: {
 			enabled: true,
+			specific: {
+				increment: 5,
+			},
 		},
 		timer: {
 			enabled: true,
-			specific: {
-				interval: 1000,
-			},
 		},
 	},
 };

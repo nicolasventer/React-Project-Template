@@ -1,7 +1,7 @@
 import { dict } from "@/app/dict";
 import { colorScheme } from "@/app/logic/colorsScheme";
-import { lang } from "@/app/logic/lang";
 import { tr } from "@/app/logic/tr";
+import { lang } from "@/shared/logic/lang";
 import { useEffect } from "react";
 
 export const AppLifeCycle = () => {

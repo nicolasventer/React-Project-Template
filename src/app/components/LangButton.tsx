@@ -1,5 +1,5 @@
 import type { Tr } from "@/app/dict/lang/en";
-import { lang } from "@/app/logic/lang";
+import { lang } from "@/shared/logic/lang";
 import clsx from "clsx";
 import "./LangButton.css";
 

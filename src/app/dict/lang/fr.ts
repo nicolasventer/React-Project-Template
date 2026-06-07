@@ -4,6 +4,7 @@ export const fr: Tr = {
 	notFound: {
 		title: "404 Non trouvé",
 		goToHomePage: "Aller à la page d'accueil",
+		notFoundPath: (path: string) => `Le chemin "${path}" n'a pas été trouvé`,
 	},
 	theme: {
 		light: "Clair",

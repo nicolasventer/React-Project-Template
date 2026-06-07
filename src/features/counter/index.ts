@@ -4,11 +4,11 @@ import { createRoute } from "@/shared/types/Router";
 
 declare global {
 	interface RouterPathObj {
-		"/counter?start?increment": "/counter?start?increment";
+		"/counter?start": "/counter?start";
 	}
 }
 
 export const CounterFeature: Feature = {
-	route: createRoute("/counter?start?increment", Counter),
-	link: "/counter?start=10&increment=5",
+	route: createRoute("/counter?start", Counter),
+	link: "/counter?start=10",
 };

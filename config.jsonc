@@ -2,13 +2,13 @@
   "$schema": "config.schema.json",
   "features": {
     "counter": {
-      "enabled": true
-    },
-    "timer": {
       "enabled": true,
       "specific": {
-        "interval": 1000
+        "increment": 5
       }
+    },
+    "timer": {
+      "enabled": true
     }
   }
 }

@@ -1,3 +1,5 @@
+import { TimerLifeCycle } from "@/features/timer/components/TimerLifeCycle";
+import { tr } from "@/features/timer/logic/tr";
 import { useEffect, useState } from "react";
 
 export const Timer = () => {
@@ -5,6 +7,7 @@ export const Timer = () => {
 	const interval = Number(urlSearchParams.get("interval") ?? 1000);
 
 	const [time, setTime] = useState(0);
+	const trV = tr.use();
 
 	useEffect(() => {
 		const initialTime = Date.now();
@@ -17,5 +20,13 @@ export const Timer = () => {
 		return () => clearTimeout(timeoutId);
 	}, [interval]);
 
-	return <div>Timer: {time}ms</div>;
+	return (
+		<>
+			<TimerLifeCycle />
+			<div>
+				{trV.timer.label}: {time}
+				{trV.timer.unit}
+			</div>
+		</>
+	);
 };

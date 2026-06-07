@@ -44,7 +44,8 @@ export const App = () => {
 					transform={(r) => r.path}
 					cases={[
 						["/", Home],
-						["/404", NotFound],
+						// eslint-disable-next-line @typescript-eslint/no-explicit-any
+						["/404", () => <NotFound {...(r.params as any)} />],
 						...enabledFeatures.map(
 							(feature) =>
 								[

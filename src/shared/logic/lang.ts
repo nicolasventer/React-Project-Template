@@ -1,4 +1,4 @@
-import type { Lang } from "@/app/dict";
+import type { Lang } from "@/shared/types/Lang";
 import { store } from "@/shared/utils/Store";
 import { wait } from "@/shared/utils/utils";
 

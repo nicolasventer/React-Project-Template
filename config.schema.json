@@ -1,6 +1,5 @@
 {
   "$id": "Config",
-  "additionalProperties": false,
   "type": "object",
   "required": [
     "$schema",
@@ -11,68 +10,46 @@
       "type": "string"
     },
     "features": {
-      "additionalProperties": false,
-      "anyOf": [
-        {
+      "type": "object",
+      "required": [
+        "counter",
+        "timer"
+      ],
+      "properties": {
+        "counter": {
           "type": "object",
           "required": [
-            "counter",
-            "timer"
+            "enabled"
           ],
           "properties": {
-            "counter": {
-              "type": "object",
-              "required": [
-                "enabled"
-              ],
-              "properties": {
-                "enabled": {
-                  "type": "boolean"
-                }
-              }
+            "enabled": {
+              "type": "boolean"
             },
-            "timer": {
+            "specific": {
               "type": "object",
               "required": [
-                "enabled"
+                "increment"
               ],
               "properties": {
-                "enabled": {
-                  "type": "boolean"
+                "increment": {
+                  "type": "number"
                 }
               }
             }
           }
         },
-        {
+        "timer": {
           "type": "object",
           "required": [
-            "timer"
+            "enabled"
           ],
           "properties": {
-            "timer": {
-              "type": "object",
-              "required": [
-                "specific"
-              ],
-              "properties": {
-                "specific": {
-                  "additionalProperties": false,
-                  "type": "object",
-                  "required": [
-                    "interval"
-                  ],
-                  "properties": {
-                    "interval": {
-                      "type": "number"
-                    }
-                  }
-                }
-              }
+            "enabled": {
+              "type": "boolean"
             }
           }
         }
-      ]
+      }
     }
   }
 }

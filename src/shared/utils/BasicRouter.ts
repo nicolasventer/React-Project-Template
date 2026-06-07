@@ -141,7 +141,11 @@ export class BasicRouter<RoutePath extends string> {
 		this.updateCurrentRoute_();
 	};
 
-	/** Updates the current route based on the current URL or local path. Called within {@link setRouterBaseRoute}, {@link navigateToRouteFn} and {@link navigateToCustomRouteFn}. */
+	/**
+	 * Updates the current route based on the current URL or local path.
+	 * Called within {@link setRouterBaseRoute}, {@link navigateToRouteFn} and {@link navigateToCustomRouteFn}.
+	 * If no registered route matches the pathname, sets the route to `"/404"` with `params.path` set to the unmatched path.
+	 */
 	private updateCurrentRoute_ = () => {
 		const url = this.isGlobal
 			? new URL(window.location.href)
@@ -152,7 +156,7 @@ export class BasicRouter<RoutePath extends string> {
 		);
 		routeRegex ??= this.routeRegexes.find(({ regex }) => regex.test(path));
 		if (!routeRegex) {
-			this.currentRoute.setValue({ path: "/404", params: {} } as RouteWithParams<RoutePath>);
+			this.currentRoute.setValue({ path: "/404", params: { path: path } } as unknown as RouteWithParams<RoutePath>);
 			return;
 		}
 		const params = path.match(routeRegex.regex)!.slice(1);
