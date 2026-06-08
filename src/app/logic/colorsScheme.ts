@@ -1,9 +1,10 @@
 import type { ColorSchemeType } from "@/app/types/ColorScheme.type";
-import { store } from "@/shared/utils/Store";
+import { getLocalStorageKey } from "@/shared/Config";
+import { localStorageStore, store } from "@/shared/utils/Store";
 import { wait } from "@/shared/utils/utils";
 
 const state = {
-	data: store<ColorSchemeType>("light"),
+	data: localStorageStore<ColorSchemeType>(getLocalStorageKey("colorScheme"), "light"),
 	isLoading: store(false),
 };
 

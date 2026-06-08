@@ -1,6 +1,7 @@
 import { TimerLifeCycle } from "@/features/timer/components/TimerLifeCycle";
 import { tr } from "@/features/timer/logic/tr";
 import { useEffect, useState } from "react";
+import styles from "./Timer.module.css";
 
 export const Timer = () => {
 	const urlSearchParams = new URLSearchParams(window.location.search);
@@ -12,9 +13,9 @@ export const Timer = () => {
 	useEffect(() => {
 		const initialTime = Date.now();
 		const updateTime = () => {
-			const newTime = Date.now() - initialTime;
-			setTime(newTime);
-			timeoutId = setTimeout(updateTime, interval - (newTime % interval));
+			const elapsed = Date.now() - initialTime;
+			setTime(Math.floor(elapsed / interval) * interval);
+			timeoutId = setTimeout(updateTime, interval - (elapsed % interval));
 		};
 		let timeoutId = setTimeout(updateTime, interval);
 		return () => clearTimeout(timeoutId);
@@ -23,9 +24,14 @@ export const Timer = () => {
 	return (
 		<>
 			<TimerLifeCycle />
-			<div>
-				{trV.timer.label}: {time}
-				{trV.timer.unit}
+			<div className={styles.root}>
+				<div className={styles.card}>
+					<p className={styles.label}>{trV.timer.label}</p>
+					<p className={styles.value}>
+						{time}
+						<span className={styles.unit}>{trV.timer.unit}</span>
+					</p>
+				</div>
 			</div>
 		</>
 	);

@@ -2,6 +2,7 @@ import { config } from "@/bootstrap/config";
 import { CounterLifeCycle } from "@/features/counter/components/CounterLifeCycle";
 import { counter } from "@/features/counter/logic/counter";
 import { tr } from "@/features/counter/logic/tr";
+import styles from "./Counter.module.css";
 
 export const Counter = ({ start }: { start?: string }) => {
 	counter.fn.initState({ count: Number(start ?? 0) });
@@ -12,10 +13,19 @@ export const Counter = ({ start }: { start?: string }) => {
 	return (
 		<>
 			<CounterLifeCycle />
-			<div>
-				{trV.counter.label}: {count}
-				<button onClick={counter.fn.addToCountFn(incrementAmount)}>{trV.counter.increment}</button>
-				<button onClick={counter.fn.addToCountFn(-incrementAmount)}>{trV.counter.decrement}</button>
+			<div className={styles.root}>
+				<div className={styles.card}>
+					<p className={styles.label}>{trV.counter.label}</p>
+					<p className={styles.value}>{count}</p>
+					<div className={styles.actions}>
+						<button type="button" className={styles.button} onClick={counter.fn.addToCountFn(-incrementAmount)}>
+							{trV.counter.decrement}
+						</button>
+						<button type="button" className={styles.button} onClick={counter.fn.addToCountFn(incrementAmount)}>
+							{trV.counter.increment}
+						</button>
+					</div>
+				</div>
 			</div>
 		</>
 	);

@@ -1,9 +1,10 @@
+import { getLocalStorageKey } from "@/shared/Config";
 import type { Lang } from "@/shared/types/Lang";
-import { store } from "@/shared/utils/Store";
+import { localStorageStore, store } from "@/shared/utils/Store";
 import { wait } from "@/shared/utils/utils";
 
 const state = {
-	data: store<Lang>("en"),
+	data: localStorageStore<Lang>(getLocalStorageKey("lang"), "en"),
 	isLoading: store(false),
 };
 

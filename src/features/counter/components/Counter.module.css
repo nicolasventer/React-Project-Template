@@ -1,0 +1,86 @@
+.root {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 2rem 1.25rem;
+}
+
+.card {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1.25rem;
+	min-width: min(100%, 18rem);
+	padding: 1.75rem 2rem;
+	border: 1px solid #e4e4e7;
+	border-radius: 12px;
+	background: #fff;
+}
+
+html[data-theme="dark"] .card {
+	border-color: #3f3f46;
+	background: #18181b;
+}
+
+.label {
+	margin: 0;
+	font-size: 0.8rem;
+	font-weight: 600;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	opacity: 0.6;
+}
+
+.value {
+	margin: 0;
+	font-size: 2.75rem;
+	font-weight: 700;
+	font-variant-numeric: tabular-nums;
+	letter-spacing: -0.03em;
+	line-height: 1;
+}
+
+.actions {
+	display: flex;
+	gap: 0.5rem;
+}
+
+.button {
+	padding: 0.5rem 1rem;
+	border: 1px solid #d4d4d8;
+	border-radius: 8px;
+	background: #fafafa;
+	color: inherit;
+	font: inherit;
+	font-size: 0.875rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition:
+		border-color 0.15s ease,
+		background 0.15s ease;
+}
+
+.button:hover {
+	border-color: #2563eb;
+	background: #eff6ff;
+}
+
+html[data-theme="dark"] .button {
+	border-color: #52525b;
+	background: #27272a;
+}
+
+html[data-theme="dark"] .button:hover {
+	border-color: #3b82f6;
+	background: #1e3a5f;
+}
+
+.button:focus {
+	outline: none;
+}
+
+.button:focus-visible {
+	border-color: #2563eb;
+	box-shadow: 0 0 0 3px rgb(37 99 235 / 0.25);
+}
