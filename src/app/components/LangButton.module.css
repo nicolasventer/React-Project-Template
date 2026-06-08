@@ -1,4 +1,4 @@
-.lang-button {
+.button {
 	--lang-border: #d4d4d8;
 	--lang-bg: #fff;
 	--lang-text: #3f3f46;
@@ -21,42 +21,42 @@
 		background 0.2s ease;
 }
 
-html[data-theme="dark"] .lang-button {
+html[data-theme="dark"] .button {
 	--lang-border: #52525b;
 	--lang-bg: #27272a;
 	--lang-text: #e4e4e7;
 	--lang-accent: #60a5fa;
 }
 
-.lang-button:hover {
+.button:hover {
 	border-color: var(--lang-accent);
 	box-shadow: 0 0 0 3px color-mix(in srgb, var(--lang-accent) 22%, transparent);
 }
 
-.lang-button:focus {
+.button:focus {
 	outline: none;
 }
 
-.lang-button:focus-visible {
+.button:focus-visible {
 	border-color: var(--lang-accent);
 	box-shadow: 0 0 0 3px color-mix(in srgb, var(--lang-accent) 35%, transparent);
 }
 
-.lang-button:disabled {
+.button:disabled {
 	cursor: wait;
 	opacity: 0.85;
 }
 
-.lang-button--loading {
+.loading {
 	pointer-events: none;
 }
 
-.lang-button-code {
+.code {
 	display: block;
 	line-height: 1.2;
 }
 
-.lang-button-spinner {
+.spinner {
 	display: block;
 	width: 1rem;
 	height: 1rem;
@@ -64,10 +64,10 @@ html[data-theme="dark"] .lang-button {
 	border: 2px solid color-mix(in srgb, var(--lang-text) 28%, transparent);
 	border-top-color: var(--lang-accent);
 	border-radius: 50%;
-	animation: lang-button-spin 0.65s linear infinite;
+	animation: spin 0.65s linear infinite;
 }
 
-@keyframes lang-button-spin {
+@keyframes spin {
 	to {
 		transform: rotate(360deg);
 	}

@@ -1,7 +1,7 @@
 import type { Tr } from "@/app/dict/lang/en";
 import { lang } from "@/shared/logic/lang";
 import clsx from "clsx";
-import "./LangButton.css";
+import styles from "./LangButton.module.css";
 
 export type LangButtonProps = { tr: Tr };
 
@@ -14,7 +14,7 @@ export const LangButton = ({ tr }: LangButtonProps) => {
 	return (
 		<button
 			type="button"
-			className={clsx("lang-button", loading && "lang-button--loading")}
+			className={clsx(styles.button, loading && styles.loading)}
 			disabled={loading}
 			aria-busy={loading}
 			aria-label={loading ? tr.lang.loading : switchLabel}
@@ -22,9 +22,9 @@ export const LangButton = ({ tr }: LangButtonProps) => {
 			onClick={lang.fn.updateFn(langV === "en" ? "fr" : "en", true)}
 		>
 			{loading ? (
-				<span className="lang-button-spinner" aria-hidden />
+				<span className={styles.spinner} aria-hidden />
 			) : (
-				<span className="lang-button-code" aria-hidden>
+				<span className={styles.code} aria-hidden>
 					{langV.toUpperCase()}
 				</span>
 			)}

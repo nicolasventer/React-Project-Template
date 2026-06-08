@@ -1,4 +1,4 @@
-.dark-mode-button {
+.button {
 	position: relative;
 	--dm-track: #e4e4e7;
 	--dm-thumb-bg: #fff;
@@ -24,7 +24,7 @@
 		box-shadow 0.2s ease;
 }
 
-html[data-theme="dark"] .dark-mode-button {
+html[data-theme="dark"] .button {
 	--dm-track: #3f3f46;
 	--dm-thumb-bg: #27272a;
 	--dm-border: #52525b;
@@ -32,26 +32,26 @@ html[data-theme="dark"] .dark-mode-button {
 	--dm-accent: #60a5fa;
 }
 
-.dark-mode-button:hover:not(:disabled) {
+.button:hover:not(:disabled) {
 	border-color: var(--dm-accent);
 	box-shadow: 0 0 0 3px color-mix(in srgb, var(--dm-accent) 22%, transparent);
 }
 
-.dark-mode-button:focus {
+.button:focus {
 	outline: none;
 }
 
-.dark-mode-button:focus-visible {
+.button:focus-visible {
 	border-color: var(--dm-accent);
 	box-shadow: 0 0 0 3px color-mix(in srgb, var(--dm-accent) 35%, transparent);
 }
 
-.dark-mode-button:disabled {
+.button:disabled {
 	opacity: 0.55;
 	cursor: wait;
 }
 
-.dark-mode-button-track {
+.track {
 	position: relative;
 	display: flex;
 	align-items: center;
@@ -64,11 +64,11 @@ html[data-theme="dark"] .dark-mode-button {
 	transition: background 0.25s ease;
 }
 
-.dark-mode-button--dark .dark-mode-button-track {
+.dark .track {
 	background: color-mix(in srgb, var(--dm-accent) 45%, var(--dm-track));
 }
 
-.dark-mode-button-thumb {
+.thumb {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -83,22 +83,22 @@ html[data-theme="dark"] .dark-mode-button {
 		color 0.2s ease;
 }
 
-.dark-mode-button--dark .dark-mode-button-thumb {
+.dark .thumb {
 	transform: translateX(1.05rem);
 }
 
-.dark-mode-button-icon {
+.icon {
 	width: 0.7rem;
 	height: 0.7rem;
 }
 
-.dark-mode-button-label {
+.label {
 	white-space: nowrap;
 	padding-right: 0.15rem;
 }
 
 @media (max-width: 380px) {
-	.dark-mode-button-label {
+	.label {
 		position: absolute;
 		width: 1px;
 		height: 1px;
@@ -110,7 +110,7 @@ html[data-theme="dark"] .dark-mode-button {
 		border: 0;
 	}
 
-	.dark-mode-button {
+	.button {
 		padding: 0.35rem;
 	}
 }

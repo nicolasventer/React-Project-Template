@@ -3,6 +3,9 @@ import type { ValueError } from "@sinclair/typebox/value";
 import { Value } from "@sinclair/typebox/value";
 import { JSONC } from "jsonc.min";
 
+const JSON_SCHEMA_PATH = "config.schema.json";
+const JSON_CONFIG_PATH = "config.jsonc";
+
 const ConfigSchema = t.Object(
 	{
 		$schema: t.String(),
@@ -19,7 +22,7 @@ export type Config = t.Static<typeof ConfigSchema>;
 export type FeatureType = keyof Config["features"];
 
 const DefaultConfig: Config = {
-	$schema: "config.schema.json",
+	$schema: JSON_SCHEMA_PATH,
 	features: {
 		counter: {
 			enabled: true,
@@ -46,7 +49,7 @@ export const getValidConfig = (configStr: string): Config => {
 };
 
 if (import.meta.main) {
-	await Bun.write("config.schema.json", JSON.stringify(ConfigSchema, null, 2));
-	await Bun.write("config.jsonc", JSON.stringify(DefaultConfig, null, 2));
-	console.log("Generated: config.schema.json, config.jsonc");
+	await Bun.write(JSON_SCHEMA_PATH, JSON.stringify(ConfigSchema, null, 2));
+	await Bun.write(JSON_CONFIG_PATH, JSON.stringify(DefaultConfig, null, 2));
+	console.log(`Generated: ${JSON_SCHEMA_PATH}, ${JSON_CONFIG_PATH}`);
 }
