@@ -1,0 +1,1 @@
+var e={timer:{label:`Chronomètre`,unit:`ms`}};export{e as fr};

@@ -1,0 +1,1 @@
+var e={counter:{label:`Compteur`,increment:`Incrémenter`,decrement:`Décrémenter`}};export{e as fr};
