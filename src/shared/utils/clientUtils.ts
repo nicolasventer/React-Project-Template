@@ -31,3 +31,30 @@ export const onEnterFn = (fn: () => void) => (ev: KeyboardEvent<HTMLInputElement
  * @returns the element with the given id
  */
 export const byId = <T extends HTMLElement = HTMLInputElement>(id: string) => document.getElementById(id) as T;
+
+/**
+ * Reads a JSON value from localStorage.
+ * @template T - The expected value type.
+ * @param key - The localStorage key.
+ * @param defaultValue - The value returned when the key is missing or invalid.
+ * @returns The stored value, or `defaultValue` on miss or parse error.
+ */
+export const readLocalStorageValue = <T>(key: string, defaultValue: T): T => {
+	try {
+		const raw = localStorage.getItem(key);
+		if (raw === null) return defaultValue;
+		return JSON.parse(raw) as T;
+	} catch {
+		return defaultValue;
+	}
+};
+
+/**
+ * Writes a JSON-serializable value to localStorage.
+ * @template T - The value type.
+ * @param key - The localStorage key.
+ * @param value - The value to store.
+ */
+export const writeLocalStorageValue = <T>(key: string, value: T) => {
+	localStorage.setItem(key, JSON.stringify(value));
+};

@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { getLocalStorageKey } from "@/shared/Config";
 import type { Dispatch, SetStateAction } from "react";
 import { useCallback, useDebugValue, useEffect, useSyncExternalStore } from "react";
 
@@ -245,6 +246,35 @@ export function store<T extends NotFunction<unknown>>(val: T, debugLabel?: strin
 export function store<T extends NotFunction<unknown>>(val?: T, debugLabel?: string) {
 	return new Store_(val, debugLabel);
 }
+
+const readLocalStorageValue = <T>(key: string, defaultValue: T): T => {
+	if (typeof window === "undefined") return defaultValue;
+	try {
+		const raw = localStorage.getItem(getLocalStorageKey(key));
+		if (raw === null) return defaultValue;
+		return JSON.parse(raw) as T;
+	} catch {
+		return defaultValue;
+	}
+};
+
+const writeLocalStorageValue = <T>(key: string, value: T) => {
+	if (typeof window === "undefined") return;
+	localStorage.setItem(getLocalStorageKey(key), JSON.stringify(value));
+};
+
+/**
+ * Creates a store backed by localStorage.
+ * @template T - The store value type.
+ * @param key - The localStorage key suffix (prefixed via {@link getLocalStorageKey}).
+ * @param defaultValue - The value used when nothing is stored yet.
+ * @returns A store that reads from localStorage and persists on update.
+ */
+export const localStorageStore = <T extends NotFunction<unknown>>(key: string, defaultValue: T): Store<T> => {
+	const s = store(readLocalStorageValue(key, defaultValue));
+	s.subscribe((v) => writeLocalStorageValue(key, v), false);
+	return s;
+};
 
 type InferArgs<T extends readonly BaseStore<unknown>[]> = T extends readonly [BaseStore<infer U>, ...infer V]
 	? [U, ...InferArgs<V extends readonly BaseStore<any>[] ? V : never>]

@@ -6,6 +6,10 @@ import { JSONC } from "jsonc.min";
 const JSON_SCHEMA_PATH = "config.schema.json";
 const JSON_CONFIG_PATH = "config.jsonc";
 
+export const LOCAL_STORAGE_KEY_PREFIX = "aab:";
+
+export const getLocalStorageKey = (key: string) => `${LOCAL_STORAGE_KEY_PREFIX}${key}`;
+
 const ConfigSchema = t.Object(
 	{
 		$schema: t.String(),
