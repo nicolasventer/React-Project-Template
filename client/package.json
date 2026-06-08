@@ -5,6 +5,8 @@
 		"config": "bun run src/shared/Config.ts",
 		"dev": "vite",
 		"build": "tsc --noEmit && bun run src/bootstrap/config.tsx && vite build",
+		"buildDeploy": "bun run build && bun run deploy",
+		"deploy": "bun run _deploy.ts",
 		"preview": "serve -l 4173 ./dist",
 		"devhost": "bunx --bun vite --host",
 		"devhttps": "cross-env USE_HTTPS=true npx vite",
