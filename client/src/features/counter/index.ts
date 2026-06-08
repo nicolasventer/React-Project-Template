@@ -10,5 +10,5 @@ declare global {
 
 export const CounterFeature: Feature = {
 	route: createRoute("/counter?start", Counter),
-	link: "/counter?start=10",
+	link: { path: "/counter?start", params: { start: "10" } },
 };

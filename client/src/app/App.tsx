@@ -24,12 +24,12 @@ export const App = () => {
 					</span>
 					{enabledFeatures.map((feature) => (
 						<a
-							key={feature.link}
-							href={feature.link}
+							key={feature.link.path}
+							href={feature.link.path}
 							className={styles.navLink}
-							onClick={route.fn.navigateToCustomRouteFn(feature.link)}
+							onClick={route.fn.navigateToRouteFn(feature.link.path, feature.link.params)}
 						>
-							{feature.link}
+							{route.fn.buildRouteLink(feature.link.path, feature.link.params)}
 						</a>
 					))}
 				</nav>

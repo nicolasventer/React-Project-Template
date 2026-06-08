@@ -1,4 +1,5 @@
 import { enabledFeatures } from "@/app/featureRegister";
+import { B_PROD } from "@/shared/Config";
 import type { RouterPath } from "@/shared/types/Router";
 import { BasicRouter } from "@/shared/utils/BasicRouter";
 
@@ -8,7 +9,7 @@ const router = new BasicRouter<RouterPath>(
 	"router",
 );
 
-router.setRouterBaseRoute("");
+router.setRouterBaseRoute(B_PROD ? "/React-Project-Template" : "");
 
 const state = {
 	router: router.getRouteStore(),

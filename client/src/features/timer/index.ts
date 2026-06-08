@@ -10,5 +10,5 @@ declare global {
 
 export const TimerFeature: Feature = {
 	route: createRoute("/timer?interval", Timer),
-	link: "/timer?interval=100",
+	link: { path: "/timer?interval", params: { interval: "100" } },
 };

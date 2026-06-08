@@ -19,10 +19,10 @@ export const Counter = ({ start }: { start?: string }) => {
 					<p className={styles.value}>{count}</p>
 					<div className={styles.actions}>
 						<button type="button" className={styles.button} onClick={counter.fn.addToCountFn(-incrementAmount)}>
-							{trV.counter.decrement}
+							-{incrementAmount}
 						</button>
 						<button type="button" className={styles.button} onClick={counter.fn.addToCountFn(incrementAmount)}>
-							{trV.counter.increment}
+							+{incrementAmount}
 						</button>
 					</div>
 				</div>
