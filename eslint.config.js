@@ -2,15 +2,34 @@
 
 import js from "@eslint/js";
 import noRelativeImportPlugin from "eslint-plugin-no-relative-import-paths";
+import { projectStructureParser, projectStructurePlugin } from "eslint-plugin-project-structure";
 import react from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 import { defineConfig, globalIgnores } from "eslint/config";
 import globals from "globals";
 import tseslint from "typescript-eslint";
+import { folderStructureConfig } from "./folderStructure.mjs";
+import { independentModulesConfig } from "./independentModules.mjs";
 
 export default defineConfig([
 	globalIgnores(["dist"]),
+	{
+		files: ["**"],
+		ignores: ["bun.lockb", "projectStructure.cache.json"],
+		languageOptions: {
+			ecmaVersion: 2020,
+			globals: globals.browser,
+			parser: projectStructureParser,
+		},
+		plugins: {
+			"project-structure": projectStructurePlugin,
+		},
+		rules: {
+			"project-structure/folder-structure": ["error", folderStructureConfig],
+			"project-structure/independent-modules": ["error", independentModulesConfig],
+		},
+	},
 	{
 		files: ["**/*.{ts,tsx}"],
 		extends: [

@@ -7,7 +7,12 @@ module.exports = {
 
 		includeOnly: "^src",
 
-		exclude: ["^src/(logic|utils|dict)", "^src/localStorage.ts", "^src/(routes|pages)/.*.css"],
+		exclude: [
+			"^src/shared/utils",
+			"^src/shared/logic",
+			"^src/(app|features)/.*/dict",
+			"^src/(app|features)/.*/.*\\.module\\.css",
+		],
 
 		tsPreCompilationDeps: false,
 
@@ -19,7 +24,7 @@ module.exports = {
 
 		reporterOptions: {
 			archi: {
-				collapsePattern: "^src/assets|^src/components/[^/]*",
+				collapsePattern: "^src/app/assets|^src/app/components|^src/features/[^/]+/components",
 
 				theme: {
 					modules: [
@@ -27,17 +32,8 @@ module.exports = {
 							criteria: { collapsed: true },
 							attributes: { shape: "tab" },
 						},
-						// {
-						// 	criteria: { source: "^src/routes/[^/]+" },
-						// 	attributes: { fillcolor: "#ffd9a3" },
-						// },
-						// {
-						// 	criteria: { source: "^src/features/[^/]+/[^/]+" },
-						// 	attributes: { fillcolor: "#aedaff" },
-						// },
 					],
 					graph: {
-						// splines: "ortho",
 						rankdir: "TB",
 						ranksep: "0.7",
 					},
