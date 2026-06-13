@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document summarizes how this **React + TypeScript + Vite** template is organized: layers (`shared`, `bootstrap`, `app`, `features`), routing, state, persistence, i18n, configuration, and the ESLint rules that keep modules decoupled.
+This document summarizes how this **React + TypeScript + Vite** template is organized: layers (`config`, `shared`, `app`, `features`), routing, state, persistence, i18n, configuration, and the ESLint rules that keep modules decoupled.
 
 The codebase is split into a thin **app shell** (`src/app/`) and pluggable **features** (`src/features/`). Shared infrastructure lives under `src/shared/`. Components import named logic modules directly (for example `route`, `tr`, `counter`) rather than a monolithic façade object.
 
@@ -17,15 +17,17 @@ _[back to top](#project-understanding)_
 ├── folderStructure.mjs        # ESLint: allowed folders/files under src/
 ├── independentModules.mjs     # ESLint: per-area import allowlists
 ├── config.jsonc               # Runtime feature flags and settings (validated at build/boot)
-├── config.schema.json         # JSON Schema generated from shared/Config.ts
+├── config.schema.json         # JSON Schema generated from config/Config.ts
 └── src/
-    ├── index.tsx              # React entry: bootstrap, createRoot, StrictMode
+    ├── index.tsx              # React entry: config bootstrap, createRoot, StrictMode
     ├── index.css              # Global styles
-    ├── bootstrap/
-    │   └── config.tsx         # Load and validate config.jsonc; render error UI on failure
+    ├── featureRegister.tsx    # Maps config.features → enabled Feature objects
+    ├── config/
+    │   ├── Config.ts          # TypeBox schema, defaults, B_PROD, getLocalStorageKey, config CLI
+    │   └── bootstrap/
+    │       └── config.tsx     # Load and validate config.jsonc; render error UI on failure
     ├── app/                   # Application shell (not feature-specific)
     │   ├── App.tsx            # Layout, nav, SwitchV routing
-    │   ├── featureRegister.tsx# Maps config.features → enabled Feature objects
     │   ├── assets/            # Shell assets (favicon, …)
     │   ├── components/        # Shell UI (AppLifeCycle, LangButton, DarkModeButton)
     │   ├── dict/              # Shell i18n (home, theme, lang, notFound)
@@ -41,7 +43,6 @@ _[back to top](#project-understanding)_
     │   └── timer/
     │       └── …              # Same layout per feature
     └── shared/                # Cross-cutting infrastructure
-        ├── Config.ts          # TypeBox schema, defaults, config validation
         ├── logic/             # Shared domain (e.g. lang)
         ├── types/             # Shared types (Feature, Router, Lang, …)
         └── utils/             # Store, BasicRouter, hooks, MultiIf / SwitchV, helpers
@@ -52,12 +53,14 @@ _[back to top](#project-understanding)_
 
 ## Layer boundaries
 
-| Layer         | Role                                                           | May import from                                        |
-| ------------- | -------------------------------------------------------------- | ------------------------------------------------------ |
-| **shared**    | Store, router utils, config schema, shared types               | `shared/**` only                                       |
-| **bootstrap** | Validate `config.jsonc` before the app mounts                  | `shared/**`                                            |
-| **app**       | Shell routing, theme, shell i18n, layout, feature registration | `app/**`, `features/**`, `bootstrap`, `shared`         |
-| **features**  | Self-contained routes, UI, logic, and translations per domain  | Same feature, `bootstrap`, `shared` — **not** `app/**` |
+| Layer         | Role                                                           | May import from                                                        |
+| ------------- | -------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| **config**    | TypeBox schema, validation CLI, bootstrap before app mounts    | `config/**` only                                                       |
+| **shared**    | Store, router utils, shared types                              | `shared/**`, `config/**`                                               |
+| **app**       | Shell routing, theme, shell i18n, layout                       | `app/**`, `featureRegister`, feature entry points, `config/**`, `shared/**` |
+| **features**  | Self-contained routes, UI, logic, and translations per domain  | Same feature, `config/**`, `shared/**` — **not** `app/**`              |
+
+[`src/featureRegister.tsx`](src/featureRegister.tsx) sits at the `src/` root and wires enabled features from `config.jsonc` into the router and nav.
 
 Within `app/logic/` and `features/*/logic/`, each file is **independent** and must not import sibling logic modules. Components subscribe with `.use()` and pass values into logic functions as parameters.
 
@@ -67,7 +70,8 @@ _[back to top](#project-understanding)_
 
 - **Router** — `BasicRouter` in `src/app/logic/route.ts`, typed with `RouterPath` from `src/shared/types/Router.ts`.
 - **Paths** — Core shell paths (`/`, `/404`) plus paths declared by enabled features in `featureRegister.tsx`. Path strings follow **BasicRouter** conventions (`/segments`, `:name` for path segments, trailing `?key` for optional query params).
-- **Feature routes** — Each feature exports a `Feature` object (`src/shared/types/Feature.ts`) with `route` (from `createRoute`) and `link`. Augment `RouterPathObj` in the feature `index.ts` for type-safe paths.
+- **Feature routes** — Each feature exports a `Feature` object (`src/shared/types/Feature.ts`) with `route` (from `createRoute`) and `link` (`{ path, params? }` for nav defaults and typed query values). Augment `RouterPathObj` in the feature `index.ts` for type-safe paths.
+- **Production base route** — When `B_PROD` is `true` in `src/config/Config.ts`, `route.ts` sets the router base (for example `/React-Project-Template` for GitHub Pages deploys).
 - **Navigation** — `route.fn.navigateToRouteFn`, `route.fn.navigateToCustomRouteFn`, `route.fn.buildRouteLink` from `src/app/logic/route.ts`.
 - **UI** — `route.router.use()` for `{ path, params }`, then `SwitchV` in `App.tsx`. Pass the **full route object** as `value` and use `transform` to narrow to `path` so param changes re-render the correct branch.
 
@@ -82,7 +86,7 @@ _[back to top](#project-understanding)_
 | **Bundler / dev**   | Vite 8                                                                                               |
 | **State**           | Custom `Store` (`src/shared/utils/Store.ts`) + logic modules in `app/logic/` and `features/*/logic/` |
 | **Routing**         | `BasicRouter` + `route` in `app/logic/route.ts` + `SwitchV` in `app/App.tsx`                         |
-| **Config**          | `config.jsonc` validated by TypeBox schema in `shared/Config.ts`; loaded in `bootstrap/config.tsx`   |
+| **Config**          | `config.jsonc` validated by TypeBox schema in `config/Config.ts`; loaded in `config/bootstrap/config.tsx` |
 | **HTTP (optional)** | `ApiCaller` (`src/shared/utils/ApiCaller.ts`) — wire up when a feature needs an API client           |
 | **i18n**            | Lazy-loaded `dict/lang/*` per surface (app shell + each feature); runtime strings in `tr` stores     |
 | **Persistence**     | Per-key `localStorageStore` in `Store.ts` (lang, color scheme, …)                                    |
@@ -94,7 +98,7 @@ _[back to top](#project-understanding)_
 
 ### `src/index.tsx` (entry)
 
-Imports `@/bootstrap/config` first so invalid config fails fast (with an error page). Then mounts `App` under `StrictMode`.
+Imports `@/config/bootstrap/config` first so invalid config fails fast (with an error page). Then mounts `App` under `StrictMode`.
 
 ### `src/app/App.tsx` (application shell)
 
@@ -116,7 +120,7 @@ _[back to top](#project-understanding)_
 ## State, `Store`, and logic boundaries
 
 - **`Store`** (`src/shared/utils/Store.ts`): `setValue`, `use()`, `useState()`, `useEffect`; optional updates wrapped in `document.startViewTransition`.
-- **`localStorageStore`**: persists a single key (prefixed via `getLocalStorageKey` from `shared/Config.ts`) on each update.
+- **`localStorageStore`**: persists a single key (prefixed via `getLocalStorageKey` from `config/Config.ts`) on each update.
 - **`Store.value`**: use **only inside the logic file** that owns the store. Elsewhere, read with `.use()` / `.useState()`.
 - **Cross-domain data**: logic functions take external values as **parameters**; components subscribe with `.use()` and pass arguments — logic files do not import sibling logic modules.
 - **Debug** — `window.store.data` (snapshot) or `window.store.watch` (subscribe from the console) for stores created with a `debugLabel`.
@@ -144,19 +148,20 @@ _[back to top](#project-understanding)_
 
 - **`counter`** (`src/features/counter/logic/counter.ts`) — `count` store, `fn.initState`, `fn.addToCountFn`.
 - **`tr`** (`src/features/counter/logic/tr.ts`) — feature translation store; `CounterLifeCycle` loads `features/counter/dict`.
-- **`CounterFeature`** (`src/features/counter/index.ts`) — route `/counter?start`, default link `/counter?start=10`.
+- **`CounterFeature`** (`src/features/counter/index.ts`) — route `/counter?start`, default link `{ path: "/counter?start", params: { start: "10" } }`.
 - Increment step from `config.features.counter.specific.increment` (see `config.jsonc`).
 
 ### Feature example: `timer`
 
-- **`TimerFeature`** (`src/features/timer/index.ts`) — route `/timer?interval`.
+- **`TimerFeature`** (`src/features/timer/index.ts`) — route `/timer?interval`, default link `{ path: "/timer?interval", params: { interval: "100" } }`.
+- Timer UI reads `interval` from the query string; feature-scoped `tr` and `dict`.
 - Timer UI reads `interval` from the query string; feature-scoped `tr` and `dict`.
 
 ### `Config`
 
 - **`config.jsonc`** — source of truth for feature toggles and feature-specific settings.
-- **`shared/Config.ts`** — TypeBox schema, `getValidConfig`, `getLocalStorageKey`, default config; run `bun run config` to regenerate schema and default jsonc.
-- **`bootstrap/config.tsx`** — exports validated `config` for the running app.
+- **`config/Config.ts`** — TypeBox schema, `getValidConfig`, `getLocalStorageKey`, `B_PROD`, default config; run `bun run config` to regenerate schema and default jsonc.
+- **`config/bootstrap/config.tsx`** — exports validated `config` for the running app.
 
 _[back to top](#project-understanding)_
 

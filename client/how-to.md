@@ -25,7 +25,7 @@ This guide documents the main extension points in this template: features, routi
 
 ## How to add a feature
 
-Features live under [`src/features/<name>/`](src/features/) and are wired through [`src/app/featureRegister.tsx`](src/app/featureRegister.tsx) and [`config.jsonc`](config.jsonc).
+Features live under [`src/features/<name>/`](src/features/) and are wired through [`src/featureRegister.tsx`](src/featureRegister.tsx) and [`config.jsonc`](config.jsonc).
 
 1. create the feature folder with the standard layout:
    - `index.ts` — export a `Feature` object
@@ -43,12 +43,12 @@ declare global {
 
 export const MyFeature: Feature = {
 	route: createRoute("/my-feature?key", MyComponent),
-	link: "/my-feature?key=value",
+	link: { path: "/my-feature?key", params: { key: "value" } },
 };
 ```
 
-3. add the feature to `ConfigSchema` in [`src/shared/Config.ts`](src/shared/Config.ts) and to [`config.jsonc`](config.jsonc)
-4. register it in [`src/app/featureRegister.tsx`](src/app/featureRegister.tsx)
+3. add the feature to `ConfigSchema` in [`src/config/Config.ts`](src/config/Config.ts) and to [`config.jsonc`](config.jsonc)
+4. register it in [`src/featureRegister.tsx`](src/featureRegister.tsx)
 5. run `bun run lint` — new paths must match [`folderStructure.mjs`](folderStructure.mjs) and [`independentModules.mjs`](independentModules.mjs)
 
 _[↑ Back to top](#how-to)_
@@ -72,7 +72,7 @@ Paths use `/segments`, `:name` for path segments, and a trailing `?key` segment 
 
 Prefer declaring the route on the feature `index.ts` (see [How to add a feature](#how-to-add-a-feature)). The path is picked up automatically when the feature is enabled in config — no manual `SwitchV` entry needed.
 
-Use `route.fn.navigateToRouteFn(...)` or `route.fn.navigateToCustomRouteFn(...)` from components; use `route.fn.buildRouteLink` when you need an `href`.
+Use `route.fn.navigateToRouteFn(path, params?)` or `route.fn.navigateToCustomRouteFn(...)` from components; use `route.fn.buildRouteLink(path, params?)` when you need an `href`.
 
 _[↑ Back to top](#how-to)_
 
@@ -98,7 +98,7 @@ _[↑ Back to top](#how-to)_
 
 ## How to persist state in localStorage
 
-Persistence uses per-key stores via `localStorageStore` in [`src/shared/utils/Store.ts`](src/shared/utils/Store.ts). Keys are prefixed with `getLocalStorageKey` from [`src/shared/Config.ts`](src/shared/Config.ts).
+Persistence uses per-key stores via `localStorageStore` in [`src/shared/utils/Store.ts`](src/shared/utils/Store.ts). Keys are prefixed with `getLocalStorageKey` from [`src/config/Config.ts`](src/config/Config.ts).
 
 1. in your logic module, create state with `localStorageStore<T>(getLocalStorageKey("myKey"), defaultValue)`
 2. read in components with `.use()`; write with `.setValue()` inside the owning logic file
@@ -112,12 +112,12 @@ _[↑ Back to top](#how-to)_
 
 ## How to add config
 
-Runtime config is defined in [`config.jsonc`](config.jsonc), validated by the TypeBox schema in [`src/shared/Config.ts`](src/shared/Config.ts), and loaded by [`src/bootstrap/config.tsx`](src/bootstrap/config.tsx).
+Runtime config is defined in [`config.jsonc`](config.jsonc), validated by the TypeBox schema in [`src/config/Config.ts`](src/config/Config.ts), and loaded by [`src/config/bootstrap/config.tsx`](src/config/bootstrap/config.tsx).
 
-1. extend `ConfigSchema` in [`src/shared/Config.ts`](src/shared/Config.ts) and `DefaultConfig`
+1. extend `ConfigSchema` in [`src/config/Config.ts`](src/config/Config.ts) and `DefaultConfig`
 2. run `bun run config` to regenerate [`config.schema.json`](config.schema.json) and refresh the default jsonc
 3. update [`config.jsonc`](config.jsonc) with your values
-4. import `config` from `@/bootstrap/config` where needed (for example feature components reading `config.features.counter.specific`)
+4. import `config` from `@/config/bootstrap/config` where needed (for example feature components reading `config.features.counter.specific`)
 
 _[↑ Back to top](#how-to)_
 
@@ -198,6 +198,6 @@ Typical workflow:
 
 1. when you add a new area (for example a new feature or app subfolder), add a `modules` entry with the right `pattern` and `allowImportsFrom`
 2. if many modules should share the same imports, add or extend a key under `reusableImportPatterns` and reference it in `allowImportsFrom`
-3. run `bun run lint` and adjust rules until imports match the architecture (features must not import `app/**`; logic modules must not import sibling logic)
+3. run `bun run lint` and adjust rules until imports match the architecture (`config/**` is self-contained; features must not import `app/**`; logic modules must not import sibling logic)
 
 _[↑ Back to top](#how-to)_
