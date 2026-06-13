@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { getLocalStorageKey } from "@/shared/Config";
+import { getLocalStorageKey } from "@/config/Config";
 import type { Dispatch, SetStateAction } from "react";
 import { useCallback, useDebugValue, useEffect, useSyncExternalStore } from "react";
 

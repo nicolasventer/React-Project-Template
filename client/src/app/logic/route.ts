@@ -1,5 +1,5 @@
-import { enabledFeatures } from "@/app/featureRegister";
-import { B_PROD } from "@/shared/Config";
+import { B_PROD } from "@/config/Config";
+import { enabledFeatures } from "@/featureRegister";
 import type { RouterPath } from "@/shared/types/Router";
 import { BasicRouter } from "@/shared/utils/BasicRouter";
 

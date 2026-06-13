@@ -1,11 +1,11 @@
 import { AppLifeCycle } from "@/app/components/AppLifeCycle";
 import { DarkModeButton } from "@/app/components/DarkModeButton";
 import { LangButton } from "@/app/components/LangButton";
-import { enabledFeatures } from "@/app/featureRegister";
 import { route } from "@/app/logic/route";
 import { tr } from "@/app/logic/tr";
 import { Home } from "@/app/pages/Home";
 import { NotFound } from "@/app/pages/NotFound";
+import { enabledFeatures } from "@/featureRegister";
 import { SwitchV } from "@/shared/utils/MultiIf";
 import type { ReactNode } from "react";
 import styles from "./App.module.css";

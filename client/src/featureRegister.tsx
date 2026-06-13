@@ -1,7 +1,7 @@
-import { config } from "@/bootstrap/config";
+import { config } from "@/config/bootstrap/config";
+import type { FeatureType } from "@/config/Config";
 import { CounterFeature } from "@/features/counter";
 import { TimerFeature } from "@/features/timer";
-import type { FeatureType } from "@/shared/Config";
 import type { Feature } from "@/shared/types/Feature";
 
 const featureRegister: Record<FeatureType, Feature> = {

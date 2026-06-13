@@ -2,9 +2,9 @@
 	"name": "client",
 	"type": "module",
 	"scripts": {
-		"config": "bun run src/shared/Config.ts",
+		"config": "bun run src/config/Config.ts",
 		"dev": "vite",
-		"build": "tsc --noEmit && bun run src/bootstrap/config.tsx && vite build",
+		"build": "tsc --noEmit && bun run src/config/bootstrap/config.tsx && vite build",
 		"buildDeploy": "bun run build && bun run deploy",
 		"deploy": "bun run _deploy.ts",
 		"preview": "serve -l 4173 ./dist",

@@ -1,5 +1,5 @@
 import type { ColorSchemeType } from "@/app/types/ColorScheme.type";
-import { getLocalStorageKey } from "@/shared/Config";
+import { getLocalStorageKey } from "@/config/Config";
 import { localStorageStore, store } from "@/shared/utils/Store";
 import { wait } from "@/shared/utils/utils";
 

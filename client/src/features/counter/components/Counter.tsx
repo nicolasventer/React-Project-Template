@@ -1,4 +1,4 @@
-import { config } from "@/bootstrap/config";
+import { config } from "@/config/bootstrap/config";
 import { CounterLifeCycle } from "@/features/counter/components/CounterLifeCycle";
 import { counter } from "@/features/counter/logic/counter";
 import { tr } from "@/features/counter/logic/tr";

@@ -1,6 +1,6 @@
 import configStr from "@/../config.jsonc?raw";
-import type { Config } from "@/shared/Config";
-import { getValidConfig } from "@/shared/Config";
+import type { Config } from "@/config/Config";
+import { getValidConfig } from "@/config/Config";
 import { createRoot } from "react-dom/client";
 
 export function getConfig(): Config {

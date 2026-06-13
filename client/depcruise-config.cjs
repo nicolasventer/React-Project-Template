@@ -8,10 +8,10 @@ module.exports = {
 		includeOnly: "^src",
 
 		exclude: [
-			"^src/shared/utils",
-			"^src/shared/logic",
-			"^src/(app|features)/.*/dict",
-			"^src/(app|features)/.*/.*\\.module\\.css",
+			// "^src/shared/utils",
+			// "^src/shared/logic",
+			// "^src/(app|features)/.*/dict",
+			// "^src/(app|features)/.*/.*\\.module\\.css",
 		],
 
 		tsPreCompilationDeps: false,
@@ -24,7 +24,7 @@ module.exports = {
 
 		reporterOptions: {
 			archi: {
-				collapsePattern: "^src/app/assets|^src/app/components|^src/features/[^/]+/components",
+				collapsePattern: "^src/.*/(dict|logic|utils)|^src/app/assets|^src/app/components|^src/features/[^/]+/components",
 
 				theme: {
 					modules: [

@@ -24,16 +24,14 @@ export const independentModulesConfig = createIndependentModules({
 			name: "AppShell",
 			pattern: ["src/app/App.tsx", "src/app/featureRegister.tsx"],
 			allowImportsFrom: ["src/app/**", "src/features/**", "src/bootstrap/**", "{shared}"],
-			errorMessage:
-				"🔥 The App shell should access app, features, bootstrap config, and shared modules. 🔥",
+			errorMessage: "🔥 The App shell should access app, features, bootstrap config, and shared modules. 🔥",
 		},
 
 		{
 			name: "AppComponents",
 			pattern: "src/app/components/**",
 			allowImportsFrom: ["{dirname}/**", "src/app/dict/**", "src/app/logic/**", "{shared}"],
-			errorMessage:
-				"🔥 App components should access their folder, app dict/logic, and shared modules. 🔥",
+			errorMessage: "🔥 App components should access their folder, app dict/logic, and shared modules. 🔥",
 		},
 
 		{
@@ -46,12 +44,7 @@ export const independentModulesConfig = createIndependentModules({
 		{
 			name: "AppLogic",
 			pattern: "src/app/logic/**",
-			allowImportsFrom: [
-				"{shared}",
-				"src/app/types/**",
-				"src/app/dict/**",
-				"src/app/featureRegister.tsx",
-			],
+			allowImportsFrom: ["{shared}", "src/app/types/**", "src/app/dict/**", "src/app/featureRegister.tsx"],
 			errorMessage:
 				"🔥 App logic modules are independent: shared, app types/dict, and featureRegister only — not sibling logic files. 🔥",
 		},
@@ -95,16 +88,14 @@ export const independentModulesConfig = createIndependentModules({
 				"src/bootstrap/**",
 				"{shared}",
 			],
-			errorMessage:
-				"🔥 Feature components should access the same feature, bootstrap config, and shared modules. 🔥",
+			errorMessage: "🔥 Feature components should access the same feature, bootstrap config, and shared modules. 🔥",
 		},
 
 		{
 			name: "FeatureLogic",
 			pattern: "src/features/*/logic/**",
 			allowImportsFrom: ["src/features/*/dict/**", "{shared}"],
-			errorMessage:
-				"🔥 Feature logic modules are independent: same-feature dict and shared only — not sibling logic or app. 🔥",
+			errorMessage: "🔥 Feature logic modules are independent: same-feature dict and shared only — not sibling logic or app. 🔥",
 		},
 
 		{
