@@ -1,0 +1,16 @@
+{
+	// "entryPoints": ["src/**/*.ts"],
+	"entryPoints": ["src/routes/**/*.impl.ts"],
+	"validation": {
+		"notExported": true,
+		"invalidLink": true,
+		"notDocumented": true
+	},
+	"out": "typedoc_out",
+	"logLevel": "Warn",
+	"treatWarningsAsErrors": false,
+	"excludeExternals": true,
+	// "projectDocuments": ["README.md", "src/**/*.md"],
+	"plugin": ["typedoc-plugin-missing-exports"],
+	"exclude": ["src/**/*.d.ts"]
+}
