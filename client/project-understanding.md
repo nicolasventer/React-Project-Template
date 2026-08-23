@@ -1,12 +1,14 @@
 # Project Understanding
 
+[Return](README.md)
+
 ## Overview
 
 This document summarizes how this **React + TypeScript + Vite** template is organized: layers (`config`, `shared`, `app`, `features`), routing, state, persistence, i18n, configuration, and the ESLint rules that keep modules decoupled.
 
 The codebase is split into a thin **app shell** (`src/app/`) and pluggable **features** (`src/features/`). Shared infrastructure lives under `src/shared/`. Components import named logic modules directly (for example `route`, `tr`, `counter`) rather than a monolithic façade object.
 
-_[back to top](#project-understanding)_
+_[Back to top](#project-understanding)_
 
 ## Code organization
 
@@ -49,7 +51,7 @@ _[back to top](#project-understanding)_
             └── hooks/
 ```
 
-_[back to top](#project-understanding)_
+_[Back to top](#project-understanding)_
 
 ## Layer boundaries
 
@@ -64,7 +66,7 @@ _[back to top](#project-understanding)_
 
 Within `app/logic/` and `features/*/logic/`, each file is **independent** and must not import sibling logic modules. Components subscribe with `.use()` and pass values into logic functions as parameters.
 
-_[back to top](#project-understanding)_
+_[Back to top](#project-understanding)_
 
 ## Routing
 
@@ -75,7 +77,7 @@ _[back to top](#project-understanding)_
 - **Navigation** — `route.fn.navigateToRouteFn`, `route.fn.navigateToCustomRouteFn`, `route.fn.buildRouteLink` from `src/app/logic/route.ts`.
 - **UI** — `route.router.use()` for `{ path, params }`, then `SwitchV` in `App.tsx`. Pass the **full route object** as `value` and use `transform` to narrow to `path` so param changes re-render the correct branch.
 
-_[back to top](#project-understanding)_
+_[Back to top](#project-understanding)_
 
 ## Tech stack
 
@@ -92,7 +94,7 @@ _[back to top](#project-understanding)_
 | **Persistence**     | Per-key `localStorageStore` in `Store.ts` (lang, color scheme, …)                                    |
 | **Quality**         | ESLint (React, TypeScript, folder structure, independent modules)                                    |
 
-_[back to top](#project-understanding)_
+_[Back to top](#project-understanding)_
 
 ## Entry, shell, and lifecycle
 
@@ -115,7 +117,7 @@ Headless component (`null` render) for store-driven effects:
 
 Feature components mount their own `*LifeCycle` for feature-scoped translations (for example `CounterLifeCycle`, `TimerLifeCycle`).
 
-_[back to top](#project-understanding)_
+_[Back to top](#project-understanding)_
 
 ## State, `Store`, and logic boundaries
 
@@ -125,7 +127,7 @@ _[back to top](#project-understanding)_
 - **Cross-domain data**: logic functions take external values as **parameters**; components subscribe with `.use()` and pass arguments — logic files do not import sibling logic modules.
 - **Debug** — `window.store.data` (snapshot) or `window.store.watch` (subscribe from the console) for stores created with a `debugLabel`.
 
-_[back to top](#project-understanding)_
+_[Back to top](#project-understanding)_
 
 ## Entity definitions
 
@@ -163,7 +165,7 @@ _[back to top](#project-understanding)_
 - **`config/Config.ts`** — TypeBox schema, `getValidConfig`, `getLocalStorageKey`, `B_PROD`, default config; run `bun run config` to regenerate schema and default jsonc.
 - **`config/bootstrap/config.tsx`** — exports validated `config` for the running app.
 
-_[back to top](#project-understanding)_
+_[Back to top](#project-understanding)_
 
 ## Features
 
@@ -176,9 +178,11 @@ _[back to top](#project-understanding)_
 - **Persistence** — language and color scheme survive reloads via `localStorageStore`.
 - **Feature flags** — enable or disable features in `config.jsonc` without removing code.
 
-_[back to top](#project-understanding)_
+_[Back to top](#project-understanding)_
 
 ## Related docs
 
 - **[how-to.md](how-to.md)** — add a feature, route, logic, config, translation, ESLint structure.
 - **[src/app/dict/README.md](src/app/dict/README.md)** — shell translation key conventions (features follow the same patterns in their own `dict/`).
+
+_[Return](README.md) · [Back to top](#project-understanding)_

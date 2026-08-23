@@ -1,5 +1,7 @@
 # How-to
 
+[Return](README.md)
+
 This guide documents the main extension points in this template: features, routing, domain logic, configuration, persistence, translations, and ESLint structure rules.
 
 ## Table of contents
@@ -51,7 +53,7 @@ export const MyFeature: Feature = {
 4. register it in [`src/featureRegister.tsx`](src/featureRegister.tsx)
 5. run `bun run lint` — new paths must match [`folderStructure.mjs`](folderStructure.mjs) and [`independentModules.mjs`](independentModules.mjs)
 
-_[↑ Back to top](#how-to)_
+_[Back to top](#how-to)_
 
 ---
 
@@ -74,7 +76,7 @@ Prefer declaring the route on the feature `index.ts` (see [How to add a feature]
 
 Use `route.fn.navigateToRouteFn(path, params?)` or `route.fn.navigateToCustomRouteFn(...)` from components; use `route.fn.buildRouteLink(path, params?)` when you need an `href`.
 
-_[↑ Back to top](#how-to)_
+_[Back to top](#how-to)_
 
 ---
 
@@ -92,7 +94,7 @@ Domain logic lives in [`src/app/logic/`](src/app/logic/) (shell) or [`src/featur
 4. keep each logic module isolated — if a function needs values from elsewhere, pass them as parameters from the component
 5. see [`src/features/counter/logic/counter.ts`](src/features/counter/logic/counter.ts) for `state` + `fn`; [`src/shared/logic/lang.ts`](src/shared/logic/lang.ts) for persisted shared state
 
-_[↑ Back to top](#how-to)_
+_[Back to top](#how-to)_
 
 ---
 
@@ -106,7 +108,7 @@ Persistence uses per-key stores via `localStorageStore` in [`src/shared/utils/St
 
 Examples: `lang.data` in [`src/shared/logic/lang.ts`](src/shared/logic/lang.ts), `colorScheme.data` in [`src/app/logic/colorsScheme.ts`](src/app/logic/colorsScheme.ts).
 
-_[↑ Back to top](#how-to)_
+_[Back to top](#how-to)_
 
 ---
 
@@ -119,7 +121,7 @@ Runtime config is defined in [`config.jsonc`](config.jsonc), validated by the Ty
 3. update [`config.jsonc`](config.jsonc) with your values
 4. import `config` from `@/config/bootstrap/config` where needed (for example feature components reading `config.features.counter.specific`)
 
-_[↑ Back to top](#how-to)_
+_[Back to top](#how-to)_
 
 ---
 
@@ -155,7 +157,7 @@ Edit [`src/features/<name>/dict/lang/en.ts`](src/features/) and mirror keys in t
 2. mirror the same nested structure in every other language file for that surface
 3. use the new path from components (for example `tr.home.title` or `tr.counter.increment`)
 
-_[↑ Back to top](#how-to)_
+_[Back to top](#how-to)_
 
 ---
 
@@ -174,7 +176,7 @@ Tips:
 - feature folders use `{camelCase}` names (`counter`, `timer`, …)
 - component and page styles use `{PascalCase}.module.css`
 
-_[↑ Back to top](#how-to)_
+_[Back to top](#how-to)_
 
 ---
 
@@ -200,4 +202,4 @@ Typical workflow:
 2. if many modules should share the same imports, add or extend a key under `reusableImportPatterns` and reference it in `allowImportsFrom`
 3. run `bun run lint` and adjust rules until imports match the architecture (`config/**` is self-contained; features must not import `app/**`; logic modules must not import sibling logic)
 
-_[↑ Back to top](#how-to)_
+_[Return](README.md) · [Back to top](#how-to)_

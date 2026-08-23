@@ -1,8 +1,12 @@
 # Translation dictionary conventions
 
+[Return](../../../README.md)
+
 Each UI surface owns its own `dict/` folder with lazy-loaded language files. Strings are never shared across surfaces — shell copy lives here under `src/app/dict/`, and feature copy lives under `src/features/<name>/dict/`.
 
 English (`lang/en.ts`) is the reference shape. Every other locale must satisfy `export type Tr = typeof en` (or `export const fr: Tr = { … }`).
+
+_[Back to top](#translation-dictionary-conventions)_
 
 ---
 
@@ -14,6 +18,8 @@ English (`lang/en.ts`) is the reference shape. Every other locale must satisfy `
 | Feature   | `src/features/<name>/dict/` | `src/features/<name>/logic/tr.ts` | `<Feature>LifeCycle.tsx` |
 
 A component reads strings from the `tr` store of **its own surface only**. The shell never imports feature dicts, and features never import the shell dict.
+
+_[Back to top](#translation-dictionary-conventions)_
 
 ---
 
@@ -68,6 +74,8 @@ export const en = {
 
 Components access strings as `tr.<feature>.<key>` (e.g. `tr.counter.increment`, `tr.timer.unit`).
 
+_[Back to top](#translation-dictionary-conventions)_
+
 ---
 
 ## Leaf key rules
@@ -83,6 +91,8 @@ notFoundPath: (path: string) => `The path "${path}" was not found`,
 
 - **`{placeholder}`** syntax inside template literals when substituting values in function bodies.
 - **Remove unused keys** from every language file when copy is deleted from the UI.
+
+_[Back to top](#translation-dictionary-conventions)_
 
 ---
 
@@ -106,6 +116,8 @@ export const dict = {
 ```
 
 English is bundled eagerly; other languages are code-split.
+
+_[Back to top](#translation-dictionary-conventions)_
 
 ---
 
@@ -135,6 +147,8 @@ English is bundled eagerly; other languages are code-split.
 3. Implement the full `Tr` shape from that surface's `en.ts`.
 4. Register the loader in each `dict/index.ts`.
 
+_[Back to top](#translation-dictionary-conventions)_
+
 ---
 
 ## Runtime loading
@@ -145,3 +159,5 @@ When `lang.data` changes (`src/shared/logic/lang.ts`), the matching `*LifeCycle`
 - Feature: `dict[langV]()` → `tr.data.setValue` in e.g. `CounterLifeCycle.tsx`
 
 Until the chunk resolves, components keep showing the previous bundle (English is available immediately).
+
+_[Return](../../../README.md) · [Back to top](#translation-dictionary-conventions)_

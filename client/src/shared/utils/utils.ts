@@ -8,6 +8,17 @@ export type TypedExclude<Type, K extends Type> = Exclude<Type, K>;
 /** Ensure a type satisfies a condition */
 export type Satisfies<T, U extends T> = U;
 
+declare const __brand: unique symbol;
+/**
+ * Nominal type: `T` tagged with brand `B` so it is not assignable to other branded types.
+ * @example
+ * type UserId = Brand<string, "UserId">;
+ * type PostId = Brand<string, "PostId">;
+ * const userId = "abc" as UserId;
+ * const postId: PostId = userId; // error: UserId is not assignable to PostId
+ */
+export type Brand<T, B extends string> = T & { [__brand]: B };
+
 /**
  * Wraps the given function so it runs at most once. Subsequent calls return the result of the first invocation. \
  * Be sure to store the wrapped function in a variable to keep the reference.
